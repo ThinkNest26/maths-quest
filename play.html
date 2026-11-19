@@ -213,7 +213,17 @@ function stopDone(st){return QUESTS.filter(q=>q[0]!=='listen'||st.listen.length)
 /* ---------- voice (Kate, UK) ---------- */
 let VOICE=null;function pickVoice(){const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/kate/i.test(v.name))||vs.find(v=>/serena|libby|sonia|female/i.test(v.name)&&/en-GB/i.test(v.lang))||vs.find(v=>/en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}
 if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
-function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+let HAVE=new Set(),KATE=null,PLAYTOK=0;
+fetch('audio/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))HAVE=new Set(a)}).catch(()=>{});
+function unlockAudio(){if(KATE)return;KATE=new Audio();KATE.preload='auto';try{KATE.src='data:audio/mp4;base64,';KATE.play().catch(()=>{})}catch(e){}}
+document.addEventListener('pointerdown',unlockAudio,{once:true});document.addEventListener('keydown',unlockAudio,{once:true});
+function robot(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+/* say(text, clipName): plays Kate's recording if we have it, otherwise the device voice */
+function say(t,k){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}
+ if(k&&HAVE.has(k)){if(!KATE)unlockAudio();const tok=++PLAYTOK;try{KATE.pause()}catch(e){}
+  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t)});return}
+ if(t)robot(t)}
+function praise(ok){const n=ok?1+Math.floor(Math.random()*10):1+Math.floor(Math.random()*4);say('',(ok?'p-':'e-')+n)}
 /* ---------- answer checking ---------- */
 function norm(s){return String(s??'').toLowerCase().replace(/−/g,'-').replace(/[’']/g,"'").replace(/\s+/g,' ').trim()}
 function frac(s){s=s.trim();let m=s.match(/^(-?\d+) (\d+)\/(\d+)$/);if(m)return(+m[1])+(+m[2])/(+m[3])*(m[1].startsWith('-')?-1:1);m=s.match(/^(-?\d+)\/(\d+)$/);if(m)return(+m[1])/(+m[2]);if(/^-?\d*\.?\d+$/.test(s))return parseFloat(s);return null}
@@ -285,7 +295,7 @@ function learnView(){const st=stopObj();
  $('#app').innerHTML=qhead('📖 Learn it')+`<div class="card"><div style="display:flex;gap:14px;align-items:center"><div style="width:90px;flex:0 0 90px">${friendSvg()}</div><div class="bubble">Let's learn: <b>${esc(st.topic)}</b>. Read each step — tap 🔊 to hear it.</div></div>
  <div class="steps">${st.learn.map((s,i)=>`<div class="step"><b>${i+1}</b><div style="flex:1">${esc(s)}</div><button class="b2" data-say="${i}" aria-label="Hear step ${i+1}" style="padding:6px 12px">🔊</button></div>`).join('')}</div>
  <div class="center"><button class="b1" id="got">I've got it! ⭐</button></div></div>`;
- bindBack();document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(st.learn[+b.dataset.say]));
+ bindBack();document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(st.learn[+b.dataset.say],(st.lk||[])[+b.dataset.say]));
  $('#got').onclick=async()=>{$('#got').disabled=true;await complete('learn');V={s:'practise',land:V.land,stop:V.stop};Q=null;render()}}
 /* ---------- practise ---------- */
 function pickQs(list,n){const f=ME.facts||{},w=ME.wrong||{};
@@ -310,17 +320,17 @@ function practiseView(){const st=stopObj();
  $('#app').innerHTML=qhead('✏️ Practise it',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`)+
  `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:''}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;
- bindBack();$('#hear').onclick=()=>say(text);
+ bindBack();$('#hear').onclick=()=>say(text,it.k);
  bindAnswer(it,async g=>{const ok=check(it,g);
   if(ok||Q.tries>=1){if(Q.tries===0){rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
      ME.facts=ME.facts||{};ME.wrong=ME.wrong||{};if(ok)ME.facts[it.id]=(ME.facts[it.id]||0)+1;else ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
    Q.res.push(ok&&Q.tries===0);
-   if(ok){cheer(Q.tries===0?'+1 ⭐ Brilliant!':'Well done! 👍');setTimeout(()=>{Q.i++;Q.tries=0;render()},900)}
+   if(ok){praise(true);cheer(Q.tries===0?'+1 ⭐ Brilliant!':'Well done! 👍');setTimeout(()=>{Q.i++;Q.tries=0;render()},900)}
    else{$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(it.a)}</b>.</span> <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;$('#nx').onclick=()=>{Q.i++;Q.tries=0;render()}}
   }else{Q.tries=1;rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:false});ME.wrong=ME.wrong||{};ME.wrong[it.id]=(ME.wrong[it.id]||0)+1;
-   $('#fb').innerHTML='<span class="bad">Not quite — try once more!</span>';$('#hn').innerHTML=`<div class="hint">${friendSvg()}<div>${esc(it.h||'Have another think.')}</div></div>`;const i=$('#ans');if(i){i.value='';i.focus()}}
+   praise(false);$('#fb').innerHTML='<span class="bad">Not quite — try once more!</span>';$('#hn').innerHTML=`<div class="hint">${friendSvg()}<div>${esc(it.h||'Have another think.')}</div></div>`;const i=$('#ans');if(i){i.value='';i.focus()}}
  })}
-async function finishPractise(){const n=Q.res.filter(Boolean).length,t=Q.list.length;
+async function finishPractise(){const n=Q.res.filter(Boolean).length,t=Q.list.length;if(n>=7)say('',n===t?'perfect':'done');
  if(n>=Math.ceil(t*0.7)&&Q.kind==='practise')await complete('practise');
  $('#app').innerHTML=qhead('✏️ Practise it')+`<div class="card center"><div class="big">${n}/${t}</div><h2 style="color:var(--sea);margin:6px 0">${n>=Math.ceil(t*.7)?'Quest complete! 🎉':'Good effort — keep going!'}</h2><p class="muted">${n>=Math.ceil(t*.7)?'Your tricky questions will come back to help you remember.':'Score 7 or more to complete this quest.'}</p>
  <button class="b2" id="again">Practise again</button> <button class="b1" id="on">Back to ${esc(landObj().name)}</button></div>`;
@@ -338,7 +348,7 @@ function listenView(){clearInterval(TIMER);
  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
  `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div><div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
  <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
- bindBack();const go=()=>{say(V.mtc?it.q:it.q)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
+ bindBack();const go=()=>{say(it.q,it.k)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
  let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
   $('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=it.q;
@@ -364,7 +374,7 @@ function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.
  else if(asn)ui=`<div class="choices"><button class="b2" data-t="always">Always</button><button class="b2" data-t="sometimes">Sometimes</button><button class="b2" data-t="never">Never</button></div>`;
  else ui=`<textarea id="ex" rows="3" placeholder="Explain your thinking…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`;
  $('#app').innerHTML=qhead('🤔 Think it')+`<div class="card center"><div class="stars" style="display:inline-block;background:var(--sun)">${esc(ty)}</div><div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${ui}<div class="msg" id="fb"></div><div id="ans"></div></div>`;
- bindBack();$('#hear').onclick=()=>say(p.q);
+ bindBack();$('#hear').onclick=()=>say(p.q,p.k);
  const reveal=(good)=>{$('#ans').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}<br><span class="muted" style="font-weight:600">The important part is explaining <i>why</i>.</span></div></div><div style="margin-top:14px">${good===undefined?'<button class="b1" id="gotit">I got it ✓</button> <button class="b2" id="notyet">Not yet</button>':'<button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another puzzle</button>'}</div>`;
   $('#gotit').onclick=async()=>{await complete('think');Q=null;V={s:'land',land:V.land};render()};const n=$('#notyet')||$('#another');if(n)n.onclick=()=>{Q=null;render()}};
  if(tf||asn){document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const ok=norm(p.a).startsWith(b.dataset.t);$('#fb').innerHTML=ok?'<span class="ok">✔ Yes! Now can you explain why?</span>':'<span class="bad">Not quite — look at Zaza\'s answer.</span>';document.querySelectorAll('[data-t]').forEach(x=>x.disabled=true);reveal(ok)})}
@@ -374,7 +384,7 @@ function useView(){const st=stopObj();if(!Q){const p=st.use[Math.floor(Math.rand
  const p=Q.p,num=firstNum(p.a)&&!/answers will vary|e\.g\./i.test(p.a)&&!/,.*\d/.test(p.a.replace(/,(?=\d{3})/g,''));
  $('#app').innerHTML=qhead('🌍 Use it')+`<div class="card center"><div style="width:110px;margin:0 auto">${friendSvg()}</div><div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${num?`<form id="af"><input class="ans" id="ans" autocomplete="off"><div style="margin-top:12px"><button class="b1">Check</button></div></form>`:`<textarea id="ex" rows="3" placeholder="Work it out and write your answer…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`}<div class="msg" id="fb"></div><div id="ans2"></div></div>`;
- bindBack();$('#hear').onclick=()=>say(p.q);
+ bindBack();$('#hear').onclick=()=>say(p.q,p.k);
  const fin=()=>{$('#ans2').innerHTML+=`<div style="margin-top:14px"><button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another problem</button></div>`;$('#gotit').onclick=async()=>{await complete('use');Q=null;V={s:'land',land:V.land};render()};$('#another').onclick=()=>{Q=null;render()}};
  if(num){let tries=0;$('#af').onsubmit=e=>{e.preventDefault();const g=$('#ans').value;const ok=check({a:firstNum(p.a)},firstNum(g)||g);
    if(ok){$('#fb').innerHTML=`<span class="ok">✔ Correct! ${esc(p.a)}</span>`;cheer('Brilliant! 🌍');$('#af').querySelector('button').disabled=true;fin()}
