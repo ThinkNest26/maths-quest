@@ -27,6 +27,8 @@ button:active,.btn:active{transform:translateY(2px)}
 .nav a{font-weight:800;font-size:15px;color:var(--ink);text-decoration:none;padding:8px 12px;border-radius:999px}
 .nav a:hover{background:#fff}
 .top .b1{font-size:15px;padding:9px 18px;box-shadow:0 3px 0 var(--coral2)}
+.top .navlink{font-size:15px;padding:7px 14px;box-shadow:none;white-space:nowrap}.top .btn{white-space:nowrap}.nav a{white-space:nowrap}
+@media(max-width:1060px){.nav{display:none}}@media(max-width:640px){.top .navt{display:none}}
 .hero{background:var(--sky);overflow:hidden}
 .hero .wrap{display:grid;grid-template-columns:1fr 1.05fr;gap:30px;align-items:center;padding-top:44px;padding-bottom:40px}
 .chip{display:inline-block;background:#fff;color:var(--sea);font-weight:800;font-size:14px;padding:6px 14px;border-radius:999px;border:2px solid #C9E8E6}
@@ -210,8 +212,8 @@ footer a{color:#fff;font-weight:800}
 </defs></svg>
 <header class="top"><div class="wrap">
  <a class="logo" href="#" aria-label="Maths Quest home"><svg aria-hidden="true"><use href="#logo"/></svg><span class="wm"><span>Maths</span><span class="wq">Quest</span></span></a>
- <nav class="nav"><a href="#lands">The lands</a><a href="#quests">Quests</a><a href="#teachers">Teachers</a><a href="#how">How it works</a><a href="#faq">Questions</a></nav>
- <a class="btn b1" href="#join">Register interest</a>
+ <nav class="nav"><a href="#lands">The lands</a><a href="#quests">Quests</a><a href="#faq">Questions</a></nav>
+ <a class="btn b2 navlink" href="play.html">🧭 Explorers</a><a class="btn b2 navlink navt" href="teacher.html">Teachers</a><a class="btn b1" href="#join">Register interest</a>
 </div></header>
 
 <section class="hero" style="padding:0;position:relative"><div class="floaters" aria-hidden="true"><span style="left:4%;top:14%">7</span><span style="left:46%;top:8%;animation-delay:-2s">+</span><span style="left:30%;top:82%;animation-delay:-4s">×</span><span style="left:8%;top:70%;animation-delay:-1s">5</span><span style="left:92%;top:88%;animation-delay:-3s">÷</span><span style="left:52%;top:90%;animation-delay:-5s">3</span></div><div class="wrap" style="position:relative">

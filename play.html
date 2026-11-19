@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maths Quest — explorers</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%23127C8C%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2724%27 fill=%27%23FFF6E6%27/%3E%3Cpath d=%27M32 9L37 32L32 55L27 32Z%27 fill=%27%23F2704E%27/%3E%3Cpath d=%27M9 32L32 27L55 32L32 37Z%27 fill=%27%23FFC845%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--sea:#0E5E6F;--sea2:#127C8C;--sky:#E3F4F4;--sand:#FFF6E6;--coral:#F2704E;--coral2:#D9553A;--sun:#FFC845;--leaf:#3FA06B;--ink:#16323A;--muted:#5B7177;--line:#EADCC0}
+*{box-sizing:border-box}
+body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--sand);font-size:18px;line-height:1.5;min-height:100vh}
+h1,h2,h3,.f{font-family:Fredoka,Nunito,sans-serif;line-height:1.15;margin:0}
+button{font-family:Fredoka,sans-serif;font-size:19px;font-weight:600;border:0;border-radius:18px;padding:12px 22px;cursor:pointer;transition:transform .1s}
+button:active{transform:translateY(2px)}
+button:disabled{opacity:.5;cursor:default}
+.b1{background:var(--coral);color:#fff;box-shadow:0 4px 0 var(--coral2)}
+.b2{background:#fff;color:var(--sea);box-shadow:0 4px 0 var(--line);border:2px solid var(--line)}
+.b3{background:var(--sea2);color:#fff;box-shadow:0 4px 0 var(--sea)}
+.wrap{max-width:980px;margin:0 auto;padding:16px}
+.top{background:var(--sea);color:#fff}
+.top .wrap{display:flex;align-items:center;gap:12px;padding:10px 16px}
+.logo{display:flex;align-items:center;gap:8px;font-family:Fredoka;font-weight:700;font-size:22px;color:#fff;text-decoration:none}
+.logo svg{width:38px;height:38px}
+.who{margin-left:auto;display:flex;align-items:center;gap:10px;font-weight:800}
+.stars{background:var(--sun);color:#5A3D00;border-radius:999px;padding:5px 14px;font-weight:800}
+.out{background:transparent;border:2px solid rgba(255,255,255,.5);color:#fff;font-size:15px;padding:6px 14px;box-shadow:none}
+.card{background:#fff;border:3px solid var(--line);border-radius:26px;padding:22px}
+.center{text-align:center}
+.muted{color:var(--muted)}
+input.ans,textarea{font:inherit;font-size:26px;font-weight:800;text-align:center;padding:12px 16px;border:3px solid var(--line);border-radius:18px;width:100%;max-width:340px;color:var(--ink);background:#FFFCF6}
+textarea{font-size:18px;text-align:left;max-width:100%;font-weight:600}
+input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
+.msg{margin-top:12px;font-weight:800;min-height:26px}
+.bad{color:#B4381B}.ok{color:#1F7A47}
+.signin{max-width:520px;margin:30px auto}
+.signin svg.z{width:150px;height:150px;display:block;margin:0 auto}
+/* map */
+.mapbox{position:relative;background:#BFE6EA;border-radius:30px;overflow:hidden;border:3px solid #A9DBDB}
+.mapbox svg.road{display:block;width:100%;height:auto}
+.node{cursor:pointer}
+.node:focus{outline:none}
+.node .ring{transition:transform .15s;transform-box:fill-box;transform-origin:center}
+.node:hover .ring,.node:focus .ring{transform:scale(1.08)}
+.lbl{font-family:Fredoka,Arial;font-weight:600;font-size:17px;fill:#0E5E6F;stroke:#FFF6E6;stroke-width:5px;paint-order:stroke;stroke-linejoin:round}
+.prog{font-family:Fredoka,Arial;font-weight:700;font-size:13px;fill:#fff}
+.bob{animation:bob 2.6s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-5px)}}
+/* land */
+.stops{display:grid;gap:14px}
+.stop{background:#fff;border:3px solid var(--line);border-radius:24px;padding:16px 18px}
+.stop h3{font-size:21px;color:var(--sea)}
+.qs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.qb{font-size:16px;padding:10px 14px;border-radius:14px;background:var(--sky);color:var(--sea);box-shadow:0 3px 0 #BFDDDD}
+.qb.done{background:#E3F5EA;color:#1F6B42;box-shadow:0 3px 0 #B7E0C6}
+.back{background:transparent;color:var(--sea);box-shadow:none;padding:6px 4px;font-size:17px}
+.landhead{display:flex;align-items:center;gap:14px;margin:6px 0 16px}
+.landhead svg{width:70px;height:70px;flex:0 0 70px}
+/* quest */
+.qhead{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.qhead .f{font-size:22px;color:var(--sea)}
+.dots{display:flex;gap:5px;margin-left:auto}
+.dots i{width:13px;height:13px;border-radius:50%;background:#E5D9BF;display:block}
+.dots i.c{background:var(--leaf)}.dots i.w{background:var(--coral)}.dots i.n{background:var(--sea2)}
+.qtext{font-family:Fredoka;font-size:clamp(24px,4.5vw,34px);font-weight:600;color:var(--ink);margin:6px 0 16px}
+.pic{background:var(--sky);border:2px dashed #A9DBDB;border-radius:18px;padding:12px 16px;margin:0 auto 14px;max-width:640px;font-weight:700;color:var(--sea);font-size:17px}
+.choices{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.choices button{min-width:110px}
+.choices button.sel{background:var(--sea2);color:#fff;box-shadow:0 4px 0 var(--sea)}
+.order{min-height:54px;border:3px dashed var(--line);border-radius:16px;padding:8px;margin:10px auto;max-width:640px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hint{background:#FFF3C4;border-radius:16px;padding:12px 16px;margin:12px auto 0;max-width:640px;font-weight:700;color:#6B4E00;display:flex;gap:10px;align-items:center;text-align:left}
+.hint svg{width:52px;height:52px;flex:0 0 52px}
+.bubble{background:var(--sky);border-radius:20px;padding:16px 18px;font-weight:700;color:var(--sea);font-size:19px}
+.steps{display:grid;gap:12px;margin:12px 0}
+.step{display:flex;gap:12px;align-items:flex-start;background:#fff;border:3px solid var(--line);border-radius:20px;padding:14px 16px;font-weight:700;font-size:19px}
+.step b{flex:0 0 38px;height:38px;border-radius:50%;background:var(--sea2);color:#fff;display:grid;place-items:center;font-family:Fredoka}
+.timer{height:12px;background:#E5D9BF;border-radius:999px;overflow:hidden;max-width:520px;margin:6px auto 14px}
+.timer i{display:block;height:100%;background:var(--sea2);width:100%;transition:width .2s linear}
+.big{font-family:Fredoka;font-size:64px;color:var(--sea);font-weight:700}
+.cheer{position:fixed;inset:0;display:grid;place-items:center;pointer-events:none;z-index:50}
+.cheer div{background:#fff;border-radius:28px;padding:22px 34px;box-shadow:0 10px 40px rgba(0,0,0,.18);font-family:Fredoka;font-size:30px;color:var(--leaf);animation:pop .9s ease forwards}
+@keyframes pop{0%{transform:scale(.6);opacity:0}20%{transform:scale(1.05);opacity:1}80%{opacity:1}100%{transform:scale(1);opacity:0}}
+.foot{text-align:center;color:var(--muted);font-size:14px;padding:26px 10px}
+.foot a{color:var(--sea);font-weight:800}
+@media(max-width:600px){body{font-size:17px}.card{padding:16px}.who .nm{display:none}.qtext{font-size:24px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="zaza" viewBox="0 0 220 220">
+ <ellipse cx="110" cy="204" rx="78" ry="9" fill="#000" opacity=".08"/>
+ <rect x="58" y="150" width="15" height="48" rx="7.5" fill="#D9A866"/><rect x="82" y="152" width="15" height="46" rx="7.5" fill="#C99558"/><rect x="128" y="152" width="15" height="46" rx="7.5" fill="#C99558"/><rect x="150" y="150" width="15" height="48" rx="7.5" fill="#D9A866"/>
+ <path d="M50 160 Q46 110 80 104 Q92 74 112 100 Q128 74 146 104 Q176 112 170 160Z" fill="#EDBD78"/>
+ <path d="M150 116 Q172 84 168 52" stroke="#EDBD78" stroke-width="27" fill="none" stroke-linecap="round"/>
+ <ellipse cx="174" cy="52" rx="29" ry="24" fill="#F2C88C"/>
+ <ellipse cx="193" cy="61" rx="13" ry="10" fill="#F8DDB2"/><circle cx="198" cy="58" r="2" fill="#6B4E2A"/>
+ <circle cx="171" cy="45" r="8" fill="#fff"/><circle cx="173" cy="46" r="4.6" fill="#16323A"/><circle cx="174.8" cy="44.2" r="1.6" fill="#fff"/>
+ <path d="M183 67 Q190 72 197 67" stroke="#6B4E2A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+ <ellipse cx="160" cy="59" rx="6" ry="3.5" fill="#F59C7E" opacity=".75"/>
+ <path d="M146 33 Q174 0 202 33Z" fill="#0E5E6F"/><rect x="140" y="29" width="68" height="8" rx="4" fill="#0E5E6F"/><rect x="151" y="24" width="46" height="6" fill="#FFC845"/>
+ <path d="M84 108 h56 v24 a6 6 0 0 1-6 6 h-44 a6 6 0 0 1-6-6z" fill="#F2704E"/><circle cx="112" cy="121" r="6" fill="#FFC845"/><path d="M109 121h6M112 118v6" stroke="#B9562B" stroke-width="1.6"/>
+ <path d="M52 150 Q34 150 40 128" stroke="#C99558" stroke-width="6" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="kidA" viewBox="0 0 60 92">
+ <ellipse cx="30" cy="89" rx="18" ry="3" fill="#000" opacity=".1"/>
+ <rect x="20" y="66" width="8" height="22" rx="4" fill="#0E5E6F"/><rect x="32" y="66" width="8" height="22" rx="4" fill="#0E5E6F"/>
+ <rect x="10" y="40" width="12" height="20" rx="5" fill="#FFC845"/>
+ <path d="M16 44 Q16 36 30 36 Q44 36 44 44 V70 H16Z" fill="#F2704E"/>
+ <path d="M44 44 Q54 36 54 24" stroke="#C98B5E" stroke-width="7" fill="none" stroke-linecap="round"/>
+ <circle cx="30" cy="22" r="14" fill="#C98B5E"/>
+ <path d="M16 20 Q16 6 30 6 Q44 6 44 20 Q38 13 30 14 Q22 13 16 20Z" fill="#2B1B12"/>
+ <path d="M12 14 Q30 -6 48 14Z" fill="#3FA06B"/><rect x="9" y="12" width="42" height="5" rx="2.5" fill="#2E8556"/>
+ <circle cx="25" cy="23" r="2" fill="#16323A"/><circle cx="35" cy="23" r="2" fill="#16323A"/>
+ <path d="M25 29 Q30 33 35 29" stroke="#16323A" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <circle cx="21" cy="27" r="2.4" fill="#F59C7E" opacity=".7"/><circle cx="39" cy="27" r="2.4" fill="#F59C7E" opacity=".7"/>
+</symbol>
+<symbol id="kidB" viewBox="0 0 60 92">
+ <ellipse cx="30" cy="89" rx="18" ry="3" fill="#000" opacity=".1"/>
+ <rect x="20" y="66" width="8" height="22" rx="4" fill="#5B4A8B"/><rect x="32" y="66" width="8" height="22" rx="4" fill="#5B4A8B"/>
+ <path d="M14 46 Q14 36 30 36 Q46 36 46 46 V72 H14Z" fill="#127C8C"/>
+ <path d="M14 48 Q6 40 8 28" stroke="#F1C9A5" stroke-width="7" fill="none" stroke-linecap="round"/>
+ <path d="M14 30 Q12 4 30 4 Q48 4 46 30 Q46 42 30 44 Q14 42 14 30Z" fill="#F2704E"/>
+ <circle cx="30" cy="24" r="11.5" fill="#F1C9A5"/>
+ <circle cx="25.5" cy="24" r="2" fill="#16323A"/><circle cx="34.5" cy="24" r="2" fill="#16323A"/>
+ <path d="M25.5 29.5 Q30 33 34.5 29.5" stroke="#16323A" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <circle cx="22" cy="28" r="2.2" fill="#F59C7E" opacity=".7"/><circle cx="38" cy="28" r="2.2" fill="#F59C7E" opacity=".7"/>
+ <circle cx="8" cy="22" r="6" fill="none" stroke="#FFC845" stroke-width="2.4"/><path d="M12 26 L17 31" stroke="#FFC845" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+<symbol id="parrot" viewBox="0 0 50 60">
+ <path d="M18 44 L14 58 M26 46 L28 58" stroke="#E0A82A" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="24" cy="32" rx="14" ry="17" fill="#3FA06B"/>
+ <path d="M14 30 Q6 44 18 50 Q24 40 22 30Z" fill="#F2704E"/><path d="M14 38 Q10 46 18 50" stroke="#FFC845" stroke-width="3" fill="none"/>
+ <circle cx="26" cy="16" r="11" fill="#4CB878"/>
+ <circle cx="29" cy="14" r="4" fill="#fff"/><circle cx="30" cy="14.5" r="2.2" fill="#16323A"/>
+ <path d="M35 15 Q44 17 38 25 Q35 21 33 20Z" fill="#FFC845"/>
+ <path d="M22 6 Q20 0 26 1 Q24 4 26 6" fill="#F2704E"/>
+</symbol>
+<symbol id="turtle" viewBox="0 0 70 44">
+ <ellipse cx="35" cy="40" rx="26" ry="4" fill="#7FCBD3"/>
+ <ellipse cx="14" cy="34" rx="7" ry="4" fill="#7CC59A"/><ellipse cx="54" cy="34" rx="7" ry="4" fill="#7CC59A"/>
+ <circle cx="60" cy="24" r="9" fill="#7CC59A"/><circle cx="63" cy="22" r="2" fill="#16323A"/><path d="M60 28 Q63 30 66 27" stroke="#16323A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+ <path d="M10 32 Q12 8 35 8 Q56 8 58 32Z" fill="#3FA06B"/>
+ <path d="M24 14 L35 10 L46 14 L46 26 L35 30 L24 26Z" fill="#2E8556"/><path d="M35 10V30M24 20H46" stroke="#3FA06B" stroke-width="1.6"/>
+</symbol>
+<symbol id="fox" viewBox="0 0 60 60">
+ <path d="M44 46 Q62 40 56 24 Q50 36 40 38Z" fill="#F2704E"/><path d="M56 24 Q58 30 52 34" fill="#fff"/>
+ <ellipse cx="28" cy="44" rx="15" ry="13" fill="#F2704E"/><ellipse cx="28" cy="48" rx="8" ry="8" fill="#FFE7D6"/>
+ <path d="M12 8 L18 24 L24 16Z" fill="#E25E3C"/><path d="M44 8 L38 24 L32 16Z" fill="#E25E3C"/>
+ <path d="M10 24 Q28 4 46 24 Q46 38 28 40 Q10 38 10 24Z" fill="#F7864F"/>
+ <path d="M14 28 Q28 44 42 28 Q36 36 28 36 Q20 36 14 28Z" fill="#FFE7D6"/>
+ <circle cx="22" cy="25" r="2.4" fill="#16323A"/><circle cx="34" cy="25" r="2.4" fill="#16323A"/><circle cx="28" cy="31" r="2.4" fill="#16323A"/>
+</symbol>
+<symbol id="owl" viewBox="0 0 50 60">
+ <path d="M8 18 L6 4 L18 12Z M42 18 L44 4 L32 12Z" fill="#8A6A3F"/>
+ <ellipse cx="25" cy="34" rx="19" ry="23" fill="#A07A48"/><ellipse cx="25" cy="42" rx="12" ry="13" fill="#E9D3AE"/>
+ <circle cx="17" cy="24" r="8" fill="#fff"/><circle cx="33" cy="24" r="8" fill="#fff"/>
+ <circle cx="17" cy="24" r="8" fill="none" stroke="#0E5E6F" stroke-width="2"/><circle cx="33" cy="24" r="8" fill="none" stroke="#0E5E6F" stroke-width="2"/><path d="M25 24h0" stroke="#0E5E6F" stroke-width="2"/>
+ <circle cx="18" cy="25" r="3.4" fill="#16323A"/><circle cx="32" cy="25" r="3.4" fill="#16323A"/>
+ <path d="M22 31 L25 36 L28 31Z" fill="#FFC845"/>
+ <path d="M20 57 v3 M30 57 v3" stroke="#E0A82A" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+<symbol id="chest" viewBox="0 0 70 56">
+ <circle cx="16" cy="8" r="5" fill="#FFC845"/><circle cx="34" cy="4" r="5" fill="#FFD866"/><circle cx="52" cy="9" r="5" fill="#FFC845"/>
+ <path d="M6 22 Q6 6 35 6 Q64 6 64 22Z" fill="#B7793B"/>
+ <rect x="6" y="22" width="58" height="30" rx="4" fill="#9A6230"/>
+ <rect x="6" y="20" width="58" height="6" fill="#FFC845"/><rect x="14" y="6" width="5" height="46" fill="#FFC845" opacity=".9"/><rect x="51" y="6" width="5" height="46" fill="#FFC845" opacity=".9"/>
+ <rect x="29" y="26" width="12" height="12" rx="3" fill="#FFC845"/><circle cx="35" cy="32" r="2.2" fill="#9A6230"/>
+</symbol>
+<symbol id="star" viewBox="0 0 20 20"><path d="M10 1 L12.6 7 L19 7.6 L14.2 11.8 L15.6 18.4 L10 15 L4.4 18.4 L5.8 11.8 L1 7.6 L7.4 7Z" fill="#FFC845"/></symbol>
+<symbol id="logo" viewBox="0 0 64 64">
+ <circle cx="32" cy="32" r="30" fill="#127C8C"/><circle cx="32" cy="32" r="24" fill="#FFF6E6"/><circle cx="32" cy="32" r="24" fill="none" stroke="#0E5E6F" stroke-width="2" stroke-dasharray="3 4"/>
+ <path d="M32 9 L37 32 L32 55 L27 32Z" fill="#F2704E"/><path d="M32 32 L37 32 L32 55 L27 32Z" fill="#0E5E6F"/>
+ <path d="M9 32 L32 27 L55 32 L32 37Z" fill="#FFC845" opacity=".95"/>
+ <circle cx="32" cy="32" r="4.5" fill="#fff" stroke="#0E5E6F" stroke-width="2"/>
+ <text x="32" y="20.5" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#fff">+</text>
+ <text x="45" y="35.5" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#7A5600">×</text>
+ <text x="19" y="35.5" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#7A5600">−</text>
+ <text x="32" y="49" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#fff">÷</text>
+</symbol>
+</defs></svg>
+<header class="top"><div class="wrap"><a class="logo" href="./"><svg aria-hidden="true"><use href="#logo"/></svg>Maths Quest</a><div class="who" id="who"></div></div></header>
+<main class="wrap" id="app"></main>
+<div class="foot">Powered by <a href="./">ThinkNest</a></div>
+<div id="fx"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://xpbkdnkfufkahaszfycd.supabase.co';
+const SUPABASE_KEY='sb_publishable_QIAV_9tLUBbDCu7FHqaTEw_zYQ0teEG';
+let sb=null;try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+const $=s=>document.querySelector(s);
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const GRADE=['KG2','Grade 1','Grade 2','Grade 3','Grade 4','Grade 5'];
+const KEY='mq-kid';
+let ME=null,C=null,V={s:'signin'},Q=null;
+const LANDICON={
+NI:'<svg viewBox="0 0 40 40"><path d="M20 36 Q22 22 17 10" stroke="#6B4E2A" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M17 11 Q6 6 2 14 M17 11 Q28 2 36 12 M17 11 Q12 22 4 24" stroke="#3FA06B" stroke-width="5" fill="none" stroke-linecap="round"/></svg>',
+TT:'<svg viewBox="0 0 40 40"><rect x="5" y="18" width="14" height="16" fill="#F2704E"/><path d="M3 19 L12 9 L21 19Z" fill="#0E5E6F"/><rect x="22" y="13" width="14" height="21" fill="#FFC845"/><path d="M20 14 L29 5 L38 14Z" fill="#0E5E6F"/></svg>',
+FF:'<svg viewBox="0 0 40 40"><rect x="9" y="5" width="22" height="26" fill="#7FCBD3"/><path d="M14 9v18M20 7v22M26 9v18" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><ellipse cx="20" cy="33" rx="16" ry="4" fill="#7FCBD3"/></svg>',
+MM:'<svg viewBox="0 0 40 40"><rect x="5" y="18" width="30" height="16" rx="3" fill="#fff" stroke="#F2704E" stroke-width="2"/><path d="M3 18 L8 8 H32 L37 18Z" fill="#F2704E"/><circle cx="12" cy="26" r="3.5" fill="#FFC845"/><circle cx="20" cy="26" r="3.5" fill="#3FA06B"/><circle cx="28" cy="26" r="3.5" fill="#F2704E"/></svg>',
+SF:'<svg viewBox="0 0 40 40"><path d="M3 34 L13 12 L23 34Z" fill="#3FA06B"/><path d="M16 34 L27 8 L38 34Z" fill="#2E8556"/></svg>',
+DD:'<svg viewBox="0 0 40 40"><path d="M2 34 Q18 18 34 34Z" fill="#F0C97F"/><rect x="10" y="10" width="5" height="16" rx="1.5" fill="#0E5E6F"/><rect x="18" y="5" width="5" height="21" rx="1.5" fill="#F2704E"/><rect x="26" y="14" width="5" height="12" rx="1.5" fill="#3FA06B"/></svg>',
+PP:'<svg viewBox="0 0 40 40"><path d="M2 36 L14 12 L22 26 L28 16 L38 36Z" fill="#8E7CC3"/><path d="M14 12 L18 20 L10 20Z" fill="#fff"/><text x="22" y="11" font-family="Arial" font-weight="700" font-size="9" fill="#0E5E6F">a:b</text></svg>'};
+const FRIEND={NI:'parrot',TT:'zaza',FF:'turtle',MM:'owl',SF:'fox',DD:'zaza',PP:'zaza'};const FNAME={parrot:'Pip',zaza:'Zaza',turtle:'Shelly',owl:'Professor Hoot',fox:'Finn'};function fname(){return FNAME[FRIEND[V.land]||'zaza']}
+const QUESTS=[['learn','📖','Learn it'],['practise','✏️','Practise it'],['listen','🎧','Listen'],['play','⏱️','Play it'],['think','🤔','Think it'],['use','🌍','Use it']];
+function save(){try{localStorage.setItem(KEY,JSON.stringify({code:ME.code}))}catch(e){}}
+function stars(){return ME?Math.max(0,(ME.stars||0)-(ME.spent||0)):0}
+function header(){$('#who').innerHTML=ME?`<span class="nm">Hi ${esc(ME.first_name)}!</span><span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;V={s:'signin'};render()}}
+function cheer(t,col){const d=document.createElement('div');d.className='cheer';d.innerHTML=`<div style="${col?'color:'+col:''}">${t}</div>`;$('#fx').appendChild(d);setTimeout(()=>d.remove(),950)}
+function key(st,kind){return `G${ME.grade}-${V.land}-${st.n}-${kind}`}
+function isDone(st,kind){return ME&&ME.done&&ME.done[key(st,kind)]}
+function stopDone(st){return QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).every(q=>isDone(st,q[0])||(q[0]==='listen'&&!st.listen.length))}
+/* ---------- voice (Kate, UK) ---------- */
+let VOICE=null;function pickVoice(){const vs=speechSynthesis.getVoices();VOICE=vs.find(v=>/kate/i.test(v.name))||vs.find(v=>/serena|libby|sonia|female/i.test(v.name)&&/en-GB/i.test(v.lang))||vs.find(v=>/en-GB/i.test(v.lang))||vs.find(v=>/^en/i.test(v.lang))||null}
+if('speechSynthesis' in window){pickVoice();speechSynthesis.onvoiceschanged=pickVoice}
+function say(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+/* ---------- answer checking ---------- */
+function norm(s){return String(s??'').toLowerCase().replace(/−/g,'-').replace(/[’']/g,"'").replace(/\s+/g,' ').trim()}
+function frac(s){s=s.trim();let m=s.match(/^(-?\d+) (\d+)\/(\d+)$/);if(m)return(+m[1])+(+m[2])/(+m[3])*(m[1].startsWith('-')?-1:1);m=s.match(/^(-?\d+)\/(\d+)$/);if(m)return(+m[1])/(+m[2]);if(/^-?\d*\.?\d+$/.test(s))return parseFloat(s);return null}
+function numVal(s){s=norm(s).replace(/,(?=\d{3})/g,'');
+ let m=s.match(/^(-?\d+(?:\.\d+)?) dirhams? (\d+) fils$/);if(m)return(+m[1])+(+m[2])/100;
+ m=s.match(/^(\d+) fils$/);if(m)return +m[1];
+ m=s.match(/^(?:(\d+) ?h(?:ours?)?)? ?(?:(\d+) ?min(?:utes?)?)?$/);if(m&&(m[1]||m[2])&&/h|min/.test(s))return'T'+((+(m[1]||0))*60+(+(m[2]||0)));
+ s=s.replace(/(cm³|cm²|m²|m³|km|cm|mm|kg|ml|°c|°|%|dirhams?|fils|seconds?|minutes?|days?|hours?|litres?|grams?|metres?|g|l|m)$/,'').trim();
+ return frac(s)}
+function check(item,given){const a=String(item.a),g=String(given??'');if(!g.trim())return false;
+ if(item.t==='choice'||item.t==='order')return norm(a)===norm(g);
+ const na=norm(a),ng=norm(g);if(na===ng)return true;
+ if(na.replace(/[\s()]/g,'')===ng.replace(/[\s()]/g,''))return true;
+ if(/^\d{1,2}:\d{2}( ?[ap]m)?$/.test(na))return na.replace(/^0/,'').replace(/\s/g,'')===ng.replace(/^0/,'').replace(/\s/g,'').replace(/\./g,'');
+ if(/ r \d+$/.test(na))return na.replace(/\s/g,'')===ng.replace(/\s|remainder/g,'r').replace(/rr+/g,'r').replace(/\s/g,'');
+ if(/^\d+ fils$/.test(na)){const v=numVal(g);if(v!==null&&(Math.abs(v-parseInt(na))<1e-9||Math.abs(v*100-parseInt(na))<1e-6))return true}
+ const x=numVal(a),y=numVal(g);if(x!==null&&y!==null){if(typeof x==='string'||typeof y==='string')return x===y;return Math.abs(x-y)<1e-9}
+ return false}
+function firstNum(s){const m=norm(s).replace(/,(?=\d{3})/g,'').match(/-?\d+(?:\.\d+)?(?: \d+\/\d+)?/);return m?m[0]:null}
+/* ---------- data ---------- */
+async function rpc(fn,args){if(!sb)return {data:null,error:{message:'offline'}};try{return await sb.rpc(fn,args)}catch(e){return {data:null,error:e}}}
+async function loadContent(){const r=await fetch(`content/grade${ME.grade}.json`,{cache:'no-cache'});C=await r.json()}
+async function signIn(code){const {data,error}=await rpc('mq_login',{p_code:code});
+ if(error)return 'Could not connect. Please try again.';
+ if(!data)return 'We could not find that code. Check it with your teacher.';
+ if(data.error==='sbcode')return 'That is a Spelling Bee code! Maths Quest has its own code — ask your teacher.';
+ if(data.error==='paused')return 'Maths Quest is paused for your school. Please ask your teacher.';
+ ME=Object.assign({code:code.toUpperCase().replace(/[^A-Z0-9]/g,'')},data);save();await loadContent();V={s:'map'};render();return null}
+/* ---------- views ---------- */
+function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
+ if(!ME){a.innerHTML=signinView();bindSignin();return}
+ if(!C){a.innerHTML='<p class="center muted">Loading your map…</p>';return}
+ ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView}[V.s]||mapView)();window.scrollTo(0,0)}
+function signinView(){return `<div class="signin card center"><svg class="z bob" viewBox="0 0 220 220"><use href="#zaza"/></svg>
+ <h1 style="font-size:34px;color:var(--sea)">Ready for your quest?</h1><p class="muted">Type your secret Maths Quest code.</p>
+ <form id="cf"><input class="ans" id="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="e.g. 7KQ-2MP" maxlength="9" style="text-transform:uppercase"><div class="msg bad" id="cm"></div>
+ <button class="b1" style="margin-top:8px;font-size:22px">Let's go! 🧭</button></form></div>`}
+function bindSignin(){$('#cf').onsubmit=async e=>{e.preventDefault();const v=$('#code').value;if(v.replace(/[^A-Za-z0-9]/g,'').length<6){$('#cm').textContent='Your code has 6 letters and numbers.';return}const b=$('#cf button');b.disabled=true;b.textContent='Opening your map…';const m=await signIn(v);if(m){$('#cm').textContent=m;b.disabled=false;b.textContent="Let's go! 🧭"}}}
+function landProgress(l){const t=l.stops.length;const d=l.stops.filter(st=>{const lv=V.land;V.land=l.code;const r=stopDone(st);V.land=lv;return r}).length;return [d,t]}
+function mapView(){const L=C.lands,n=L.length,W=600,rowH=240,H=rowH*Math.ceil(n/2)+80;
+ const pts=L.map((l,i)=>{const row=Math.floor(i/2),left=row%2===0?(i%2===0):(i%2===1);return [left?150:450,100+row*rowH+(i%2)*90]});
+ let d=`M60 40 `;pts.forEach(([x,y],i)=>{d+= i===0?`Q ${x-60} ${y-40} ${x} ${y} `:`Q ${(x+pts[i-1][0])/2} ${(y+pts[i-1][1])/2+60} ${x} ${y} `});d+=`Q ${pts[n-1][0]} ${pts[n-1][1]+70} ${W/2} ${H-40}`;
+ let cur=L.findIndex(l=>{const [a,b]=landProgress(l);return a<b});if(cur<0)cur=n-1;
+ const nodes=L.map((l,i)=>{const [a,b]=landProgress(l);const [x,y]=pts[i];const full=a===b;
+  return `<g class="node" tabindex="0" role="button" aria-label="${esc(l.name)}, ${a} of ${b} stops done" data-land="${l.code}"><circle class="ring" cx="${x}" cy="${y}" r="46" fill="${full?'#E3F5EA':'#FFF6E6'}" stroke="${full?'#3FA06B':'#0E5E6F'}" stroke-width="5"/><g transform="translate(${x-26} ${y-30})"><svg width="52" height="52" viewBox="0 0 40 40">${LANDICON[l.code].replace(/^<svg[^>]*>|<\/svg>$/g,'')}</svg></g>
+  <rect x="${x-24}" y="${y+24}" width="48" height="20" rx="10" fill="${full?'#3FA06B':'#F2704E'}"/><text class="prog" x="${x}" y="${y+38}" text-anchor="middle">${full?'★':''}${a}/${b}</text><text class="lbl" x="${x}" y="${y+66}" text-anchor="middle">${esc(l.name)}</text></g>`}).join('');
+ const [zx,zy]=pts[cur];
+ $('#app').innerHTML=`<div class="center" style="margin:6px 0 14px"><h1 style="font-size:30px;color:var(--sea)">${esc(ME.first_name)}'s quest map</h1><p class="muted" style="margin:4px 0 0">${GRADE[ME.grade]} · tap a land to explore</p></div>
+ <div class="mapbox"><svg class="road" viewBox="0 0 ${W} ${H}" role="img" aria-label="Quest map"><path d="${d}" fill="none" stroke="#8A6A3F" stroke-width="30" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#D6B37C" stroke-width="23" stroke-linecap="round"/><path d="${d}" fill="none" stroke="#FFF6E6" stroke-width="3.5" stroke-dasharray="10 12"/>
+ <g transform="translate(22 10)"><rect width="76" height="30" rx="9" fill="#0E5E6F"/><text x="38" y="21" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="16" fill="#fff">START</text></g>
+ ${nodes}<g class="bob"><use href="#zaza" x="${zx+30}" y="${zy-90}" width="78" height="78"/></g><use href="#chest" x="${W/2-34}" y="${H-80}" width="68" height="54"/></svg></div>`;
+ document.querySelectorAll('[data-land]').forEach(g=>{const go=()=>{V={s:'land',land:g.dataset.land};render()};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}})}
+function landObj(){return C.lands.find(l=>l.code===V.land)}
+function landView(){const l=landObj();
+ $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button><div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>
+ ${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
+ <div class="stops">${l.stops.map(st=>`<div class="stop"><h3>${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')}</div>`;
+ $('#bk').onclick=()=>{V={s:'map'};render()};
+ const m=$('#mtc');if(m)m.onclick=()=>{V={s:'listen',land:'TT',stop:0,mtc:true};render()};
+ document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{V={s:b.dataset.q,land:V.land,stop:+b.dataset.st};Q=null;render()})}
+function stopObj(){return landObj().stops.find(s=>s.n===V.stop)}
+function qhead(title,extra){return `<div class="qhead"><button class="back" id="bk">← ${esc(landObj().name)}</button><span class="f">${title}</span>${extra||''}</div>`}
+function bindBack(){$('#bk').onclick=()=>{Q=null;V={s:'land',land:V.land};render()}}
+async function complete(kind){const st=stopObj();const k=key(st,kind);const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:k,p_kind:kind});
+ if(data){ME.stars=data.stars;ME.done=data.done;header();if(data.prize)cheer(`+${data.prize} ⭐ Quest complete!`);else cheer('Quest complete! 🎉')}
+ else{ME.done=ME.done||{};ME.done[k]=1}}
+function friendSvg(){const f=FRIEND[V.land]||'zaza';const vb={zaza:'0 0 220 220',parrot:'0 0 50 60',owl:'0 0 50 60',turtle:'0 0 70 44',fox:'0 0 60 60'}[f];return `<svg viewBox="${vb}"><use href="#${f}"/></svg>`}
+function learnView(){const st=stopObj();
+ $('#app').innerHTML=qhead('📖 Learn it')+`<div class="card"><div style="display:flex;gap:14px;align-items:center"><div style="width:90px;flex:0 0 90px">${friendSvg()}</div><div class="bubble">Let's learn: <b>${esc(st.topic)}</b>. Read each step — tap 🔊 to hear it.</div></div>
+ <div class="steps">${st.learn.map((s,i)=>`<div class="step"><b>${i+1}</b><div style="flex:1">${esc(s)}</div><button class="b2" data-say="${i}" aria-label="Hear step ${i+1}" style="padding:6px 12px">🔊</button></div>`).join('')}</div>
+ <div class="center"><button class="b1" id="got">I've got it! ⭐</button></div></div>`;
+ bindBack();document.querySelectorAll('[data-say]').forEach(b=>b.onclick=()=>say(st.learn[+b.dataset.say]));
+ $('#got').onclick=async()=>{$('#got').disabled=true;await complete('learn');V={s:'practise',land:V.land,stop:V.stop};Q=null;render()}}
+/* ---------- practise ---------- */
+function pickQs(list,n){const f=ME.facts||{},w=ME.wrong||{};
+ const sc=it=>((f[it.id]||0)>=2?100:(f[it.id]||0)*30)-(w[it.id]||0)*20+it.d*3+Math.random()*12;
+ return list.slice().sort((a,b)=>sc(a)-sc(b)).slice(0,n).sort((a,b)=>a.d-b.d)}
+function splitPic(q){const m=String(q).match(/^\((?:Picture: )?(.*?)\)\s*(.*)$/s);return m&&m[1].length>8?[m[1],m[2]]:[null,q]}
+function answerUI(it){
+ if(it.t==='choice')return `<div class="choices">${it.c.map(c=>`<button class="b2" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>`;
+ if(it.t==='order'){const items=it.a.split(', ').slice().sort(()=>Math.random()-.5);return `<div class="muted">Tap them in order, smallest first.</div><div class="order" id="ord"></div><div class="choices">${items.map(c=>`<button class="b2" data-o="${esc(c)}">${esc(c)}</button>`).join('')}</div><div style="margin-top:10px"><button class="b2" id="clr">Start again</button> <button class="b1" id="chk">Check</button></div>`}
+ const ph=it.t==='fraction'?'e.g. 3/4':it.t==='text'?'type your answer':'';
+ return `<form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="${it.t==='number'&&!/[a-z(]/i.test(it.a)?'decimal':'text'}" placeholder="${ph}"> <div style="margin-top:12px"><button class="b1">Check</button></div></form>`}
+function bindAnswer(it,cb){
+ if(it.t==='choice'){document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>cb(b.dataset.c));return}
+ if(it.t==='order'){let seq=[];const draw=()=>{$('#ord').innerHTML=seq.map(x=>`<span class="stars" style="background:var(--sky);color:var(--sea)">${esc(x)}</span>`).join('')};
+  document.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{if(!seq.includes(b.dataset.o)){seq.push(b.dataset.o);b.disabled=true;draw()}});
+  $('#clr').onclick=()=>{seq=[];document.querySelectorAll('[data-o]').forEach(b=>b.disabled=false);draw()};$('#chk').onclick=()=>cb(seq.join(', '));return}
+ const i=$('#ans');i.focus();$('#af').onsubmit=e=>{e.preventDefault();cb(i.value)}}
+function practiseView(){const st=stopObj();
+ if(!Q){Q={kind:'practise',list:pickQs(st.practise,10),i:0,res:[],tries:0}}
+ if(Q.i>=Q.list.length)return finishPractise();
+ const it=Q.list[Q.i];const [pic,text]=splitPic(it.q);
+ $('#app').innerHTML=qhead('✏️ Practise it',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`)+
+ `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:''}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+ ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;
+ bindBack();$('#hear').onclick=()=>say(text);
+ bindAnswer(it,async g=>{const ok=check(it,g);
+  if(ok||Q.tries>=1){if(Q.tries===0){rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
+     ME.facts=ME.facts||{};ME.wrong=ME.wrong||{};if(ok)ME.facts[it.id]=(ME.facts[it.id]||0)+1;else ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
+   Q.res.push(ok&&Q.tries===0);
+   if(ok){cheer(Q.tries===0?'+1 ⭐ Brilliant!':'Well done! 👍');setTimeout(()=>{Q.i++;Q.tries=0;render()},900)}
+   else{$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(it.a)}</b>.</span> <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;$('#nx').onclick=()=>{Q.i++;Q.tries=0;render()}}
+  }else{Q.tries=1;rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:false});ME.wrong=ME.wrong||{};ME.wrong[it.id]=(ME.wrong[it.id]||0)+1;
+   $('#fb').innerHTML='<span class="bad">Not quite — try once more!</span>';$('#hn').innerHTML=`<div class="hint">${friendSvg()}<div>${esc(it.h||'Have another think.')}</div></div>`;const i=$('#ans');if(i){i.value='';i.focus()}}
+ })}
+async function finishPractise(){const n=Q.res.filter(Boolean).length,t=Q.list.length;
+ if(n>=Math.ceil(t*0.7)&&Q.kind==='practise')await complete('practise');
+ $('#app').innerHTML=qhead('✏️ Practise it')+`<div class="card center"><div class="big">${n}/${t}</div><h2 style="color:var(--sea);margin:6px 0">${n>=Math.ceil(t*.7)?'Quest complete! 🎉':'Good effort — keep going!'}</h2><p class="muted">${n>=Math.ceil(t*.7)?'Your tricky questions will come back to help you remember.':'Score 7 or more to complete this quest.'}</p>
+ <button class="b2" id="again">Practise again</button> <button class="b1" id="on">Back to ${esc(landObj().name)}</button></div>`;
+ bindBack();$('#again').onclick=()=>{Q=null;render()};$('#on').onclick=()=>{Q=null;V={s:'land',land:V.land};render()}}
+/* ---------- listen and answer ---------- */
+let TIMER=null;
+function listenView(){clearInterval(TIMER);
+ if(V.mtc&&!Q){const set=C.mtc[Math.floor(Math.random()*C.mtc.length)];Q={kind:'mtc',list:set.map((x,i)=>({id:'mtc',q:x.q,a:x.a,t:'number',sec:6})),i:0,res:[]}}
+ const st=V.mtc?null:stopObj();if(!Q)Q={kind:'listen',list:st.listen.slice().sort(()=>Math.random()-.5),i:0,res:[]};
+ if(Q.i>=Q.list.length){const n=Q.res.filter(Boolean).length,t=Q.list.length;
+  if(!V.mtc&&n>=Math.ceil(t*.7))complete('listen');
+  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span></div>`:qhead('🎧 Listen and answer'))+`<div class="card center"><div class="big">${n}/${t}</div><h2 style="color:var(--sea)">${n===t?'Perfect score! 🏆':n>=Math.ceil(t*.7)?'Great listening! 🎉':'Keep practising!'}</h2><button class="b2" id="again">Try again</button></div>`;
+  bindBack();$('#again').onclick=()=>{Q=null;render()};return}
+ const it=Q.list[Q.i],sec=it.sec||8;
+ $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
+ `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div><div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
+ <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
+ bindBack();const go=()=>{say(V.mtc?it.q:it.q)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
+ let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
+  if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
+  $('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=it.q;
+  setTimeout(()=>{Q.i++;render()},ok?800:1800)};
+ TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
+ $('#ans').focus();$('#af').onsubmit=e=>{e.preventDefault();done($('#ans').value)}}
+/* ---------- play it: beat the clock ---------- */
+function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practise.filter(x=>x.t==='number'||x.t==='choice');
+ const best=+(localStorage.getItem('mq-best-'+key(st,'play'))||0);
+ if(!Q){$('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div style="width:120px;margin:0 auto">${friendSvg()}</div><h2 style="color:var(--sea)">How many can you get right in 60 seconds?</h2><p class="muted">Your best: <b>${best}</b></p><button class="b1" id="go" style="font-size:24px">Start! ⏱️</button></div>`;bindBack();$('#go').onclick=()=>{Q={kind:'play',score:0,left:600,cur:null};render()};return}
+ if(Q.left<=0){const s=Q.score;if(s>best)try{localStorage.setItem('mq-best-'+key(st,'play'),s)}catch(e){}
+  if(s>=3)complete('play');
+  $('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div class="big">${s}</div><h2 style="color:var(--sea)">${s>best?'New best score! 🏆':'Time\'s up!'}</h2><p class="muted">Best: ${Math.max(s,best)}</p><button class="b1" id="again">Play again</button></div>`;bindBack();$('#again').onclick=()=>{Q=null;render()};return}
+ Q.cur=pool[Math.floor(Math.random()*pool.length)];const it=Q.cur;const [pic,text]=splitPic(it.q);
+ $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:''}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
+ bindBack();clearInterval(TIMER);TIMER=setInterval(()=>{if(!Q||V.s!=='play'){clearInterval(TIMER);return}Q.left--;const b=$('#tb');if(b)b.style.width=(Q.left/6)+'%';if(Q.left<=0){clearInterval(TIMER);render()}},100);
+ bindAnswer(it,g=>{if(check(it,g)){Q.score++;cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}setTimeout(()=>{if(Q&&Q.left>0)render()},check(it,g)?250:900)})}
+/* ---------- think it ---------- */
+function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.random()*st.think.length)];Q={kind:'think',p,shown:false}}
+ const p=Q.p,ty=String(p.type||'');let ui;
+ const tf=/true or false/i.test(ty),asn=/always/i.test(ty);
+ if(tf)ui=`<div class="choices"><button class="b2" data-t="true">True</button><button class="b2" data-t="false">False</button></div>`;
+ else if(asn)ui=`<div class="choices"><button class="b2" data-t="always">Always</button><button class="b2" data-t="sometimes">Sometimes</button><button class="b2" data-t="never">Never</button></div>`;
+ else ui=`<textarea id="ex" rows="3" placeholder="Explain your thinking…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`;
+ $('#app').innerHTML=qhead('🤔 Think it')+`<div class="card center"><div class="stars" style="display:inline-block;background:var(--sun)">${esc(ty)}</div><div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${ui}<div class="msg" id="fb"></div><div id="ans"></div></div>`;
+ bindBack();$('#hear').onclick=()=>say(p.q);
+ const reveal=(good)=>{$('#ans').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}<br><span class="muted" style="font-weight:600">The important part is explaining <i>why</i>.</span></div></div><div style="margin-top:14px">${good===undefined?'<button class="b1" id="gotit">I got it ✓</button> <button class="b2" id="notyet">Not yet</button>':'<button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another puzzle</button>'}</div>`;
+  $('#gotit').onclick=async()=>{await complete('think');Q=null;V={s:'land',land:V.land};render()};const n=$('#notyet')||$('#another');if(n)n.onclick=()=>{Q=null;render()}};
+ if(tf||asn){document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const ok=norm(p.a).startsWith(b.dataset.t);$('#fb').innerHTML=ok?'<span class="ok">✔ Yes! Now can you explain why?</span>':'<span class="bad">Not quite — look at Zaza\'s answer.</span>';document.querySelectorAll('[data-t]').forEach(x=>x.disabled=true);reveal(ok)})}
+ else $('#rev').onclick=()=>{reveal()}}
+/* ---------- use it ---------- */
+function useView(){const st=stopObj();if(!Q){const p=st.use[Math.floor(Math.random()*st.use.length)];Q={kind:'use',p}}
+ const p=Q.p,num=firstNum(p.a)&&!/answers will vary|e\.g\./i.test(p.a)&&!/,.*\d/.test(p.a.replace(/,(?=\d{3})/g,''));
+ $('#app').innerHTML=qhead('🌍 Use it')+`<div class="card center"><div style="width:110px;margin:0 auto">${friendSvg()}</div><div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+ ${num?`<form id="af"><input class="ans" id="ans" autocomplete="off"><div style="margin-top:12px"><button class="b1">Check</button></div></form>`:`<textarea id="ex" rows="3" placeholder="Work it out and write your answer…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`}<div class="msg" id="fb"></div><div id="ans2"></div></div>`;
+ bindBack();$('#hear').onclick=()=>say(p.q);
+ const fin=()=>{$('#ans2').innerHTML+=`<div style="margin-top:14px"><button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another problem</button></div>`;$('#gotit').onclick=async()=>{await complete('use');Q=null;V={s:'land',land:V.land};render()};$('#another').onclick=()=>{Q=null;render()}};
+ if(num){let tries=0;$('#af').onsubmit=e=>{e.preventDefault();const g=$('#ans').value;const ok=check({a:firstNum(p.a)},firstNum(g)||g);
+   if(ok){$('#fb').innerHTML=`<span class="ok">✔ Correct! ${esc(p.a)}</span>`;cheer('Brilliant! 🌍');$('#af').querySelector('button').disabled=true;fin()}
+   else if(++tries<2){$('#fb').innerHTML='<span class="bad">Not quite — check your working and try again.</span>'}
+   else{$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(p.a)}</b>.</span>`;$('#af').querySelector('button').disabled=true;$('#ans2').innerHTML='<div style="margin-top:12px"><button class="b2" id="another">Try another problem</button></div>';$('#another').onclick=()=>{Q=null;render()}}}}
+ else $('#rev').onclick=()=>{$('#ans2').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}</div></div>`;fin()}}
+/* ---------- start ---------- */
+(async()=>{let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+ if(saved&&saved.code){$('#app').innerHTML='<p class="center muted">Opening your map…</p>';const m=await signIn(saved.code);if(m){ME=null;render()}}else render()})();
+</script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maths Quest — teachers</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%23127C8C%27/%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2724%27 fill=%27%23FFF6E6%27/%3E%3Cpath d=%27M32 9L37 32L32 55L27 32Z%27 fill=%27%23F2704E%27/%3E%3Cpath d=%27M9 32L32 27L55 32L32 37Z%27 fill=%27%23FFC845%27/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--sea:#0E5E6F;--sea2:#127C8C;--sky:#E3F4F4;--sand:#FFF6E6;--coral:#F2704E;--coral2:#D9553A;--sun:#FFC845;--leaf:#3FA06B;--ink:#16323A;--muted:#5B7177;--line:#EADCC0}
+*{box-sizing:border-box}body{margin:0;font-family:Nunito,system-ui,sans-serif;color:var(--ink);background:var(--sand);font-size:16px}
+h1,h2,h3,.f{font-family:Fredoka,Nunito,sans-serif;margin:0}
+button{font-family:Fredoka,sans-serif;font-size:16px;font-weight:600;border:0;border-radius:14px;padding:9px 16px;cursor:pointer}
+.b1{background:var(--coral);color:#fff;box-shadow:0 3px 0 var(--coral2)}.b2{background:#fff;color:var(--sea);border:2px solid var(--line)}.sm{font-size:14px;padding:6px 11px}
+header{background:var(--sea);color:#fff}header .w{display:flex;align-items:center;gap:12px;max-width:1150px;margin:0 auto;padding:10px 16px}
+header a.logo{display:flex;align-items:center;gap:8px;color:#fff;text-decoration:none;font-family:Fredoka;font-weight:700;font-size:21px}header svg{width:36px;height:36px}
+#who{margin-left:auto;display:flex;gap:10px;align-items:center;font-size:14px}#who button{background:transparent;border:2px solid rgba(255,255,255,.5);color:#fff}
+main{max-width:1150px;margin:0 auto;padding:18px 16px}
+.card{background:#fff;border:2px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+input,select,textarea{font:inherit;padding:9px 12px;border:2px solid var(--line);border-radius:12px;background:#FFFCF6;width:100%}
+label{font-weight:800;font-size:13px;display:block;margin:10px 0 4px}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.spacer{flex:1}
+.msg{display:none;margin-top:10px;padding:10px 14px;border-radius:12px;font-weight:800}.msg.show{display:block}.msg.bad{background:#FDE7E1;color:#9A3412}.msg.ok{background:#E3F5EA;color:#1F6B42}
+table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;font-size:12px;text-transform:uppercase;color:var(--muted);padding:8px;border-bottom:2px solid var(--line)}td{padding:8px;border-bottom:1px solid #F4EEDC}
+.code{font-family:ui-monospace,Menlo,monospace;font-weight:800;background:var(--sky);color:var(--sea);padding:3px 8px;border-radius:8px}
+.pill{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:800;font-size:12.5px;background:var(--sky);color:var(--sea)}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stat{background:#fff;border:2px solid var(--line);border-radius:18px;padding:14px}.stat b{font-family:Fredoka;font-size:30px;color:var(--sea);display:block}
+.modal{position:fixed;inset:0;background:rgba(14,40,50,.5);display:grid;place-items:center;z-index:40;padding:16px}.modal .card{max-width:620px;width:100%;max-height:90vh;overflow:auto}
+.login{max-width:440px;margin:40px auto}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:12px;font-weight:800;z-index:60}
+#cards{display:none}
+@media print{header,main,.toast,.modal{display:none!important}#cards{display:block}body{background:#fff}}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ccard{border:3px solid var(--sea2);border-radius:18px;padding:14px;text-align:center;break-inside:avoid;background:#E3F4F4}
+.ccard .cd{font-family:ui-monospace,Menlo,monospace;font-size:30px;font-weight:800;color:var(--sea);letter-spacing:2px;margin:6px 0}.ccard .n{font-family:Fredoka;font-size:26px;color:var(--coral)}
+@media(max-width:700px){.stats{grid-template-columns:1fr 1fr}.hide-sm{display:none}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<symbol id="zaza" viewBox="0 0 220 220">
+ <ellipse cx="110" cy="204" rx="78" ry="9" fill="#000" opacity=".08"/>
+ <rect x="58" y="150" width="15" height="48" rx="7.5" fill="#D9A866"/><rect x="82" y="152" width="15" height="46" rx="7.5" fill="#C99558"/><rect x="128" y="152" width="15" height="46" rx="7.5" fill="#C99558"/><rect x="150" y="150" width="15" height="48" rx="7.5" fill="#D9A866"/>
+ <path d="M50 160 Q46 110 80 104 Q92 74 112 100 Q128 74 146 104 Q176 112 170 160Z" fill="#EDBD78"/>
+ <path d="M150 116 Q172 84 168 52" stroke="#EDBD78" stroke-width="27" fill="none" stroke-linecap="round"/>
+ <ellipse cx="174" cy="52" rx="29" ry="24" fill="#F2C88C"/>
+ <ellipse cx="193" cy="61" rx="13" ry="10" fill="#F8DDB2"/><circle cx="198" cy="58" r="2" fill="#6B4E2A"/>
+ <circle cx="171" cy="45" r="8" fill="#fff"/><circle cx="173" cy="46" r="4.6" fill="#16323A"/><circle cx="174.8" cy="44.2" r="1.6" fill="#fff"/>
+ <path d="M183 67 Q190 72 197 67" stroke="#6B4E2A" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+ <ellipse cx="160" cy="59" rx="6" ry="3.5" fill="#F59C7E" opacity=".75"/>
+ <path d="M146 33 Q174 0 202 33Z" fill="#0E5E6F"/><rect x="140" y="29" width="68" height="8" rx="4" fill="#0E5E6F"/><rect x="151" y="24" width="46" height="6" fill="#FFC845"/>
+ <path d="M84 108 h56 v24 a6 6 0 0 1-6 6 h-44 a6 6 0 0 1-6-6z" fill="#F2704E"/><circle cx="112" cy="121" r="6" fill="#FFC845"/><path d="M109 121h6M112 118v6" stroke="#B9562B" stroke-width="1.6"/>
+ <path d="M52 150 Q34 150 40 128" stroke="#C99558" stroke-width="6" fill="none" stroke-linecap="round"/>
+</symbol>
+<symbol id="kidA" viewBox="0 0 60 92">
+ <ellipse cx="30" cy="89" rx="18" ry="3" fill="#000" opacity=".1"/>
+ <rect x="20" y="66" width="8" height="22" rx="4" fill="#0E5E6F"/><rect x="32" y="66" width="8" height="22" rx="4" fill="#0E5E6F"/>
+ <rect x="10" y="40" width="12" height="20" rx="5" fill="#FFC845"/>
+ <path d="M16 44 Q16 36 30 36 Q44 36 44 44 V70 H16Z" fill="#F2704E"/>
+ <path d="M44 44 Q54 36 54 24" stroke="#C98B5E" stroke-width="7" fill="none" stroke-linecap="round"/>
+ <circle cx="30" cy="22" r="14" fill="#C98B5E"/>
+ <path d="M16 20 Q16 6 30 6 Q44 6 44 20 Q38 13 30 14 Q22 13 16 20Z" fill="#2B1B12"/>
+ <path d="M12 14 Q30 -6 48 14Z" fill="#3FA06B"/><rect x="9" y="12" width="42" height="5" rx="2.5" fill="#2E8556"/>
+ <circle cx="25" cy="23" r="2" fill="#16323A"/><circle cx="35" cy="23" r="2" fill="#16323A"/>
+ <path d="M25 29 Q30 33 35 29" stroke="#16323A" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <circle cx="21" cy="27" r="2.4" fill="#F59C7E" opacity=".7"/><circle cx="39" cy="27" r="2.4" fill="#F59C7E" opacity=".7"/>
+</symbol>
+<symbol id="kidB" viewBox="0 0 60 92">
+ <ellipse cx="30" cy="89" rx="18" ry="3" fill="#000" opacity=".1"/>
+ <rect x="20" y="66" width="8" height="22" rx="4" fill="#5B4A8B"/><rect x="32" y="66" width="8" height="22" rx="4" fill="#5B4A8B"/>
+ <path d="M14 46 Q14 36 30 36 Q46 36 46 46 V72 H14Z" fill="#127C8C"/>
+ <path d="M14 48 Q6 40 8 28" stroke="#F1C9A5" stroke-width="7" fill="none" stroke-linecap="round"/>
+ <path d="M14 30 Q12 4 30 4 Q48 4 46 30 Q46 42 30 44 Q14 42 14 30Z" fill="#F2704E"/>
+ <circle cx="30" cy="24" r="11.5" fill="#F1C9A5"/>
+ <circle cx="25.5" cy="24" r="2" fill="#16323A"/><circle cx="34.5" cy="24" r="2" fill="#16323A"/>
+ <path d="M25.5 29.5 Q30 33 34.5 29.5" stroke="#16323A" stroke-width="2" fill="none" stroke-linecap="round"/>
+ <circle cx="22" cy="28" r="2.2" fill="#F59C7E" opacity=".7"/><circle cx="38" cy="28" r="2.2" fill="#F59C7E" opacity=".7"/>
+ <circle cx="8" cy="22" r="6" fill="none" stroke="#FFC845" stroke-width="2.4"/><path d="M12 26 L17 31" stroke="#FFC845" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+<symbol id="parrot" viewBox="0 0 50 60">
+ <path d="M18 44 L14 58 M26 46 L28 58" stroke="#E0A82A" stroke-width="3" stroke-linecap="round"/>
+ <ellipse cx="24" cy="32" rx="14" ry="17" fill="#3FA06B"/>
+ <path d="M14 30 Q6 44 18 50 Q24 40 22 30Z" fill="#F2704E"/><path d="M14 38 Q10 46 18 50" stroke="#FFC845" stroke-width="3" fill="none"/>
+ <circle cx="26" cy="16" r="11" fill="#4CB878"/>
+ <circle cx="29" cy="14" r="4" fill="#fff"/><circle cx="30" cy="14.5" r="2.2" fill="#16323A"/>
+ <path d="M35 15 Q44 17 38 25 Q35 21 33 20Z" fill="#FFC845"/>
+ <path d="M22 6 Q20 0 26 1 Q24 4 26 6" fill="#F2704E"/>
+</symbol>
+<symbol id="turtle" viewBox="0 0 70 44">
+ <ellipse cx="35" cy="40" rx="26" ry="4" fill="#7FCBD3"/>
+ <ellipse cx="14" cy="34" rx="7" ry="4" fill="#7CC59A"/><ellipse cx="54" cy="34" rx="7" ry="4" fill="#7CC59A"/>
+ <circle cx="60" cy="24" r="9" fill="#7CC59A"/><circle cx="63" cy="22" r="2" fill="#16323A"/><path d="M60 28 Q63 30 66 27" stroke="#16323A" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+ <path d="M10 32 Q12 8 35 8 Q56 8 58 32Z" fill="#3FA06B"/>
+ <path d="M24 14 L35 10 L46 14 L46 26 L35 30 L24 26Z" fill="#2E8556"/><path d="M35 10V30M24 20H46" stroke="#3FA06B" stroke-width="1.6"/>
+</symbol>
+<symbol id="fox" viewBox="0 0 60 60">
+ <path d="M44 46 Q62 40 56 24 Q50 36 40 38Z" fill="#F2704E"/><path d="M56 24 Q58 30 52 34" fill="#fff"/>
+ <ellipse cx="28" cy="44" rx="15" ry="13" fill="#F2704E"/><ellipse cx="28" cy="48" rx="8" ry="8" fill="#FFE7D6"/>
+ <path d="M12 8 L18 24 L24 16Z" fill="#E25E3C"/><path d="M44 8 L38 24 L32 16Z" fill="#E25E3C"/>
+ <path d="M10 24 Q28 4 46 24 Q46 38 28 40 Q10 38 10 24Z" fill="#F7864F"/>
+ <path d="M14 28 Q28 44 42 28 Q36 36 28 36 Q20 36 14 28Z" fill="#FFE7D6"/>
+ <circle cx="22" cy="25" r="2.4" fill="#16323A"/><circle cx="34" cy="25" r="2.4" fill="#16323A"/><circle cx="28" cy="31" r="2.4" fill="#16323A"/>
+</symbol>
+<symbol id="owl" viewBox="0 0 50 60">
+ <path d="M8 18 L6 4 L18 12Z M42 18 L44 4 L32 12Z" fill="#8A6A3F"/>
+ <ellipse cx="25" cy="34" rx="19" ry="23" fill="#A07A48"/><ellipse cx="25" cy="42" rx="12" ry="13" fill="#E9D3AE"/>
+ <circle cx="17" cy="24" r="8" fill="#fff"/><circle cx="33" cy="24" r="8" fill="#fff"/>
+ <circle cx="17" cy="24" r="8" fill="none" stroke="#0E5E6F" stroke-width="2"/><circle cx="33" cy="24" r="8" fill="none" stroke="#0E5E6F" stroke-width="2"/><path d="M25 24h0" stroke="#0E5E6F" stroke-width="2"/>
+ <circle cx="18" cy="25" r="3.4" fill="#16323A"/><circle cx="32" cy="25" r="3.4" fill="#16323A"/>
+ <path d="M22 31 L25 36 L28 31Z" fill="#FFC845"/>
+ <path d="M20 57 v3 M30 57 v3" stroke="#E0A82A" stroke-width="3" stroke-linecap="round"/>
+</symbol>
+<symbol id="chest" viewBox="0 0 70 56">
+ <circle cx="16" cy="8" r="5" fill="#FFC845"/><circle cx="34" cy="4" r="5" fill="#FFD866"/><circle cx="52" cy="9" r="5" fill="#FFC845"/>
+ <path d="M6 22 Q6 6 35 6 Q64 6 64 22Z" fill="#B7793B"/>
+ <rect x="6" y="22" width="58" height="30" rx="4" fill="#9A6230"/>
+ <rect x="6" y="20" width="58" height="6" fill="#FFC845"/><rect x="14" y="6" width="5" height="46" fill="#FFC845" opacity=".9"/><rect x="51" y="6" width="5" height="46" fill="#FFC845" opacity=".9"/>
+ <rect x="29" y="26" width="12" height="12" rx="3" fill="#FFC845"/><circle cx="35" cy="32" r="2.2" fill="#9A6230"/>
+</symbol>
+<symbol id="star" viewBox="0 0 20 20"><path d="M10 1 L12.6 7 L19 7.6 L14.2 11.8 L15.6 18.4 L10 15 L4.4 18.4 L5.8 11.8 L1 7.6 L7.4 7Z" fill="#FFC845"/></symbol>
+<symbol id="logo" viewBox="0 0 64 64">
+ <circle cx="32" cy="32" r="30" fill="#127C8C"/><circle cx="32" cy="32" r="24" fill="#FFF6E6"/><circle cx="32" cy="32" r="24" fill="none" stroke="#0E5E6F" stroke-width="2" stroke-dasharray="3 4"/>
+ <path d="M32 9 L37 32 L32 55 L27 32Z" fill="#F2704E"/><path d="M32 32 L37 32 L32 55 L27 32Z" fill="#0E5E6F"/>
+ <path d="M9 32 L32 27 L55 32 L32 37Z" fill="#FFC845" opacity=".95"/>
+ <circle cx="32" cy="32" r="4.5" fill="#fff" stroke="#0E5E6F" stroke-width="2"/>
+ <text x="32" y="20.5" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#fff">+</text>
+ <text x="45" y="35.5" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#7A5600">×</text>
+ <text x="19" y="35.5" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#7A5600">−</text>
+ <text x="32" y="49" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="9" fill="#fff">÷</text>
+</symbol>
+</defs></svg>
+<header><div class="w"><a class="logo" href="./"><svg aria-hidden="true"><use href="#logo"/></svg>Maths Quest — Teachers</a><div id="who"></div></div></header>
+<main id="app"><p>Loading…</p></main>
+<div id="cards"></div><div id="modal"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://xpbkdnkfufkahaszfycd.supabase.co';
+const SUPABASE_KEY='sb_publishable_QIAV_9tLUBbDCu7FHqaTEw_zYQ0teEG';
+let sb=null;try{sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY)}catch(e){}
+const $=s=>document.querySelector(s);const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const GL=g=>g===0?'KG2':'Grade '+g;const ALPH='ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function newCode(){const a=new Uint32Array(6);crypto.getRandomValues(a);return Array.from(a,x=>ALPH[x%ALPH.length]).join('')}
+function fmtCode(c){return c.slice(0,3)+'-'+c.slice(3)}
+function toast(t){const d=document.createElement('div');d.className='toast';d.textContent=t;document.body.appendChild(d);setTimeout(()=>d.remove(),2600)}
+let USER=null,SCHOOL=null,KIDS=[],PROG={},F={grade:'all',q:''};
+function parseLine(line){const toks=line.split(/[,\t;]+|\s+/).map(t=>t.trim()).filter(Boolean);if(!toks.length)return null;
+ let name=null,grade=null,cls='';
+ for(const t of toks){const u=t.toUpperCase().replace(/[.\-_/]/g,'');if(/^(GRADE|GR|YEAR|CLASS)$/.test(u))continue;let m;
+  if((m=u.match(/^KG2?([A-Z]{0,2})$/))){grade=0;if(m[1])cls='KG2'+m[1];continue}
+  if((m=u.match(/^(?:G|GR|GRADE)?([0-5])([A-Z]{0,2})$/))){const g=+m[1];if(m[2]){cls=m[1]+m[2];if(grade===null)grade=g}else if(grade===null)grade=g;continue}
+  if(name===null&&/^[\p{L}'’]+$/u.test(t)){name=t;continue}
+  if(name!==null&&/^[A-Z]$/.test(u)&&grade!==null&&!cls){cls=(grade===0?'KG2':grade)+u;continue}}
+ if(grade===null&&F.grade!=='all')grade=+F.grade;if(!name||grade===null)return null;
+ return {first_name:name.charAt(0).toLocaleUpperCase()+name.slice(1),grade,class_name:cls}}
+/* ---------- sign in ---------- */
+function renderLogin(msg){$('#who').innerHTML='';$('#app').innerHTML=`<div class="card login"><h2 style="color:var(--sea)">Teacher sign in</h2><p style="color:var(--muted)">Use the same email and password as your Spelling Bee teacher account.</p>
+ <form id="lf"><label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password"><div style="margin-top:14px"><button class="b1" style="width:100%">Sign in</button></div></form>
+ <div class="msg bad ${msg?'show':''}" id="lm">${esc(msg||'')}</div><p style="font-size:14px;margin-top:14px">Forgot your password? Reset it on the <a href="https://school-spellingbee.com/teacher.html">Spelling Bee teacher page</a> — it is the same account.</p></div>`;
+ $('#lf').onsubmit=async e=>{e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});if(error){$('#lm').textContent='That email or password is not right.';$('#lm').classList.add('show');return}start()}}
+async function start(){if(!sb){renderLogin('Could not connect.');return}
+ const {data:{session}}=await sb.auth.getSession();if(!session){renderLogin();return}USER=session.user;
+ $('#who').innerHTML=`<span>${esc(USER.email)}</span><button class="sm" id="so">Sign out</button>`;$('#so').onclick=async()=>{await sb.auth.signOut();renderLogin()};
+ const {data:s}=await sb.rpc('mq_school_info');SCHOOL=s;
+ if(!SCHOOL){$('#app').innerHTML=`<div class="card login"><h2 style="color:var(--sea)">This email isn't on a school's teacher list yet</h2><p>Ask a teacher at your school to add you in the Spelling Bee School settings → Teachers.</p></div>`;return}
+ if(!SCHOOL.plan){$('#app').innerHTML=`<div class="card" style="max-width:640px;margin:30px auto;text-align:center"><svg viewBox="0 0 220 220" style="width:140px"><use href="#zaza"/></svg><h1 style="color:var(--sea)">Start Maths Quest at ${esc(SCHOOL.name)}</h1><p>Try everything free for 7 days: the quest map, 7 maths lands, over 3,000 questions, stars and teacher reports.</p><button class="b1" id="trial" style="font-size:20px">Start the free trial 🚀</button></div>`;
+  $('#trial').onclick=async()=>{const {data}=await sb.rpc('mq_start_trial');if(data&&data.ok){toast('Your 7-day trial has started!');start()}else toast('Could not start the trial')};return}
+ if(!SCHOOL.active){$('#app').innerHTML=`<div class="card" style="max-width:640px;margin:30px auto;text-align:center"><h1 style="color:var(--sea)">Your Maths Quest plan has ended</h1><p>Children can't play until it is renewed. Email <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a> and we'll send an invoice.</p></div>`;return}
+ await load()}
+async function load(){const [{data:k},{data:p}]=await Promise.all([sb.from('mq_students').select('*').order('grade').order('class_name').order('first_name'),sb.from('mq_progress').select('*')]);
+ KIDS=k||[];PROG={};(p||[]).forEach(x=>PROG[x.student_id]=x);render()}
+function visible(){return KIDS.filter(c=>(F.grade==='all'||c.grade===+F.grade)&&(!F.q||(c.first_name+' '+c.class_name+' '+c.code).toLowerCase().includes(F.q)))}
+function ago(t){if(!t)return '—';const d=Math.floor((Date.now()-Date.parse(t))/864e5);return d<=0?'today':d===1?'yesterday':d+' days ago'}
+function render(){const vis=visible();const week=KIDS.filter(c=>PROG[c.id]&&PROG[c.id].last_seen&&Date.now()-Date.parse(PROG[c.id].last_seen)<7*864e5).length;
+ const totalStars=Object.values(PROG).reduce((n,p)=>n+p.stars,0);const ans=Object.values(PROG).reduce((n,p)=>n+p.answered,0),cor=Object.values(PROG).reduce((n,p)=>n+p.correct,0);
+ $('#app').innerHTML=`${SCHOOL.plan==='trial'?`<div class="card" style="background:#E8F0FF;border-color:#B9CDF5"><b>🎉 Free trial:</b> ${SCHOOL.days_left} day${SCHOOL.days_left===1?'':'s'} left. Email <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a> to choose a plan.</div>`:''}
+ <div class="stats"><div class="stat"><b>${KIDS.length}</b>explorers with codes</div><div class="stat"><b>${week}</b>played this week</div><div class="stat"><b>${totalStars}</b>stars earned</div><div class="stat"><b>${ans?Math.round(100*cor/ans):0}%</b>answers correct</div></div>
+ <div class="card"><div class="row"><h2 style="color:var(--sea);font-size:22px">Explorers</h2><div class="spacer"></div>
+  <button class="b1" id="add">+ Add children</button><button class="b2" id="copy">Copy from Spelling Bee</button><button class="b2" id="print">🖨 Print code cards</button></div>
+  <div class="row" style="margin:12px 0"><select id="fg" style="width:auto"><option value="all">All grades</option>${[0,1,2,3,4,5].map(g=>`<option value="${g}" ${F.grade==g?'selected':''}>${GL(g)}</option>`).join('')}</select><input id="fq" placeholder="Search name, class or code" value="${esc(F.q)}" style="max-width:280px"><span style="color:var(--muted)">${vis.length} shown</span></div>
+  <div style="overflow:auto"><table><thead><tr><th>Name</th><th>Grade · class</th><th>Code</th><th>⭐ Stars</th><th>Quests done</th><th class="hide-sm">Correct</th><th class="hide-sm">Last played</th><th></th></tr></thead><tbody>
+  ${vis.map(c=>{const p=PROG[c.id]||{};const dn=Object.keys(p.done||{}).length;return `<tr><td><b>${esc(c.first_name)}</b></td><td>${GL(c.grade)}${c.class_name?' · '+esc(c.class_name):''}</td><td><span class="code">${fmtCode(c.code)}</span></td><td>${p.stars||0}</td><td>${dn}</td><td class="hide-sm">${p.answered?Math.round(100*p.correct/p.answered)+'%':'—'}</td><td class="hide-sm">${ago(p.last_seen)}</td><td style="white-space:nowrap"><button class="b2 sm" data-new="${c.id}">New code</button> <button class="b2 sm" data-del="${c.id}">✕</button></td></tr>`}).join('')||'<tr><td colspan="8" style="color:var(--muted);padding:20px">No explorers yet. Click <b>+ Add children</b> or <b>Copy from Spelling Bee</b>.</td></tr>'}
+  </tbody></table></div><p style="font-size:13px;color:var(--muted)">Maths Quest codes are different from Spelling Bee codes. Children sign in at <b>${esc(location.origin)}/play.html</b>.</p></div>`;
+ $('#fg').onchange=e=>{F.grade=e.target.value;render()};$('#fq').oninput=e=>{F.q=e.target.value.toLowerCase();const p=e.target.selectionStart;render();const i=$('#fq');i.focus();i.setSelectionRange(p,p)};
+ $('#add').onclick=addModal;$('#copy').onclick=copyModal;$('#print').onclick=printCards;
+ document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{const c=KIDS.find(k=>k.id===b.dataset.del);if(!confirm(`Remove ${c.first_name}? Their code and progress will be deleted.`))return;const {error}=await sb.from('mq_students').delete().eq('id',c.id);if(error){toast('Could not remove');return}KIDS=KIDS.filter(k=>k.id!==c.id);render();toast('Removed')});
+ document.querySelectorAll('[data-new]').forEach(b=>b.onclick=async()=>{for(let i=0;i<5;i++){const code=newCode();const {error}=await sb.from('mq_students').update({code}).eq('id',b.dataset.new);if(!error){KIDS.find(k=>k.id===b.dataset.new).code=code;render();toast('New code: '+fmtCode(code));return}}toast('Could not make a new code')})}
+async function insertKids(rows,msgEl){rows.forEach(r=>r.code=newCode());let {data,error}=await sb.from('mq_students').insert(rows).select();
+ if(error&&/duplicate|unique/i.test(error.message)){rows.forEach(r=>r.code=newCode());({data,error}=await sb.from('mq_students').insert(rows).select())}
+ if(error){msgEl.innerHTML=/PLAN_LIMIT/.test(error.message)?`Your plan allows up to <b>${SCHOOL.max_children}</b> children. Email hello@school-mathquest.com to upgrade.`:'Could not add the children. Please try again.';msgEl.classList.add('show');return false}
+ KIDS=KIDS.concat(data);return data.length}
+function addModal(){$('#modal').innerHTML=`<div class="modal"><div class="card"><h2 style="color:var(--sea)">Add children</h2><p style="color:var(--muted);font-size:14px">One child per line: first name and class (or grade), e.g. <code>Mariam 3A</code> · <code>Saeed KG2B</code> · <code>Lina, 5, 5C</code></p><textarea id="kids" rows="9"></textarea><div class="msg bad" id="am"></div><div class="row" style="margin-top:12px"><div class="spacer"></div><button class="b2" id="ac">Cancel</button><button class="b1" id="ao">Add and make codes</button></div></div></div>`;
+ $('#ac').onclick=()=>$('#modal').innerHTML='';$('#ao').onclick=async()=>{const rows=[],bad=[];$('#kids').value.split('\n').map(l=>l.trim()).filter(Boolean).forEach((l,i)=>{const r=parseLine(l);r?rows.push(r):bad.push(i+1)});
+  if(bad.length){$('#am').textContent='Please check line '+bad.join(', ')+' — each line needs a first name and a class or grade.';$('#am').classList.add('show');return}if(!rows.length)return;
+  if(SCHOOL.max_children&&KIDS.length+rows.length>SCHOOL.max_children){$('#am').innerHTML=`Your plan allows up to <b>${SCHOOL.max_children}</b> children (you have ${KIDS.length}).`;$('#am').classList.add('show');return}
+  const n=await insertKids(rows,$('#am'));if(n){$('#modal').innerHTML='';render();toast(n+' children added')}}}
+async function copyModal(){const {data:sbk,error}=await sb.from('students').select('first_name,grade,class_name').order('grade').order('class_name').order('first_name');
+ if(error){toast('Could not read the Spelling Bee list');return}
+ const have=new Set(KIDS.map(k=>(k.first_name+'|'+k.grade+'|'+k.class_name).toLowerCase()));const list=(sbk||[]).filter(k=>!have.has((k.first_name+'|'+k.grade+'|'+k.class_name).toLowerCase()));
+ const byG={};list.forEach(k=>(byG[k.grade]=byG[k.grade]||[]).push(k));
+ $('#modal').innerHTML=`<div class="modal"><div class="card"><h2 style="color:var(--sea)">Copy children from the Spelling Bee</h2><p style="color:var(--muted);font-size:14px">They keep their names and classes and get <b>new Maths Quest codes</b>. Children already in Maths Quest are not shown.</p>
+ ${list.length?Object.keys(byG).map(g=>`<label style="display:flex;gap:8px;align-items:center;font-size:15px"><input type="checkbox" data-g="${g}" checked style="width:auto"> ${GL(+g)} — ${byG[g].length} children</label>`).join(''):'<p><b>Everyone is already in Maths Quest.</b></p>'}
+ <div class="msg bad" id="cm"></div><div class="row" style="margin-top:14px"><div class="spacer"></div><button class="b2" id="cc">Cancel</button>${list.length?'<button class="b1" id="co">Copy and make codes</button>':''}</div></div></div>`;
+ $('#cc').onclick=()=>$('#modal').innerHTML='';const co=$('#co');if(co)co.onclick=async()=>{const gs=[...document.querySelectorAll('[data-g]:checked')].map(x=>+x.dataset.g);const rows=list.filter(k=>gs.includes(k.grade)).map(k=>({first_name:k.first_name,grade:k.grade,class_name:k.class_name||''}));
+  if(!rows.length)return;co.disabled=true;co.textContent='Making codes…';const n=await insertKids(rows,$('#cm'));if(n){$('#modal').innerHTML='';render();toast(n+' children copied with new codes')}else{co.disabled=false;co.textContent='Copy and make codes'}}}
+function printCards(){const list=visible();if(!list.length){toast('No children to print');return}
+ $('#cards').innerHTML=`<div class="cards">${list.map(c=>`<div class="ccard"><svg viewBox="0 0 64 64" style="width:40px;height:40px"><use href="#logo"/></svg><div class="f" style="color:var(--sea);font-size:18px">Maths Quest</div><div class="n">${esc(c.first_name)}</div><div style="font-size:13px">${GL(c.grade)}${c.class_name?' · '+esc(c.class_name):''}</div><div style="font-size:12px;margin-top:6px">Your secret explorer code</div><div class="cd">${fmtCode(c.code)}</div><div style="font-size:12px">Go to <b>${esc(location.host)}/play.html</b> and type your code. Happy exploring! 🧭</div></div>`).join('')}</div>`;setTimeout(()=>window.print(),150)}
+start();
+</script>
+</body>
+</html>
