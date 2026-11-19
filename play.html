@@ -185,7 +185,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .burst{position:fixed;inset:0;pointer-events:none;z-index:9;overflow:hidden}
 .burst i{position:absolute;top:-40px;font-style:normal;font-size:30px;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.party .cf,.pav,.pstar,.pclap,.burst i{animation:none}.party .cf,.burst{display:none}}
-.fpwrap{margin:10px auto 6px;max-width:420px;background:#FFFDF6;border:3px dashed #FFD23F;border-radius:20px;padding:12px}.fpic{display:block;width:100%;height:auto;max-height:240px}</style>
+.fpwrap{margin:10px auto 6px;max-width:560px;background:#FFFDF6;border:3px dashed #FFD23F;border-radius:20px;padding:12px}.fpic{display:block;width:100%;height:auto;max-height:340px}.pict{font-weight:800;margin-bottom:6px}.picl{list-style:none;margin:0;padding:0;display:inline-block;text-align:left}.picl li{font-size:24px;font-family:Fredoka,Arial;padding:4px 14px;margin:4px 0;background:#fff;border-radius:12px}.picl li::before{content:"● ";color:#FF8A3D}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1012,6 +1012,10 @@ function visPP(t,g){let m;
 function visFor(q,land,grade){try{const t=String(q);
  const f={FF:fracPic,NI:visNI,TT:visTT,MM:visMM,SF:visSF,DD:visDD,PP:visPP}[land];return f?f(t,grade)||'':''}catch(e){return ''}}
 
+function picBox(pic){/* a description we can't draw: show it as a big, clear list */
+ const m=String(pic).match(/^([^:—]+)[:—]\s*(.+)$/);if(m&&/[;,]/.test(m[2])){const items=m[2].split(/\s*[;]\s*|,\s+(?=[A-Za-z])/).map(x=>x.replace(/\.$/,'').trim()).filter(Boolean);
+  return `<div class="pic"><div class="pict">🖼️ ${esc(cap(m[1].trim()))}</div><ul class="picl">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`}
+ return `<div class="pic">🖼️ ${esc(pic)}</div>`}
 function fpFor(q){const s=visFor(q,V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
@@ -1132,7 +1136,7 @@ function practiseView(){const st=stopObj();
  if(Q.i>=Q.list.length)return finishPractise();
  const it=Q.list[Q.i];const [pic,text]=splitPic(it.q);
  $('#app').innerHTML=qhead('✏️ Practise it',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`)+
- `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${fpFor(it.q)||(pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+ `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${fpFor(it.q)||(pic?`${picBox(pic)}`:'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;
  bindBack();$('#hear').onclick=()=>say(text,it.k);
  bindAnswer(it,async g=>{const ok=check(it,g);
@@ -1177,7 +1181,7 @@ function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practi
   if(s>=3)complete('play');
   $('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div class="big">${s}</div><h2 style="color:var(--sea)">${s>best?'New best score! 🏆':'Time\'s up!'}</h2><p class="muted">Best: ${Math.max(s,best)}</p><button class="b1" id="again">Play again</button></div>`;bindBack();$('#again').onclick=()=>{Q=null;render()};return}
  Q.cur=pool[Math.floor(Math.random()*pool.length)];const it=Q.cur;const [pic,text]=splitPic(it.q);
- $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${fpFor(it.q)||(pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:'')}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
+ $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${fpFor(it.q)||(pic?`${picBox(pic)}`:'')}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
  bindBack();clearInterval(TIMER);TIMER=setInterval(()=>{if(!Q||V.s!=='play'){clearInterval(TIMER);return}Q.left--;const b=$('#tb');if(b)b.style.width=(Q.left/6)+'%';if(Q.left<=0){clearInterval(TIMER);render()}},100);
  bindAnswer(it,g=>{if(check(it,g)){Q.score++;miniParty();cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}setTimeout(()=>{if(Q&&Q.left>0)render()},check(it,g)?250:900)})}
 /* ---------- think it ---------- */
