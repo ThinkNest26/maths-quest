@@ -754,7 +754,265 @@ function fracPic(q,grade){const t=String(q);let m;
  m=t.match(/(\d+)\/(100)\b/);if(m&&+m[1]<=100)return fpPercent(+m[1]);
  return ''}
 
-function fpFor(q){if(V.land!=='FF')return '';const s=fracPic(q,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
+/* ---------- pictures for every land (drawn from the question text) ---------- */
+const VC={o:'#FF8A3D',b:'#2F9BE0',g:'#2DBE6C',p:'#8E5BD6',r:'#F2483A',y:'#FFD23F',ln:'#1D4E89',mut:'#9DB4C8'};
+const PAL=[VC.o,VC.b,VC.g,VC.p,VC.r,'#14A9D6','#E35BB5'];
+function T(x,y,t,sz,col,anc,wt){return `<text x="${x}" y="${y}" text-anchor="${anc||'middle'}" font-family="Fredoka,Arial" font-weight="${wt||700}" font-size="${sz||20}" fill="${col||VC.ln}">${esc(String(t))}</text>`}
+function cap(s){s=String(s).trim();return s.charAt(0).toUpperCase()+s.slice(1)}
+/* ===== Number Island ===== */
+function tenFrames(groups){/* groups: [[count,colour,crossed]] filled in order across ten-frames */
+ const tot=groups.reduce((a,g)=>a+g[0],0),frames=Math.max(1,Math.ceil(tot/10)),s=40,fw=5*s,gap=24,W=Math.min(2,frames)*(fw+gap)-gap+20,rowsF=Math.ceil(frames/2),H=rowsF*(2*s+gap)-gap+20;let o='',k=0;
+ const cells=[];groups.forEach(([n,c,x])=>{for(let i=0;i<n;i++)cells.push([c,x])});
+ for(let f=0;f<frames;f++){const fx=10+(f%2)*(fw+gap),fy=10+Math.floor(f/2)*(2*s+gap);for(let i=0;i<10;i++){const cx=fx+(i%5)*s,cy=fy+Math.floor(i/5)*s;o+=`<rect x="${cx}" y="${cy}" width="${s}" height="${s}" fill="#fff" stroke="${VC.ln}" stroke-width="3"/>`;
+  const c=cells[f*10+i];if(c){o+=`<circle cx="${cx+s/2}" cy="${cy+s/2}" r="${s*.36}" fill="${c[0]}"/>`;if(c[1])o+=`<path d="M${cx+8} ${cy+8} L${cx+s-8} ${cy+s-8} M${cx+s-8} ${cy+8} L${cx+8} ${cy+s-8}" stroke="${VC.ln}" stroke-width="4" stroke-linecap="round"/>`}}}
+ return fpWrap(W,H,o)}
+function numLine(vals,blankIdx,step){/* vals: numbers shown in order (blank shown as ?) */
+ const n=vals.length,nums=vals.filter(v=>v!=='?'),W=Math.max(420,n*90+60),x0=40,dx=(W-80)/(n-1||1);let o=`<path d="M10 60 H${W-10}" stroke="${VC.ln}" stroke-width="4"/><path d="M${W-22} 52 L${W-8} 60 L${W-22} 68" fill="none" stroke="${VC.ln}" stroke-width="4"/>`;
+ vals.forEach((v,i)=>{const x=x0+i*dx,bl=i===blankIdx;o+=`<path d="M${x} 48 V72" stroke="${VC.ln}" stroke-width="4"/>`;
+  if(i<n-1){const back=nums.length>1&&nums[nums.length-1]<nums[0];o+=back?`<path d="M${x+dx-6} 44 Q${x+dx/2} 8 ${x+6} 44" fill="none" stroke="${VC.o}" stroke-width="3"/><path d="M${x+14} 38 L${x+6} 44 L${x+16} 46" fill="none" stroke="${VC.o}" stroke-width="3"/>`:`<path d="M${x+6} 44 Q${x+dx/2} 8 ${x+dx-6} 44" fill="none" stroke="${VC.o}" stroke-width="3"/><path d="M${x+dx-14} 38 L${x+dx-6} 44 L${x+dx-16} 46" fill="none" stroke="${VC.o}" stroke-width="3"/>`}
+  o+=bl?`<rect x="${x-26}" y="80" width="52" height="34" rx="8" fill="${VC.y}"/>`+T(x,104,'?',24):T(x,106,v,22)});
+ return fpWrap(W,124,o)}
+function towers(list){/* [[label,n]] cube towers */
+ const s=Math.min(22,Math.floor(300/Math.max(...list.map(x=>x[1])))),W=list.length*110+20,H=Math.max(...list.map(x=>x[1]))*s+60;let o='';
+ list.forEach(([lab,n],i)=>{const x=30+i*110;for(let k=0;k<n;k++)o+=`<rect x="${x}" y="${H-40-(k+1)*s}" width="${s+28}" height="${s}" fill="${PAL[i]}" stroke="#fff" stroke-width="2"/>`;o+=T(x+(s+28)/2,H-12,lab,22)});
+ return fpWrap(W,H,o)}
+function baseTen(h,t,u){/* hundreds flats, tens rods, ones cubes */
+ let o='',x=10;const s=11,H=Math.max(140,t>10?260:140);
+ for(let i=0;i<h;i++){o+=`<rect x="${x}" y="10" width="${10*s}" height="${10*s}" fill="${VC.p}" stroke="#fff" stroke-width="1"/>`;for(let k=1;k<10;k++)o+=`<path d="M${x+k*s} 10 v${10*s} M${x} ${10+k*s} h${10*s}" stroke="#fff" stroke-width="1"/>`;x+=10*s+14}
+ for(let i=0;i<t;i++){const rx=x+(i%10)*(s+6),ry=10+Math.floor(i/10)*(10*s+10);o+=`<rect x="${rx}" y="${ry}" width="${s}" height="${10*s}" fill="${VC.b}" stroke="#fff" stroke-width="1"/>`;for(let k=1;k<10;k++)o+=`<path d="M${rx} ${ry+k*s} h${s}" stroke="#fff" stroke-width="1"/>`}
+ x+=Math.min(t,10)*(s+6)+(t?12:0);
+ for(let i=0;i<u;i++){o+=`<rect x="${x+(i%5)*(s+5)}" y="${10+Math.floor(i/5)*(s+5)}" width="${s}" height="${s}" fill="${VC.o}"/>`}
+ x+=Math.min(u,5)*(s+5);return fpWrap(Math.max(x+10,200),Math.max(H,Math.ceil(u/5)*(s+5)+20),o)}
+function pvChart(num,digit){const s=String(num).replace(/,/g,'');const names=['Ones','Tens','Hundreds','Thousands','Ten thousands','Hundred thousands','Millions'];const n=s.length,w=Math.min(110,600/n),W=n*w+20;let o='';
+ [...s].forEach((d,i)=>{const col=n-1-i,x=10+i*w,hi=d===String(digit)&&![...s].slice(i+1).includes(String(digit));o+=`<rect x="${x}" y="10" width="${w}" height="40" fill="#E6F1FB" stroke="${VC.ln}" stroke-width="2"/>`+T(x+w/2,36,(n>4?['O','T','H','Th','TTh','HTh','M']:names)[col]||'',w<90?16:15)+
+  `<rect x="${x}" y="50" width="${w}" height="70" fill="${hi?'#FFF0D9':'#fff'}" stroke="${VC.ln}" stroke-width="2"/>`+T(x+w/2,100,d,40,hi?VC.o:VC.ln)});return fpWrap(W,130,o)}
+function thermo(vals){/* temperatures to mark on a thermometer */
+ const lo=Math.min(-20,...vals.map(v=>Math.floor(v/5)*5-5)),hi=Math.max(20,...vals.map(v=>Math.ceil(v/5)*5+5)),H=320,sy=v=>20+(hi-v)/(hi-lo)*(H-60);let o=`<rect x="70" y="10" width="34" height="${H-40}" rx="17" fill="#fff" stroke="${VC.ln}" stroke-width="4"/><circle cx="87" cy="${H-26}" r="24" fill="${VC.r}" stroke="${VC.ln}" stroke-width="4"/><rect x="80" y="${sy(vals[0])}" width="14" height="${H-26-sy(vals[0])}" fill="${VC.r}"/>`;
+ for(let v=lo;v<=hi;v+=5){const y=sy(v);o+=`<path d="M104 ${y} h${v%10?8:16}" stroke="${VC.ln}" stroke-width="2"/>`+(v%10===0?T(140,y+6,v+'°',16,v<0?VC.b:VC.ln,'start'):'')}
+ vals.forEach((v,i)=>{o+=`<path d="M60 ${sy(v)} h-14" stroke="${i?VC.g:VC.o}" stroke-width="4"/>`+T(40,sy(v)+6,(v<0?'−'+(-v):v)+'°',16,i?VC.g:VC.o,'end')});return fpWrap(220,H,o)}
+const WORDNUM={one:1,two:2,three:3,four:4,five:5,six:6,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,twenty:20};
+function seqVis(t){const m=t.match(/(?:Count back|Fill the gap|Continue the count|What comes next\?|Which number is missing\?|Count in \d+s)[^:?]*[:?]?\s*([\d,\s_…]+(?:__|…)?[\d,\s_…]*)/i);if(!m)return '';
+ const parts=m[1].split(',').map(x=>x.trim()).filter(x=>x!=='');let vals=[],blank=-1;parts.forEach(p=>{if(/^(__|…)$/.test(p)){blank=vals.length;vals.push('?')}else if(/^\d+$/.test(p))vals.push(+p);else if(/^\d+\s*(__|…)$/.test(p)){vals.push(+p.match(/\d+/)[0]);blank=vals.length;vals.push('?')}});
+ if(blank<0){blank=vals.length;vals.push('?')}if(vals.length<3||vals.length>7)return '';return numLine(vals,blank)}
+function visNI(t,g){let m;
+ if(g<=2){const sq=seqVis(t);if(sq)return sq}
+ if(g===0){
+  m=t.match(/^(\d+) \+ (\d+) = \?$/)||t.match(/What is (\d+) plus (\d+)\?/);if(m&&+m[1]+ +m[2]<=20)return tenFrames([[+m[1],VC.o],[+m[2],VC.b]]);
+  m=t.match(/^(\d+) − (\d+) = \?$/)||t.match(/What is (\d+) minus (\d+)\?/);if(m&&+m[1]<=20&&+m[2]<=+m[1])return tenFrames([[+m[1]-+m[2],VC.o],[+m[2],VC.o,1]]);
+  m=t.match(/^(\d+) \+ \? = (\d+)$/);if(m&&+m[2]<=20)return tenFrames([[+m[1],VC.o]]);
+  m=t.match(/What is 1 (more|less) than (\d+)\?/);if(m){const n=+m[2];return m[1]==='more'?numLine([n-1,n,'?'],2):numLine(['?',n,n+1],0)}
+  m=t.match(/Which is more, (\d+) or (\d+)\?/);if(m&&+m[1]<=20&&+m[2]<=20)return towers([[m[1],+m[1]],[m[2],+m[2]]]);
+  m=t.match(/Which number is the least: (\d+), (\d+), (\d+)\?/);if(m&&Math.max(+m[1],+m[2],+m[3])<=20)return towers([[m[1],+m[1]],[m[2],+m[2]],[m[3],+m[3]]]);
+  m=t.match(/Write "(\w+)" as a number/);if(m&&WORDNUM[m[1]])return tenFrames([[WORDNUM[m[1]],VC.o]]);
+  m=t.match(/Which word is (\d+)\?/);if(m&&+m[1]<=20)return tenFrames([[+m[1],VC.o]])}
+ m=t.match(/(\d+) hundreds?, (\d+) tens? and (\d+) ones?/);if(m)return baseTen(+m[1],+m[2],+m[3]);
+ m=t.match(/(\d+) tens? and (\d+) ones?/);if(m&&g<=2)return baseTen(0,+m[1],+m[2]);
+ m=t.match(/How many tens are in (\d+)\?/);if(m&&+m[1]<100)return baseTen(0,Math.floor(+m[1]/10),+m[1]%10);
+ m=t.match(/value of the digit (\d) in ([\d,]+)/);if(m)return pvChart(m[2],m[1]);
+ m=t.match(/temperature is −(\d+) °C\. It (rises|falls) by (\d+)/);if(m)return thermo([-+m[1]]);
+ m=t.match(/difference between (−?\d+) °C and (−?\d+) °C/);if(m){const v=x=>x.startsWith('−')?-+x.slice(1):+x;return thermo([v(m[1]),v(m[2])])}
+ if(g===1){m=t.match(/(\d+) more than (\d+)/);if(m&&+m[2]<100&&+m[1]===10)return numLine([+m[2]-10,+m[2],'?'],2)}
+ return ''}
+/* ===== Times Table Town ===== */
+function dotArray(r,c,col){const s=Math.min(36,Math.floor(420/Math.max(c,1))),W=c*s+20,H=r*s+20;let o='';for(let i=0;i<r;i++)for(let j=0;j<c;j++)o+=`<circle cx="${10+j*s+s/2}" cy="${10+i*s+s/2}" r="${s*.36}" fill="${col||PAL[i%2?1:0]}"/>`;return fpWrap(W,H,o)}
+function groupsVis(n,each,word){const per=each,cols=Math.min(per,5),rows=Math.ceil(per/cols),bw=cols*26+22,bh=rows*26+22,gap=14,perRow=Math.min(n,5),W=perRow*(bw+gap)+10,H=Math.ceil(n/perRow)*(bh+gap)+10;let o='';
+ for(let k=0;k<n;k++){const gx=10+(k%perRow)*(bw+gap),gy=10+Math.floor(k/perRow)*(bh+gap);o+=`<rect x="${gx}" y="${gy}" width="${bw}" height="${bh}" rx="${word==='bag'?10:bh/2}" fill="#FFF6E6" stroke="${VC.o}" stroke-width="3"/>`;
+  for(let i=0;i<per;i++)o+=`<circle cx="${gx+11+13+(i%cols)*26}" cy="${gy+11+13+Math.floor(i/cols)*26}" r="9" fill="${VC.b}"/>`}
+ return fpWrap(W,H,o)}
+function shareVis(n,k){/* n things and k empty boxes */
+ const cols=Math.min(n,10),s=26,W=Math.max(cols*s+20,k*92+10),H=Math.ceil(n/10)*s+120;let o='';for(let i=0;i<n;i++)o+=`<circle cx="${10+s/2+(i%10)*s}" cy="${10+s/2+Math.floor(i/10)*s}" r="9" fill="${VC.b}"/>`;
+ const y=Math.ceil(n/10)*s+30;for(let j=0;j<k;j++)o+=`<rect x="${10+j*92}" y="${y}" width="80" height="70" rx="10" fill="#FFF6E6" stroke="${VC.o}" stroke-width="4"/>`;return fpWrap(W,H,o)}
+function areaModel(a,b,c){/* (a+b) × c split rectangle */
+ const W=520,x=60,y=40,w=440,h=120,wa=w*a/(a+b);return fpWrap(W,200,`<rect x="${x}" y="${y}" width="${wa}" height="${h}" fill="#FFE3CF" stroke="${VC.ln}" stroke-width="3"/><rect x="${x+wa}" y="${y}" width="${w-wa}" height="${h}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="3"/>`+T(x+wa/2,y-10,a,22)+T(x+wa+(w-wa)/2,y-10,b,22)+T(x-20,y+h/2+8,c,22)+T(x+wa/2,y+h/2+8,`${a} × ${c}`,24,VC.o)+T(x+wa+(w-wa)/2,y+h/2+8,`${b} × ${c}`,24,VC.b))}
+function outfits(a,b){let o='';for(let i=0;i<a;i++)o+=`<g transform="translate(${20+i*80} 20)"><path d="M10 10 L25 0 H45 L60 10 L52 24 L46 20 V60 H24 V20 L18 24Z" fill="${PAL[i]}" stroke="${VC.ln}" stroke-width="2"/></g>`;
+ for(let j=0;j<b;j++)o+=`<g transform="translate(${20+j*80} 110)"><path d="M10 30 Q35 -6 60 30Z M4 30 H66 V38 H4Z" fill="${PAL[(j+3)%7]}" stroke="${VC.ln}" stroke-width="2"/></g>`;
+ return fpWrap(Math.max(a,b)*80+30,170,o+T(10,100,'',2))}
+function visTT(t,g){let m;
+ if(g<=2){const sq=seqVis(t);if(sq)return sq}
+ m=t.match(/(\d+) groups of (\d+)/);if(m&&+m[1]<=10&&+m[2]<=10)return groupsVis(+m[1],+m[2]);
+ m=t.match(/array has (\d+) rows of (\d+)/);if(m)return dotArray(+m[1],+m[2]);
+ m=t.match(/There are (\d+) bags with (\d+) \w+ in each/);if(m&&+m[1]<=10&&+m[2]<=10)return groupsVis(+m[1],+m[2],'bag');
+ m=t.match(/Share (\d+) \w+ equally between (\d+)/)||t.match(/(\d+) \w+ are shared equally into (\d+) boxes/);if(m&&+m[1]<=50&&+m[2]<=6)return shareVis(+m[1],+m[2]);
+ m=t.match(/(\d+) \w+ are put into groups of (\d+)/);if(m&&+m[1]<=50)return shareVis(+m[1],0);
+ m=t.match(/Write ((?:\d+ \+ )+\d+) as a multiplication/);if(m){const p=m[1].split(' + ').map(Number);if(p[0]<=10)return dotArray(p.length,p[0])}
+ m=t.match(/Is (\d+) odd or even\?/);if(m&&+m[1]<=30)return pairsVis(+m[1]);
+ m=t.match(/(\d+) shirts and (\d+) hats/);if(m)return outfits(+m[1],+m[2]);
+ m=t.match(/(\d+) × (\d+) = \((\d+) × \d+\) \+ \((\d+) × \d+\)/);if(m)return areaModel(+m[3],+m[4],+m[2]);
+ m=t.match(/(?:What is )?(\d+)²/);if(m&&+m[1]<=10)return dotArray(+m[1],+m[1]);
+ if(g<=2){m=t.match(/^(\d+) × (\d+) = \?$/)||t.match(/What is (\d+) times (\d+)\?/);if(m&&+m[1]<=12&&+m[2]<=12&&+m[1]*+m[2]<=60)return dotArray(+m[1],+m[2])}
+ return ''}
+function pairsVis(n){const s=34,cols=Math.ceil(n/2),W=cols*s+20;let o='';for(let i=0;i<n;i++){const c=Math.floor(i/2),r=i%2;o+=`<circle cx="${10+c*s+s/2}" cy="${10+r*s+s/2}" r="12" fill="${i===n-1&&n%2?VC.r:VC.b}"/>`}
+ for(let c=0;c<Math.floor(n/2);c++)o+=`<rect x="${10+c*s+3}" y="13" width="${s-6}" height="${2*s-6}" rx="12" fill="none" stroke="${VC.o}" stroke-width="2"/>`;return fpWrap(W,2*s+20,o)}
+/* ===== Measure Market ===== */
+function clockSVG(h,m,x,y,r,dig){let o=`<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" stroke="${VC.ln}" stroke-width="${r/12}"/>`;
+ for(let i=0;i<60;i++){const a=i*6*Math.PI/180,l=i%5?r*.06:r*.12;o+=`<path d="M${x+Math.sin(a)*(r*.92)} ${y-Math.cos(a)*(r*.92)} L${x+Math.sin(a)*(r*.92-l)} ${y-Math.cos(a)*(r*.92-l)}" stroke="${VC.ln}" stroke-width="${i%5?1.5:3}"/>`}
+ for(let i=1;i<=12;i++){const a=i*30*Math.PI/180;o+=T(x+Math.sin(a)*r*.72,y-Math.cos(a)*r*.72+r*.09,i,r*.2)}
+ const ha=((h%12)+m/60)*30*Math.PI/180,ma=m*6*Math.PI/180;
+ o+=`<path d="M${x} ${y} L${x+Math.sin(ha)*r*.5} ${y-Math.cos(ha)*r*.5}" stroke="${VC.r}" stroke-width="${r*.07}" stroke-linecap="round"/><path d="M${x} ${y} L${x+Math.sin(ma)*r*.78} ${y-Math.cos(ma)*r*.78}" stroke="${VC.ln}" stroke-width="${r*.045}" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r="${r*.06}" fill="${VC.ln}"/>`;
+ if(dig)o+=`<rect x="${x-r*.55}" y="${y+r+12}" width="${r*1.1}" height="${r*.38}" rx="8" fill="#1D2B3A"/>`+T(x,y+r+12+r*.3,dig,r*.26,'#7CFFB2');return o}
+function timesIn(t){const out=[];const re=/(\d{1,2}):(\d{2})|half past (\d{1,2})|quarter past (\d{1,2})|quarter to (\d{1,2})|(\d{1,2}) past (\d{1,2})|(\d{1,2}) o'clock/gi;let m;
+ while((m=re.exec(t))&&out.length<2){if(m[1])out.push([+m[1],+m[2],m[0]]);else if(m[3])out.push([+m[3],30]);else if(m[4])out.push([+m[4],15]);else if(m[5])out.push([+m[5]-1,45]);else if(m[6])out.push([+m[7],+m[6]]);else if(m[8])out.push([+m[8],0])}return out}
+function clocksVis(ts){const r=90,W=ts.length*230;return fpWrap(W,ts.some(x=>x[2])?260:210,ts.map((x,i)=>clockSVG(x[0],x[1],115+i*230,105,r,x[2])).join(''))}
+function cubesRows(list){const s=Math.min(24,Math.floor(400/Math.max(...list.map(x=>x[1])))),W=Math.max(...list.map(x=>x[1]))*s+150;let o='';
+ list.forEach(([lab,n],i)=>{const y=14+i*56;o+=T(10,y+s*.8,cap(lab),18,VC.ln,'start');for(let k=0;k<n;k++)o+=`<rect x="${120+k*s}" y="${y}" width="${s}" height="${s}" fill="${PAL[i]}" stroke="#fff" stroke-width="2"/>`});return fpWrap(W,list.length*56+20,o)}
+function balanceVis(a,na,b,nb){let o=`<path d="M200 200 V70" stroke="${VC.ln}" stroke-width="8"/><path d="M150 210 H250" stroke="${VC.ln}" stroke-width="10" stroke-linecap="round"/><path d="M60 70 H340" stroke="${VC.ln}" stroke-width="8" stroke-linecap="round"/><circle cx="200" cy="70" r="10" fill="${VC.y}"/>`;
+ [[60,a,na,VC.o],[340,b,nb,VC.b]].forEach(([x,lab,n,c])=>{o+=`<path d="M${x} 70 L${x-50} 130 M${x} 70 L${x+50} 130" stroke="${VC.mut}" stroke-width="3"/><path d="M${x-60} 130 H${x+60} Q${x+50} 150 ${x} 150 Q${x-50} 150 ${x-60} 130Z" fill="#fff" stroke="${VC.ln}" stroke-width="3"/>`;
+  for(let k=0;k<n;k++){const cx=x-45+(k%5)*18,cy=112-Math.floor(k/5)*18;o+=`<rect x="${cx}" y="${cy}" width="16" height="16" fill="${c}"/>`}o+=T(x,180,`${cap(lab)}: ${n}`,18)});return fpWrap(400,230,o)}
+function dialVis(v,unit){const max=[10,20,50,100,200,500,1000].find(x=>x>=v)||Math.ceil(v/100)*100,step=max/10;let o=`<circle cx="150" cy="150" r="130" fill="#fff" stroke="${VC.ln}" stroke-width="8"/>`;
+ for(let i=0;i<=40;i++){const a=(-135+i*270/40)*Math.PI/180,l=i%4?10:20;o+=`<path d="M${150+Math.sin(a)*118} ${150-Math.cos(a)*118} L${150+Math.sin(a)*(118-l)} ${150-Math.cos(a)*(118-l)}" stroke="${VC.ln}" stroke-width="${i%4?2:3}"/>`;if(i%4===0)o+=T(150+Math.sin(a)*82,150-Math.cos(a)*82+7,step*i/4,18)}
+ const a=(-135+v/max*270)*Math.PI/180;o+=`<path d="M150 150 L${150+Math.sin(a)*105} ${150-Math.cos(a)*105}" stroke="${VC.r}" stroke-width="6" stroke-linecap="round"/><circle cx="150" cy="150" r="10" fill="${VC.r}"/>`+T(150,220,unit,24);return fpWrap(300,300,o)}
+function rulerVis(n){const cm=Math.max(10,n+2),s=Math.min(40,520/cm),W=cm*s+40;let o=`<rect x="20" y="80" width="${cm*s}" height="60" fill="#FFE59A" stroke="${VC.ln}" stroke-width="3"/>`;
+ for(let i=0;i<=cm*2;i++){const x=20+i*s/2;o+=`<path d="M${x} 80 v${i%2?10:20}" stroke="${VC.ln}" stroke-width="2"/>`;if(i%2===0)o+=T(x,124,i/2,16)}
+ o+=`<path d="M20 30 H${20+n*s-24} L${20+n*s} 46 L${20+n*s-24} 62 H20Z" fill="${VC.y}" stroke="${VC.ln}" stroke-width="3"/><path d="M${20+n*s-24} 30 V62" stroke="${VC.ln}" stroke-width="2"/><path d="M${20+n*s-8} 41 L${20+n*s} 46 L${20+n*s-8} 51Z" fill="${VC.ln}"/><rect x="20" y="30" width="16" height="32" fill="#F7A8CF" stroke="${VC.ln}" stroke-width="2"/>`;
+ return fpWrap(W,150,o)}
+function coin(x,y,lab,small,col){return `<circle cx="${x}" cy="${y}" r="${small?22:28}" fill="${col||'#D7DCE2'}" stroke="#8A96A6" stroke-width="3"/><circle cx="${x}" cy="${y}" r="${small?17:22}" fill="none" stroke="#fff" stroke-width="1.5"/>`+T(x,y+(small?5:6),lab,small?14:16,'#3B4A5A')}
+function coinsVis(groups){/* [[count,label,colour,caption]] */let o='',x=10,maxc=1;groups.forEach(([n,lab,col,cp])=>{const cols=Math.min(n,5);for(let i=0;i<n;i++)o+=coin(x+32+(i%5)*62,40+Math.floor(i/5)*62,lab,false,col);o+=T(x+cols*31,40+Math.ceil(n/5)*62,cp||'',18);maxc=Math.max(maxc,Math.ceil(n/5));x+=cols*62+40});return fpWrap(x,maxc*62+50,o)}
+function rectVis(a,b,unit,grid,qa,qb){const sc=Math.min(320/a,180/b,30),w=a*sc,h=b*sc,W=w+140,H=h+100,x=70,y=40;let o=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/>`;
+ if(grid){for(let i=1;i<a;i++)o+=`<path d="M${x+i*sc} ${y} v${h}" stroke="${VC.ln}" stroke-width="1.5"/>`;for(let j=1;j<b;j++)o+=`<path d="M${x} ${y+j*sc} h${w}" stroke="${VC.ln}" stroke-width="1.5"/>`}
+ o+=T(x+w/2,y-12,qa||`${a} ${unit}`,22)+T(x+w+14,y+h/2+7,qb||`${b} ${unit}`,22,VC.ln,'start');return fpWrap(W,H,o)}
+function lShape(A,B,c,d,unit){/* A×B rectangle with c×d cut from top-right corner */const sc=Math.min(300/A,200/B),x=60,y=40,w=A*sc,h=B*sc,cw=c*sc,ch=d*sc;
+ let o=`<path d="M${x} ${y} H${x+w-cw} V${y+ch} H${x+w} V${y+h} H${x}Z" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/><path d="M${x+w-cw} ${y} H${x+w} V${y+ch}" fill="none" stroke="${VC.mut}" stroke-width="2" stroke-dasharray="6 6"/>`;
+ o+=T(x+w/2,y+h+30,`${A} ${unit}`,20)+T(x-12,y+h/2+6,`${B} ${unit}`,20,VC.ln,'end')+T(x+w-cw/2,y+ch/2+6,`${c} × ${d}`,16,VC.mut)+T(x+w-cw/2,y-10,'cut out',14,VC.mut);return fpWrap(w+140,h+80,o)}
+function triVis(b,h,unit){const sc=Math.min(320/b,180/h),x=60,y=30,w=b*sc,hh=h*sc,ax=x+w*.35;return fpWrap(w+120,hh+80,`<path d="M${x} ${y+hh} H${x+w} L${ax} ${y}Z" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/><path d="M${ax} ${y} V${y+hh}" stroke="${VC.o}" stroke-width="3" stroke-dasharray="7 6"/><rect x="${ax}" y="${y+hh-14}" width="14" height="14" fill="none" stroke="${VC.o}" stroke-width="2"/>`+T(x+w/2,y+hh+30,`base ${b} ${unit}`,20)+T(ax+10,y+hh/2,`height ${h} ${unit}`,18,VC.o,'start'))}
+function visMM(t,g){let m;
+ m=t.match(/(?:a|the) (\w+) (\d+) cubes long and (?:a|the) (\w+) (\d+) cubes long/);if(m)return cubesRows([[m[1],+m[2]],[m[3],+m[4]]]);
+ m=t.match(/The (\w+) is (\d+) cubes long\. The (\w+) is (\d+) cubes long/);if(m)return cubesRows([[m[1],+m[2]],[m[3],+m[4]]]);
+ m=t.match(/a balance\. The (\w+) weighs (\d+) cubes, the (\w+) weighs (\d+) cubes/);if(m)return balanceVis(m[1],+m[2],m[3],+m[4]);
+ m=t.match(/scale pointing to (\d+) (g|kg)/);if(m)return dialVis(+m[1],m[2]);
+ m=t.match(/pencil goes from 0 to (\d+)/);if(m)return rulerVis(+m[1]);
+ m=t.match(/How many (\d+)-(dirham|fils) coins make (\d+) dirhams?\?/);if(m)return fpWrap(320,170,coin(160,60,`${m[1]}${m[2]==='fils'?'f':''}`,false,m[2]==='fils'?'#E8C27A':'#D7DCE2').replace(/r="28"/,'r="44"').replace(/r="22"/,'r="36"')+T(160,145,`one ${m[1]}-${m[2]} coin`,22));
+ m=t.match(/(\d+)-dirham pile of coins and a (\d+)-dirham pile/);if(m&&+m[1]<=10&&+m[2]<=10)return coinsVis([[+m[1],'1',null,`${m[1]} dirhams`],[+m[2],'1',null,`${m[2]} dirhams`]]);
+ m=t.match(/L-shape is an? (\d+) m by (\d+) m rectangle with an? (\d+) m by (\d+) m (?:square|rectangle) cut/)||t.match(/L-shape: an? (\d+) m by (\d+) m rectangle with an? (\d+) m by (\d+) m rectangle cut/);if(m)return lShape(+m[1],+m[2],+m[3],+m[4],'m');
+ m=t.match(/triangle with base (\d+) (cm|m) and height (\d+)/);if(m)return triVis(+m[1],+m[3],m[2]);
+ m=t.match(/rectangle (\d+) (cm|m) by (\d+) (?:cm|m)/);if(m)return rectVis(+m[1],+m[3],m[2],/count the squares/.test(t)&&+m[1]<=12&&+m[3]<=12);
+ m=t.match(/rectangle has an area of (\d+) (cm|m)² and a length of (\d+)/);if(m)return rectVis(+m[3],Math.max(1,+m[1]/+m[3]),m[2],false,`${m[3]} ${m[2]}`,'?')+'';
+ m=t.match(/rectangle has an area of (\d+) (cm|m)²\. One side is (\d+)/);if(m)return rectVis(+m[3],Math.max(1,+m[1]/+m[3]),m[2],false,`${m[3]} ${m[2]}`,'?');
+ m=t.match(/rectangle has a perimeter of (\d+) (cm|m) and a length of (\d+)/);if(m)return rectVis(+m[3],Math.max(1,+m[1]/2-+m[3]),m[2],false,`${m[3]} ${m[2]}`,'?');
+ const ts=timesIn(t);if(ts.length&&!/show it on the clock|long hand|short hand|hands? points?/i.test(t))return clocksVis(ts);
+ return ''}
+/* ===== Shape Forest ===== */
+function poly(n,cx,cy,r,rot){let p='';for(let i=0;i<n;i++){const a=(rot||-90)*Math.PI/180+i*2*Math.PI/n;p+=`${(cx+r*Math.cos(a)).toFixed(1)},${(cy+r*Math.sin(a)).toFixed(1)} `}return p}
+function shape2D(name){const N={triangle:3,'equilateral triangle':3,square:4,pentagon:5,hexagon:6,'regular hexagon':6,heptagon:7,octagon:8,decagon:10};let o='';const f='#DCEBFA',s=`stroke="${VC.ln}" stroke-width="5" stroke-linejoin="round"`;
+ if(name==='circle')o=`<circle cx="110" cy="100" r="80" fill="${f}" ${s}/>`;
+ else if(name==='rectangle')o=`<rect x="20" y="40" width="180" height="110" fill="${f}" ${s}/>`;
+ else if(name==='square')o=`<rect x="30" y="20" width="160" height="160" fill="${f}" ${s}/>`;
+ else if(name==='isosceles triangle')o=`<polygon points="110,15 175,180 45,180" fill="${f}" ${s}/>`;
+ else if(name==='scalene triangle')o=`<polygon points="40,180 200,180 80,40" fill="${f}" ${s}/>`;
+ else if(/right-angled triangle/.test(name))o=`<polygon points="40,20 40,180 200,180" fill="${f}" ${s}/><rect x="40" y="160" width="20" height="20" fill="none" stroke="${VC.o}" stroke-width="3"/>`;
+ else if(name==='rhombus')o=`<polygon points="110,15 190,100 110,185 30,100" fill="${f}" ${s}/>`;
+ else if(name==='parallelogram')o=`<polygon points="60,40 210,40 160,160 10,160" fill="${f}" ${s}/>`;
+ else if(name==='trapezium')o=`<polygon points="60,40 160,40 210,160 10,160" fill="${f}" ${s}/>`;
+ else if(N[name])o=`<polygon points="${poly(N[name],110,105,90,name.includes('square')?-45:-90)}" fill="${f}" ${s}/>`;
+ return o?fpWrap(220,200,o):''}
+function shape3D(name){const f='#DCEBFA',f2='#B5D4F4',f3='#85B7EB',s=`stroke="${VC.ln}" stroke-width="4" stroke-linejoin="round"`;let o='';
+ if(name==='cube')o=`<polygon points="40,70 140,70 140,170 40,170" fill="${f}" ${s}/><polygon points="40,70 80,30 180,30 140,70" fill="${f2}" ${s}/><polygon points="140,70 180,30 180,130 140,170" fill="${f3}" ${s}/>`;
+ else if(name==='cuboid')o=`<polygon points="20,80 160,80 160,170 20,170" fill="${f}" ${s}/><polygon points="20,80 60,40 200,40 160,80" fill="${f2}" ${s}/><polygon points="160,80 200,40 200,130 160,170" fill="${f3}" ${s}/>`;
+ else if(name==='sphere')o=`<circle cx="110" cy="100" r="80" fill="${f}" ${s}/><ellipse cx="110" cy="100" rx="80" ry="22" fill="none" stroke="${VC.ln}" stroke-width="2" stroke-dasharray="6 6"/><ellipse cx="85" cy="70" rx="18" ry="12" fill="#fff" opacity=".7"/>`;
+ else if(name==='cylinder')o=`<path d="M40 40 V160 A70 20 0 0 0 180 160 V40" fill="${f}" ${s}/><ellipse cx="110" cy="40" rx="70" ry="20" fill="${f2}" ${s}/>`;
+ else if(name==='cone')o=`<path d="M110 15 L40 160 A70 20 0 0 0 180 160 Z" fill="${f}" ${s}/><path d="M40 160 A70 20 0 0 1 180 160" fill="none" stroke="${VC.ln}" stroke-width="2" stroke-dasharray="6 6"/>`;
+ else if(/pyramid/.test(name))o=`<polygon points="30,150 140,150 110,30" fill="${f}" ${s}/><polygon points="140,150 190,115 110,30" fill="${f3}" ${s}/><path d="M30 150 L80 115 L190 115" fill="none" stroke="${VC.ln}" stroke-width="2" stroke-dasharray="6 6"/><path d="M80 115 L110 30" stroke="${VC.ln}" stroke-width="2" stroke-dasharray="6 6"/>`;
+ else if(/prism/.test(name))o=`<polygon points="30,160 90,60 150,160" fill="${f}" ${s}/><polygon points="90,60 170,30 210,130 150,160" fill="${f3}" ${s}/><path d="M30 160 L90 130 L210 130" fill="none" stroke="${VC.ln}" stroke-width="2" stroke-dasharray="6 6"/>`;
+ return o?fpWrap(220,190,o):''}
+const SHAPES2=['equilateral triangle','isosceles triangle','scalene triangle','right-angled triangle','regular hexagon','triangle','square','rectangle','circle','pentagon','hexagon','heptagon','octagon','decagon','rhombus','parallelogram','trapezium'];
+const SHAPES3=['square-based pyramid','triangular prism','cube','cuboid','sphere','cylinder','cone','pyramid'];
+function angleVis(list,lab){/* draw one or more angles */const W=list.length*200;let o='';list.forEach((d,i)=>{const cx=30+i*200,cy=150,r=130,a=d*Math.PI/180;
+ o+=`<path d="M${cx} ${cy} H${cx+r}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/><path d="M${cx} ${cy} L${cx+Math.cos(a)*r*(d>90?.7:1)} ${cy-Math.sin(a)*r*(d>90?.7:1)}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/>`;
+ o+=d===90?`<rect x="${cx}" y="${cy-24}" width="24" height="24" fill="none" stroke="${VC.o}" stroke-width="3"/>`:`<path d="M${cx+34} ${cy} A34 34 0 ${d>180?1:0} 0 ${cx+34*Math.cos(a)} ${cy-34*Math.sin(a)}" fill="none" stroke="${VC.o}" stroke-width="4"/>`;
+ if(lab!==false)o+=T(cx+70,cy+34,d+'°',22,VC.o)});return fpWrap(Math.max(W,240),190,o).replace('viewBox="0 0','viewBox="-10 0')}
+function lineAngles(a){const cx=200,cy=140,r=150,ra=a*Math.PI/180;return fpWrap(420,190,`<path d="M30 ${cy} H370" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/><path d="M${cx} ${cy} L${cx+Math.cos(Math.PI-ra)*r*.8} ${cy-Math.sin(Math.PI-ra)*r*.8}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/>`+T(cx-60,cy-14,a+'°',22,VC.o)+T(cx+60,cy-14,'?',26,VC.b))}
+function pointAngles(arr){const cx=150,cy=130,r=110;let o='',acc=0;const all=[...arr,360-arr.reduce((a,b)=>a+b,0)];all.forEach((d,i)=>{const a=acc*Math.PI/180;o+=`<path d="M${cx} ${cy} L${cx+Math.cos(a)*r} ${cy-Math.sin(a)*r}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/>`;const mid=(acc+d/2)*Math.PI/180;o+=T(cx+Math.cos(mid)*62,cy-Math.sin(mid)*62+8,i<arr.length?d+'°':'?',20,i<arr.length?VC.o:VC.b);acc+=d});return fpWrap(300,260,o+`<circle cx="${cx}" cy="${cy}" r="6" fill="${VC.ln}"/>`)}
+function crossAngles(a){const cx=200,cy=110,r=150,ra=a*Math.PI/180/2;return fpWrap(400,220,`<path d="M${cx-Math.cos(ra)*r} ${cy+Math.sin(ra)*r} L${cx+Math.cos(ra)*r} ${cy-Math.sin(ra)*r}" stroke="${VC.ln}" stroke-width="5"/><path d="M${cx-Math.cos(ra)*r} ${cy-Math.sin(ra)*r} L${cx+Math.cos(ra)*r} ${cy+Math.sin(ra)*r}" stroke="${VC.ln}" stroke-width="5"/>`+T(cx,cy-40,a+'°',22,VC.o)+T(cx,cy+56,'?',26,VC.b))}
+function polyAngles(list){const n=list.length+1,pts=n===3?[[60,180],[340,180],[150,40]]:[[60,190],[340,200],[300,40],[90,60]];let o=`<polygon points="${pts.map(p=>p.join(',')).join(' ')}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="5" stroke-linejoin="round"/>`;
+ const c=[pts.reduce((a,p)=>a+p[0],0)/n,pts.reduce((a,p)=>a+p[1],0)/n];pts.forEach((p,i)=>{const x=p[0]+(c[0]-p[0])*.26,y=p[1]+(c[1]-p[1])*.26+7;o+=T(x,y,i<list.length?list[i]+'°':'?',20,i<list.length?VC.o:VC.b)});return fpWrap(400,230,o)}
+function grid(points,opt){/* points: [[x,y,label,colour]] ; opt:{mirrorX,arrows:[[x1,y1,x2,y2]],icon} */opt=opt||{};
+ const xs=points.map(p=>p[0]).concat(opt.extraX||[]),ys=points.map(p=>p[1]).concat(opt.extraY||[]);const neg=xs.some(v=>v<0)||ys.some(v=>v<0)||opt.four;
+ const M=Math.max(6,...xs.map(Math.abs),...ys.map(Math.abs))+1,lo=neg?-M:0,s=Math.min(36,(neg?320:300)/(M-lo)),W=(M-lo)*s+60,H=W,ox=30-lo*s,oy=30+M*s;let o='';
+ for(let i=lo;i<=M;i++){o+=`<path d="M${ox+i*s} ${30} V${30+(M-lo)*s} M${30} ${oy-i*s} H${30+(M-lo)*s}" stroke="#D5E3EF" stroke-width="1.5"/>`;if(i!==0||!neg){o+=T(ox+i*s,oy+18,i,12,VC.mut);if(i)o+=T(ox-8,oy-i*s+4,i,12,VC.mut,'end')}}
+ o+=`<path d="M${ox} 30 V${30+(M-lo)*s} M30 ${oy} H${30+(M-lo)*s}" stroke="${VC.ln}" stroke-width="3"/>`;
+ if(opt.mirrorX!=null)o+=`<path d="M${ox+opt.mirrorX*s} 26 V${34+(M-lo)*s}" stroke="${VC.p}" stroke-width="4" stroke-dasharray="10 6"/>`+T(ox+opt.mirrorX*s,22,'mirror',14,VC.p);
+ (opt.arrows||[]).forEach(([x1,y1,x2,y2])=>{o+=`<path d="M${ox+x1*s} ${oy-y1*s} L${ox+x2*s} ${oy-y2*s}" stroke="${VC.o}" stroke-width="4" stroke-dasharray="8 6"/>`});
+ points.forEach(([x,y,lab,c])=>{o+=opt.icon?`<use href="#${opt.icon}" x="${ox+x*s-22}" y="${oy-y*s-36}" width="44" height="44"/>`:`<circle cx="${ox+x*s}" cy="${oy-y*s}" r="8" fill="${c||VC.r}"/>`+(lab?T(ox+x*s+10,oy-y*s-10,lab,15,c||VC.r,'start'):'')});
+ return fpWrap(W,H,o)}
+const DIRS=['north','east','south','west'];
+function compassVis(dir,turn,cw){const i=DIRS.indexOf(dir),a=i*90*Math.PI/180;let o=`<circle cx="150" cy="150" r="110" fill="#fff" stroke="${VC.ln}" stroke-width="4"/>`;
+ DIRS.forEach((d,k)=>{const b=k*90*Math.PI/180;o+=T(150+Math.sin(b)*135,150-Math.cos(b)*135+8,cap(d),20)});
+ o+=`<path d="M150 150 L${150+Math.sin(a)*90} ${150-Math.cos(a)*90}" stroke="${VC.o}" stroke-width="10" stroke-linecap="round"/><circle cx="150" cy="150" r="12" fill="${VC.ln}"/>`;
+ const s=cw?1:-1,a1=a+s*0.45,a2=a+s*1.25;o=`<defs><marker id="vah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="${VC.p}"/></marker></defs>`+o+`<path d="M${150+Math.sin(a1)*62} ${150-Math.cos(a1)*62} A62 62 0 0 ${cw?1:0} ${150+Math.sin(a2)*62} ${150-Math.cos(a2)*62}" fill="none" stroke="${VC.p}" stroke-width="5" marker-end="url(#vah)"/>`+T(150,330,cw?'turning clockwise ↻':'turning anticlockwise ↺',18,VC.p);
+ return fpWrap(320,345,o+`<use href="#zaza" x="${150+Math.sin(a)*90-26}" y="${150-Math.cos(a)*90-26}" width="52" height="52"/>`).replace('viewBox="0 0 320 345"','viewBox="-10 -10 330 355"')}
+function letterVis(L){return fpWrap(200,200,`<text x="100" y="165" text-anchor="middle" font-family="Arial,Helvetica" font-weight="700" font-size="190" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="5">${esc(L)}</text>`)}
+function positionVis(){return fpWrap(240,220,`<rect x="60" y="120" width="120" height="90" fill="#C98E52" stroke="${VC.ln}" stroke-width="4"/><path d="M60 140 H180" stroke="${VC.ln}" stroke-width="2"/><circle cx="120" cy="60" r="40" fill="${VC.r}" stroke="${VC.ln}" stroke-width="4"/><path d="M84 52 Q120 70 156 52" fill="none" stroke="#fff" stroke-width="4"/>`)}
+function visSF(t,g){let m;
+ m=t.match(/\(Picture: an? (.+?)\.\)/);if(m){const n=m[1].toLowerCase();if(/ball above a box/.test(n))return positionVis();for(const s of SHAPES3)if(n===s)return shape3D(s);for(const s of SHAPES2)if(n===s)return shape2D(s)}
+ m=t.match(/angle of (\d+)°/)||t.match(/An angle measures (\d+)°/)||t.match(/makes an? (\d+)° angle/);if(m&&+m[1]<360)return angleVis([+m[1]]);
+ m=t.match(/Order these angles from smallest: ([\d°, ]+)/);if(m){const a=m[1].match(/\d+/g).map(Number);if(a.length<=4)return angleVis(a)}
+ m=t.match(/Angles on a straight line: (\d+)° and \?/);if(m)return lineAngles(+m[1]);
+ m=t.match(/Angles around a point: ([\d°, ]+?) and \?/);if(m)return pointAngles(m[1].match(/\d+/g).map(Number));
+ m=t.match(/triangle has angles (\d+)° and (\d+)°/);if(m)return polyAngles([+m[1],+m[2]]);
+ m=t.match(/quadrilateral has angles (\d+)°, (\d+)° and (\d+)°/);if(m)return polyAngles([+m[1],+m[2],+m[3]]);
+ m=t.match(/Two straight lines cross\. One angle is (\d+)°/);if(m)return crossAngles(+m[1]);
+ m=t.match(/regular polygon with (\d+) sides/);if(m&&+m[1]<=12)return fpWrap(220,210,`<polygon points="${poly(+m[1],110,105,92)}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="5" stroke-linejoin="round"/>`);
+ m=t.match(/grid with a (\w+) at (\d+) across, (\d+) up/);if(m)return grid([[+m[2],+m[3],'',VC.r]],{icon:m[1]==='camel'?'zaza':null});
+ const P=x=>x.replace('−','-');
+ m=t.match(/(?:Move|Translate) (?:the point )?\((−?\d+), (−?\d+)\) (\d+) (left|right) and (\d+) (up|down)/);if(m){const x=+P(m[1]),y=+P(m[2]),dx=(m[4]==='left'?-1:1)*+m[3],dy=(m[6]==='down'?-1:1)*+m[5];return grid([[x,y,`(${m[1]}, ${m[2]})`]],{extraX:[x+dx],extraY:[y+dy]})}
+ m=t.match(/Reflect the point \((\d+), (\d+)\) in the vertical mirror line x = (\d+)/);if(m)return grid([[+m[1],+m[2],`(${m[1]}, ${m[2]})`]],{mirrorX:+m[3],extraX:[2*+m[3]-+m[1]]});
+ m=t.match(/Reflect \((−?\d+), (−?\d+)\) in the (x|y)-axis/);if(m)return grid([[+P(m[1]),+P(m[2]),`(${m[1]}, ${m[2]})`]],{four:true});
+ m=t.match(/corners at \((\d+), (\d+)\), \((\d+), (\d+)\) and \((\d+), (\d+)\)/);if(m)return grid([[+m[1],+m[2],`(${m[1]}, ${m[2]})`],[+m[3],+m[4],`(${m[3]}, ${m[4]})`],[+m[5],+m[6],`(${m[5]}, ${m[6]})`]]);
+ m=t.match(/Which quadrant is the point \((−?\d+), (−?\d+)\)/);if(m)return grid([[+P(m[1]),+P(m[2]),`(${m[1]}, ${m[2]})`]],{four:true});
+ m=t.match(/(?:Zaza )?[Ff]aces? (north|east|south|west)\. (?:She makes|Make) an? ([\w-]+ )?turn (clockwise|anticlockwise)/);if(m)return compassVis(m[1],m[2],m[3]==='clockwise');
+ m=t.match(/capital letter ([A-Z])\b/);if(m)return letterVis(m[1]);
+ m=t.match(/(?:does|do) (?:a|an|the) ([a-z -]+?) (?:have|has)\b/i)||t.match(/(?:faces|end|base|sides) of (?:a|an) ([a-z -]+?)\?/i);
+ if(m){const n=m[1].toLowerCase().trim();for(const s of SHAPES3)if(n===s)return shape3D(s);for(const s of SHAPES2)if(n===s)return shape2D(s)}
+ if(/o'clock/.test(t)){const ts=timesIn(t);if(ts.length)return clocksVis(ts)}
+ return ''}
+/* ===== Data Desert ===== */
+function parsePairs(s){return s.split(/[,;]\s*/).map(x=>x.trim().match(/^(.+?):? (\d+)$/)).filter(Boolean).map(m=>[m[1].trim(),+m[2]])}
+function hoopsVis(list){const W=list.length*190;let o='';list.forEach(([lab,n],i)=>{const cx=95+i*190;o+=`<ellipse cx="${cx}" cy="100" rx="85" ry="80" fill="${PAL[i]}22" stroke="${PAL[i]}" stroke-width="5"/>`;const cols=n>9?4:3,rows=Math.ceil(n/cols);for(let k=0;k<n;k++){const r=Math.floor(k/cols),c=k%cols,inRow=Math.min(cols,n-r*cols);o+=`<circle cx="${cx+(c-(inRow-1)/2)*30}" cy="${100+(r-(rows-1)/2)*30}" r="11" fill="${PAL[i]}"/>`}o+=T(cx,206,cap(lab),20)});return fpWrap(W,220,o)}
+function tallyMarks(n,x,y){let o='';const groups=Math.floor(n/5),rest=n%5;let cx=x;for(let gI=0;gI<groups;gI++){for(let k=0;k<4;k++)o+=`<path d="M${cx+k*9} ${y} v28" stroke="${VC.ln}" stroke-width="3" stroke-linecap="round"/>`;o+=`<path d="M${cx-4} ${y+24} L${cx+31} ${y+4}" stroke="${VC.r}" stroke-width="3" stroke-linecap="round"/>`;cx+=46}
+ for(let k=0;k<rest;k++)o+=`<path d="M${cx+k*9} ${y} v28" stroke="${VC.ln}" stroke-width="3" stroke-linecap="round"/>`;return o}
+function tallyCount(s){return (s.match(/卌/g)||[]).length*5+(s.match(/\|/g)||[]).length}
+function tallyChart(rows){const W=420,rh=46;let o=`<rect x="10" y="10" width="${W-20}" height="${rh}" fill="#E6F1FB" stroke="${VC.ln}" stroke-width="2"/>`+T(80,40,'Choice',18)+T(260,40,'Tally',18);
+ rows.forEach(([lab,n],i)=>{const y=10+(i+1)*rh;o+=`<rect x="10" y="${y}" width="140" height="${rh}" fill="#fff" stroke="${VC.ln}" stroke-width="2"/><rect x="150" y="${y}" width="${W-160}" height="${rh}" fill="#fff" stroke="${VC.ln}" stroke-width="2"/>`+T(80,y+30,cap(lab),18)+tallyMarks(n,170,y+9)});return fpWrap(W,(rows.length+1)*rh+20,o)}
+function smiley(x,y,half){return `<g transform="translate(${x} ${y})">${half?`<path d="M0 -12 A12 12 0 0 0 0 12 Z" fill="${VC.y}" stroke="${VC.ln}" stroke-width="2"/>`:`<circle r="12" fill="${VC.y}" stroke="${VC.ln}" stroke-width="2"/><circle cx="-4" cy="-3" r="1.8" fill="${VC.ln}"/><circle cx="4" cy="-3" r="1.8" fill="${VC.ln}"/><path d="M-5 4 Q0 8 5 4" fill="none" stroke="${VC.ln}" stroke-width="1.8"/>`}</g>`}
+function pictoVis(rows,key){const mx=Math.max(...rows.map(r=>r[1])),W=150+mx*30+20,rh=40;let o='';rows.forEach(([lab,n],i)=>{const y=14+i*rh;o+=T(130,y+26,cap(lab),18,VC.ln,'end');for(let k=0;k<n;k++)o+=smiley(160+k*30,y+20)});
+ const ky=14+rows.length*rh+10;o+=smiley(30,ky+16)+T(50,ky+22,`= ${key} ${key===1?'child':'children'}`,18,VC.ln,'start');return fpWrap(Math.max(W,260),ky+44,o)}
+function niceStep(max){const c=[1,2,5,10,20,25,50,100,200,250,500];return c.find(s=>max/s<=10)||1000}
+function barChart(rows,step,ylab){const mx=Math.max(...rows.map(r=>r[1])),top=Math.ceil(mx/step)*step||step,H=300,W=Math.max(380,rows.length*90+90),x0=60,y0=H-50,ph=H-80,sy=v=>y0-v/top*ph;let o='';
+ for(let v=0;v<=top;v+=step){o+=`<path d="M${x0} ${sy(v)} H${W-10}" stroke="#D5E3EF" stroke-width="1.5"/>`+T(x0-8,sy(v)+5,v,13,VC.ln,'end')}
+ const bw=(W-x0-20)/rows.length;rows.forEach(([lab,v],i)=>{const x=x0+10+i*bw;o+=`<rect x="${x+bw*.15}" y="${sy(v)}" width="${bw*.7}" height="${y0-sy(v)}" fill="${PAL[i%PAL.length]}" stroke="${VC.ln}" stroke-width="2"/>`+T(x+bw/2,y0+22,cap(lab).slice(0,10),14)});
+ o+=`<path d="M${x0} 20 V${y0} H${W-10}" fill="none" stroke="${VC.ln}" stroke-width="3"/>`;return fpWrap(W,H,o)}
+function lineChart(rows,unit){const vals=rows.map(r=>r[1]),mn=Math.min(...vals),mx=Math.max(...vals),step=niceStep((mx-Math.min(0,mn))/1),lo=unit==='°C'?Math.floor((mn-2)/5)*5:0,top=Math.ceil(mx/step)*step,H=300,W=Math.max(400,rows.length*80+80),x0=64,y0=H-50,ph=H-80,st=niceStep(top-lo),sy=v=>y0-(v-lo)/(top-lo)*ph;let o='';
+ for(let v=lo;v<=top;v+=st){o+=`<path d="M${x0} ${sy(v)} H${W-10}" stroke="#D5E3EF" stroke-width="1.5"/>`+T(x0-8,sy(v)+5,v+(unit==='°C'?'°':''),13,VC.ln,'end')}
+ const dx=(W-x0-40)/(rows.length-1);o+=`<polyline points="${rows.map(([l,v],i)=>`${x0+20+i*dx},${sy(v)}`).join(' ')}" fill="none" stroke="${VC.o}" stroke-width="4"/>`;
+ rows.forEach(([l,v],i)=>{o+=`<circle cx="${x0+20+i*dx}" cy="${sy(v)}" r="6" fill="${VC.o}" stroke="#fff" stroke-width="2"/>`+T(x0+20+i*dx,y0+22,l,14)});
+ o+=`<path d="M${x0} 20 V${y0} H${W-10}" fill="none" stroke="${VC.ln}" stroke-width="3"/>`;return fpWrap(W,H,o)}
+function pieVis(rows,title){let o='',a0=-90;const cx=150,cy=150,r=120;rows.forEach(([lab,fr],i)=>{const d=fr*360,a1=a0+d,r0=a0*Math.PI/180,r1=a1*Math.PI/180;o+=`<path d="M${cx} ${cy} L${cx+r*Math.cos(r0)} ${cy+r*Math.sin(r0)} A${r} ${r} 0 ${d>180?1:0} 1 ${cx+r*Math.cos(r1)} ${cy+r*Math.sin(r1)}Z" fill="${PAL[i]}" stroke="#fff" stroke-width="3"/>`;
+ const mid=(a0+d/2)*Math.PI/180;o+=T(cx+Math.cos(mid)*r*.6,cy+Math.sin(mid)*r*.6+6,cap(lab),16,'#fff');a0=a1});return fpWrap(300,310,o+T(150,300,title||'',16))}
+function timetableVis(times,mins){const W=Math.max(420,times.length*90+150),cw=(W-150)/times.length;let o=`<rect x="10" y="10" width="${W-20}" height="100" rx="8" fill="#fff" stroke="${VC.ln}" stroke-width="2"/>`+T(80,48,'Station A',17)+T(80,92,'Station B',17);
+ o+=`<path d="M150 10 V110 M10 60 H${W-10}" stroke="${VC.ln}" stroke-width="2"/>`;times.forEach((t,i)=>{o+=T(150+cw*(i+.5),48,t,20)+T(150+cw*(i+.5),92,'?',20,VC.mut)});o+=T(W/2,140,`🚇 The journey takes ${mins} minutes`,18,VC.o);return fpWrap(W,150,o)}
+function visDD(t,g){let m;
+ m=t.match(/sorting hoops — ([^)]+?)\.?\)/);if(m)return hoopsVis(parsePairs(m[1]));
+ m=t.match(/\(Tally chart: ([^)]+)\)/);if(m)return tallyChart(m[1].split(';').map(s=>{const k=s.trim().match(/^(\S+)\s+(.*)$/);return [k[1],tallyCount(k[2])]}));
+ m=t.match(/a tally — ([卌|\s]+)\)/);if(m){const n=tallyCount(m[1]);return fpWrap(Math.floor(n/5)*46+(n%5)*9+40,50,tallyMarks(n,14,10))}
+ m=t.match(/\(Pictogram — each ☺ = (\d+) child(?:ren)?: ([^)]+)\)/);if(m)return pictoVis(m[2].split(';').map(s=>{const k=s.trim().match(/^(\S+)\s+(☺*)/);return [k[1],k[2].length]}),+m[1]);
+ m=t.match(/\(Bar chart, (?:the scale goes up in|scale in) (\d+)s(?:, [^:]+)?: ([^)]+?)\.?\)/);if(m)return barChart(parsePairs(m[2]),+m[1]);
+ m=t.match(/\(Time graph of temperature: ([^)]+?)\.?\)/);if(m)return lineChart(parsePairs(m[1].replace(/ °C/g,'')),'°C');
+ m=t.match(/\(Line graph of [^:]+: ([^)]+?)\.?\)/);if(m)return lineChart(parsePairs(m[1]));
+ m=t.match(/\(Timetable — the metro leaves Station A at ([\d:, and]+?) and takes (\d+) minutes/);if(m)return timetableVis(m[1].match(/\d\d:\d\d/g),m[2]);
+ m=t.match(/\(Pie chart of (\d+) children's ([^:]+): ([^)]+?)\.?\)/);if(m){const rows=m[3].split(',').map(s=>{const k=s.trim().match(/^(\S+) (\d+)\/(\d+)/);return k?[k[1],+k[2]/+k[3]]:null}).filter(Boolean);return pieVis(rows,`${m[1]} children`)}
+ return ''}
+/* ===== Pattern Peaks ===== */
+function ratioVis(a,la,b,lb){let o='';for(let i=0;i<a;i++)o+=`<circle cx="${40+i*44}" cy="40" r="17" fill="${VC.o}"/>`;for(let j=0;j<b;j++)o+=`<circle cx="${40+j*44}" cy="100" r="17" fill="${VC.b}"/>`;
+ const W=Math.max(a,b)*44+170;o+=T(Math.max(a,b)*44+40,47,cap(la),18,VC.o,'start')+T(Math.max(a,b)*44+40,107,cap(lb),18,VC.b,'start');return fpWrap(W,140,`<rect x="10" y="10" width="${Math.max(a,b)*44+10}" height="120" rx="16" fill="none" stroke="${VC.mut}" stroke-width="3" stroke-dasharray="8 6"/>`+o)}
+function visPP(t,g){let m;
+ m=t.match(/For every (\d+) ([\w ]+?) there are (\d+) ([\w ]+?)\./);if(m&&+m[1]<=8&&+m[3]<=8)return ratioVis(+m[1],m[2],+m[3],m[4]);
+ m=t.match(/Share (\d+) dirhams in the ratio (\d+):(\d+)/);if(m){const a=+m[2],b=+m[3];return fpBarModel(+m[1],a+b,Math.max(a,b))}
+ const sq=seqVis(t);if(sq)return sq;
+ m=t.match(/^(\d+)% of (\d+) = \?$/)||t.match(/What is (\d+)% of (\d+)\?/);if(m){const p=+m[1],N=+m[2];if(p%10===0)return fpBarModel(N,10,p/10);if(p%25===0)return fpBarModel(N,4,p/25);if(p%5===0)return fpBarModel(N,20,p/5)}
+ return ''}
+function visFor(q,land,grade){try{const t=String(q);
+ const f={FF:fracPic,NI:visNI,TT:visTT,MM:visMM,SF:visSF,DD:visDD,PP:visPP}[land];return f?f(t,grade)||'':''}catch(e){return ''}}
+
+function fpFor(q){const s=visFor(q,V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
