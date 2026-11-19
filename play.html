@@ -167,7 +167,25 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 @media(max-width:600px){.jwrap{border-radius:0;border-width:0}}
 .jpad.later:hover{opacity:.85}
 @media (prefers-reduced-motion:reduce){.jpad.cur .jin,.spin,.flow{animation:none}}
-.back{position:relative;z-index:5}</style>
+.back{position:relative;z-index:5}.party{position:fixed;inset:0;z-index:25;display:grid;place-items:center;background:rgba(230,248,255,.4);animation:pin .25s ease-out;cursor:pointer}
+.party.out{animation:pout .35s ease-in forwards}@keyframes pin{from{opacity:0}}@keyframes pout{to{opacity:0}}
+.party .cf{position:absolute;top:-30px;width:12px;height:16px;border-radius:3px;font-style:normal;font-size:26px;line-height:1;animation:cfall 2s linear forwards}
+.party .cf:not(:empty){width:auto;height:auto;background:none}@keyframes cfall{to{transform:translateY(112vh) rotate(540deg)}}
+.pcard{position:relative;background:#fff;border:6px solid #FFD23F;border-radius:36px;padding:22px 36px 16px;text-align:center;box-shadow:0 18px 50px rgba(20,90,140,.25);animation:ppop .55s cubic-bezier(.2,1.6,.4,1);max-width:90vw}
+@keyframes ppop{from{transform:scale(.3) rotate(-12deg);opacity:0}}
+.pav{position:relative;display:inline-block;line-height:0;animation:pjump .6s ease-in-out infinite alternate}.pav svg{border-radius:50%;border:5px solid #FFD23F}
+.pemo{position:absolute;right:-30px;top:-14px;font-size:48px;line-height:1}
+@keyframes pjump{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-14px) rotate(5deg)}}
+.pcheer{font-family:Fredoka;font-weight:700;font-size:clamp(32px,7vw,52px);color:#F2483A;margin-top:8px;line-height:1.1}
+.pstreak{font-family:Fredoka;font-size:24px;color:#E8690E;margin-top:4px}
+.pclap{font-size:42px;margin-top:4px;animation:pclap .3s ease-in-out infinite alternate}@keyframes pclap{to{transform:scale(1.18) rotate(-6deg)}}
+.pstar{display:inline-block;margin-top:10px;background:#FFD23F;font-family:Fredoka;font-size:26px;padding:6px 18px;border-radius:999px;animation:pjump .5s ease-in-out infinite alternate}
+.ptap{font-size:13px;color:#8A9BA3;margin-top:10px}
+.stars.pop{animation:spop .6s ease}@keyframes spop{40%{transform:scale(1.4)}}
+.burst{position:fixed;inset:0;pointer-events:none;z-index:9;overflow:hidden}
+.burst i{position:absolute;top:-40px;font-style:normal;font-size:30px;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.party .cf,.pav,.pstar,.pclap,.burst i{animation:none}.party .cf,.burst{display:none}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -616,6 +634,52 @@ function bindJourney(l,J){document.querySelectorAll('.jpad').forEach(g=>{const g
  const an=b.animate(pts.map(([x,y])=>({transform:`translate(${x}px,${y}px)`})),{duration:900*(pts.length-1)+300,easing:'ease-in-out'});
  an.onfinish=()=>{b.classList.remove('rowing');cheer(J.allDone?'You reached the treasure! 🏆':'Paddle on! 🚣');praise(true)}}
 
+/* ---------- celebrations: bells, clapping, confetti (same engine as the Spelling Bee) ---------- */
+let AC=null,STREAK=0;const pick=a=>a[Math.floor(Math.random()*a.length)];
+function ac(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+let ROOM=null;function room(){const a=ac();if(!a)return null;if(ROOM)return ROOM;
+ const inp=a.createGain(),dry=a.createGain(),wet=a.createGain();dry.gain.value=1;wet.gain.value=0.3;inp.connect(dry);dry.connect(a.destination);
+ try{const len=Math.floor(a.sampleRate*1.4),ir=a.createBuffer(2,len,a.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)}
+  const conv=a.createConvolver();conv.buffer=ir;inp.connect(conv);conv.connect(wet);wet.connect(a.destination)}catch(e){}
+ ROOM=inp;return ROOM}
+function bell(f,t,d,vol){const a=ac();if(!a)return;const r=room();if(!r)return;const n=a.currentTime+t;[[f,1],[f*2.01,0.22],[f*3.02,0.06]].forEach(([fr,m])=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(Math.max((vol||0.1)*m,0.0002),n+0.008);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(r);o.start(n);o.stop(n+d+0.05)})}
+function happySound(big){[1046.5,1318.5,1568,2093].forEach((f,i)=>bell(f,i*0.075,1.0,0.085));if(big)[1568,2093,2637,3136].forEach((f,i)=>bell(f,0.45+i*0.08,1.2,0.07))}
+function gentleSound(){bell(523.25,0,0.7,0.06);bell(659.25,0.16,0.9,0.05)}
+let CLAPBUF=null;
+function clapBuffers(a){if(CLAPBUF)return CLAPBUF;CLAPBUF=[];for(let k=0;k<8;k++){const len=Math.floor(a.sampleRate*0.1),b=a.createBuffer(1,len,a.sampleRate),d=b.getChannelData(0);
+ const bursts=[0,0.003+Math.random()*0.004,0.008+Math.random()*0.005],tail=28+Math.random()*30;
+ for(let i=0;i<len;i++){const t=i/a.sampleRate;let env=0;bursts.forEach((s,j)=>{if(t>=s)env=Math.max(env,j<2?0.6*Math.exp(-(t-s)*700):Math.exp(-(t-s)*tail))});d[i]=(Math.random()*2-1)*env}CLAPBUF.push(b)}return CLAPBUF}
+function clapSound(big,dur){const a=ac();if(!a)return;const r=room();if(!r)return;const bufs=clapBuffers(a),out=a.createGain();out.gain.value=0.55;out.connect(r);
+ const now=a.currentTime+0.05,D=dur||(big?3.0:2.0),people=big?16:11;
+ for(let p=0;p<people;p++){let dest=out;if(a.createStereoPanner){const pan=a.createStereoPanner();pan.pan.value=Math.random()*1.7-0.85;pan.connect(out);dest=pan}
+  const rate=3.4+Math.random()*2,tone=650+Math.random()*1900,buf=bufs[p%bufs.length],start=Math.random()*0.35,stop=D-Math.random()*0.6;
+  for(let t=start;t<stop;t+=(1/rate)*(0.88+Math.random()*0.24)){const fin=Math.min(1,(t-start+0.05)/0.3),fout=t>stop-0.8?Math.max(0,(stop-t)/0.8):1,vol=(0.22+Math.random()*0.18)*fin*fout;if(vol<0.01)continue;
+   const s=a.createBufferSource();s.buffer=buf;s.playbackRate.value=0.85+Math.random()*0.35;const bp=a.createBiquadFilter();bp.type='bandpass';bp.frequency.value=tone*(0.9+Math.random()*0.2);bp.Q.value=0.75;const g=a.createGain();g.gain.value=vol;
+   s.connect(bp);bp.connect(g);g.connect(dest);s.start(now+t)}}}
+/* the card text matches what Kate says in each praise clip (p-1 … p-10) */
+const CHEERS=['Well done!','Brilliant!','Fantastic!','Amazing!','Super maths!','Great job, explorer!','You’re a star! ⭐','Excellent thinking!','Perfect!','Hooray!'];
+const PARTY_EMO=['🎉','🌟','🥳','🏆','🚀','🦄','💯','🧭','🤩'];
+const STREAKS={3:'3 in a row! 🔥',5:'5 in a row! You’re on fire! 🔥🔥',8:'8 in a row! Maths superstar! 🌟',10:'10 in a row! Champion explorer! 🏆'};
+document.addEventListener('pointerdown',()=>ac(),{once:true});
+/* full party: overlay card + confetti + bells + clapping + Kate. then() runs when it closes */
+function celebrate(star,then){STREAK++;const big=STREAK>=3;happySound(big);setTimeout(()=>clapSound(big),120);
+ const old=document.getElementById('party');if(old)old.remove();
+ const n=1+Math.floor(Math.random()*CHEERS.length),streak=STREAKS[STREAK]||'';
+ const d=document.createElement('div');d.id='party';d.className='party';
+ let conf='';const cols=['#FF6B4A','#FFD23F','#2DBE6C','#2F9BE0','#8E5BD6','#FF8FB1','#14A9D6'];
+ for(let i=0;i<46;i++){const isE=i%5===0;conf+=`<i class="cf" style="left:${Math.random()*100}vw;animation-delay:${(Math.random()*0.4).toFixed(2)}s;animation-duration:${(1.5+Math.random()*1.1).toFixed(2)}s;${isE?'':'background:'+cols[i%cols.length]+';'}">${isE?pick(['⭐','✨','➕','✖️','🧭','🎈']):''}</i>`}
+ d.innerHTML=`${conf}<div class="pcard"><div class="pav">${avatarSVG(myAv(),96)}<span class="pemo">${pick(PARTY_EMO)}</span></div><div class="pcheer">${CHEERS[n-1]}</div>${streak?`<div class="pstreak">${streak}</div>`:''}<div class="pclap">👏👏👏</div>${star?'<div class="pstar">+1 ⭐</div>':''}<div class="ptap">tap to keep going</div></div>`;
+ let closed=false;const close=()=>{if(closed)return;closed=true;d.classList.add('out');setTimeout(()=>{d.remove();if(then)then()},350)};
+ d.addEventListener('click',close);document.body.appendChild(d);
+ const k={3:'k-3',5:'k-5',8:'k-8',10:'k-10'}[STREAK];setTimeout(()=>say('',k&&HAVE.has(k)?k:'p-'+n),380);
+ setTimeout(close,big?2600:2000);
+ const st=document.querySelector('.top .stars');if(st&&star){st.classList.remove('pop');void st.offsetWidth;st.classList.add('pop')}}
+/* small party for timed games: bells, a quick clap and a sprinkle of stars — no pause */
+function miniParty(){STREAK++;happySound(false);clapSound(false,1.1);const b=document.createElement('div');b.className='burst';
+ for(let i=0;i<14;i++){const e=document.createElement('i');e.textContent=pick(['⭐','✨','🎉']);e.style.left=Math.random()*100+'vw';e.style.animationDelay=Math.random()*0.3+'s';b.appendChild(e)}
+ document.body.appendChild(b);setTimeout(()=>b.remove(),2200)}
+function oops(){STREAK=0;gentleSound();setTimeout(()=>praise(false),300)}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
@@ -700,12 +764,12 @@ function landView(){const l=landObj();
  const key2=(el,f)=>{if(!el)return;el.onclick=f;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}}};
  key2($('#cta'),()=>{const nq=nextQuest(l);if(nq){V={s:nq[1],land:l.code,stop:nq[0]};Q=null;render();scrollTo(0,0)}else{$('#stops').scrollIntoView({behavior:'smooth'})}});
  key2($('#hm'),()=>{V={s:'map'};render()});
- document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{const ok=b.dataset.pick==='5';praise(ok);b.classList.remove('yes','no');void b.offsetWidth;b.classList.add(ok?'yes':'no');if(ok)cheer('Yes! 5 starfish! ⭐')})}
+ document.querySelectorAll('[data-pick]').forEach(b=>b.onclick=()=>{const ok=b.dataset.pick==='5';if(!ok)oops();b.classList.remove('yes','no');void b.offsetWidth;b.classList.add(ok?'yes':'no');if(ok)celebrate(false)})}
 function stopObj(){return landObj().stops.find(s=>s.n===V.stop)}
 function qhead(title,extra){return `<div class="qhead"><button class="back" id="bk">← ${esc(landObj().name)}</button><span class="f">${title}</span>${extra||''}</div>`}
 function bindBack(){$('#bk').onclick=()=>{Q=null;V={s:'land',land:V.land};render()}}
 async function complete(kind){const st=stopObj();const k=key(st,kind);const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:k,p_kind:kind});
- if(data){ME.stars=data.stars;ME.done=data.done;header();if(data.prize)cheer(`+${data.prize} ⭐ Quest complete!`);else cheer('Quest complete! 🎉')}
+ if(data){ME.stars=data.stars;ME.done=data.done;header();if(data.prize)cheer(`+${data.prize} ⭐ Quest complete!`);else cheer('Quest complete! 🎉');happySound(true);clapSound(true)}
  else{ME.done=ME.done||{};ME.done[k]=1}}
 function friendSvg(){const f=FRIEND[V.land]||'zaza';const vb={zaza:'0 0 220 220',parrot:'0 0 50 60',owl:'0 0 50 60',turtle:'0 0 70 44',fox:'0 0 60 60'}[f];return `<svg viewBox="${vb}"><use href="#${f}"/></svg>`}
 function learnView(){const st=stopObj();
@@ -742,10 +806,10 @@ function practiseView(){const st=stopObj();
   if(ok||Q.tries>=1){if(Q.tries===0){rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
      ME.facts=ME.facts||{};ME.wrong=ME.wrong||{};if(ok)ME.facts[it.id]=(ME.facts[it.id]||0)+1;else ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
    Q.res.push(ok&&Q.tries===0);
-   if(ok){praise(true);cheer(Q.tries===0?'+1 ⭐ Brilliant!':'Well done! 👍');setTimeout(()=>{Q.i++;Q.tries=0;render()},900)}
+   if(ok){celebrate(Q.tries===0,()=>{Q.i++;Q.tries=0;render()})}
    else{$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(it.a)}</b>.</span> <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;$('#nx').onclick=()=>{Q.i++;Q.tries=0;render()}}
   }else{Q.tries=1;rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:false});ME.wrong=ME.wrong||{};ME.wrong[it.id]=(ME.wrong[it.id]||0)+1;
-   praise(false);$('#fb').innerHTML='<span class="bad">Not quite — try once more!</span>';$('#hn').innerHTML=`<div class="hint">${friendSvg()}<div>${esc(it.h||'Have another think.')}</div></div>`;const i=$('#ans');if(i){i.value='';i.focus()}}
+   oops();$('#fb').innerHTML='<span class="bad">Not quite — try once more!</span>';$('#hn').innerHTML=`<div class="hint">${friendSvg()}<div>${esc(it.h||'Have another think.')}</div></div>`;const i=$('#ans');if(i){i.value='';i.focus()}}
  })}
 async function finishPractise(){const n=Q.res.filter(Boolean).length,t=Q.list.length;if(n>=7)say('',n===t?'perfect':'done');
  if(n>=Math.ceil(t*0.7)&&Q.kind==='practise')await complete('practise');
@@ -768,7 +832,7 @@ function listenView(){clearInterval(TIMER);
  bindBack();const go=()=>{say(it.q,it.k)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
  let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
-  $('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=it.q;
+  if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=it.q;
   setTimeout(()=>{Q.i++;render()},ok?800:1800)};
  TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
  $('#ans').focus();$('#af').onsubmit=e=>{e.preventDefault();done($('#ans').value)}}
@@ -782,7 +846,7 @@ function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practi
  Q.cur=pool[Math.floor(Math.random()*pool.length)];const it=Q.cur;const [pic,text]=splitPic(it.q);
  $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:''}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
  bindBack();clearInterval(TIMER);TIMER=setInterval(()=>{if(!Q||V.s!=='play'){clearInterval(TIMER);return}Q.left--;const b=$('#tb');if(b)b.style.width=(Q.left/6)+'%';if(Q.left<=0){clearInterval(TIMER);render()}},100);
- bindAnswer(it,g=>{if(check(it,g)){Q.score++;cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}setTimeout(()=>{if(Q&&Q.left>0)render()},check(it,g)?250:900)})}
+ bindAnswer(it,g=>{if(check(it,g)){Q.score++;miniParty();cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}setTimeout(()=>{if(Q&&Q.left>0)render()},check(it,g)?250:900)})}
 /* ---------- think it ---------- */
 function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.random()*st.think.length)];Q={kind:'think',p,shown:false}}
  const p=Q.p,ty=String(p.type||'');let ui;
@@ -794,7 +858,7 @@ function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.
  bindBack();$('#hear').onclick=()=>say(p.q,p.k);
  const reveal=(good)=>{$('#ans').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}<br><span class="muted" style="font-weight:600">The important part is explaining <i>why</i>.</span></div></div><div style="margin-top:14px">${good===undefined?'<button class="b1" id="gotit">I got it ✓</button> <button class="b2" id="notyet">Not yet</button>':'<button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another puzzle</button>'}</div>`;
   $('#gotit').onclick=async()=>{await complete('think');Q=null;V={s:'land',land:V.land};render()};const n=$('#notyet')||$('#another');if(n)n.onclick=()=>{Q=null;render()}};
- if(tf||asn){document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const ok=norm(p.a).startsWith(b.dataset.t);$('#fb').innerHTML=ok?'<span class="ok">✔ Yes! Now can you explain why?</span>':'<span class="bad">Not quite — look at Zaza\'s answer.</span>';document.querySelectorAll('[data-t]').forEach(x=>x.disabled=true);reveal(ok)})}
+ if(tf||asn){document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const ok=norm(p.a).startsWith(b.dataset.t);if(ok)celebrate(false);else oops();$('#fb').innerHTML=ok?'<span class="ok">✔ Yes! Now can you explain why?</span>':'<span class="bad">Not quite — look at Zaza\'s answer.</span>';document.querySelectorAll('[data-t]').forEach(x=>x.disabled=true);reveal(ok)})}
  else $('#rev').onclick=()=>{reveal()}}
 /* ---------- use it ---------- */
 function useView(){const st=stopObj();if(!Q){const p=st.use[Math.floor(Math.random()*st.use.length)];Q={kind:'use',p}}
@@ -804,7 +868,7 @@ function useView(){const st=stopObj();if(!Q){const p=st.use[Math.floor(Math.rand
  bindBack();$('#hear').onclick=()=>say(p.q,p.k);
  const fin=()=>{$('#ans2').innerHTML+=`<div style="margin-top:14px"><button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another problem</button></div>`;$('#gotit').onclick=async()=>{await complete('use');Q=null;V={s:'land',land:V.land};render()};$('#another').onclick=()=>{Q=null;render()}};
  if(num){let tries=0;$('#af').onsubmit=e=>{e.preventDefault();const g=$('#ans').value;const ok=check({a:firstNum(p.a)},firstNum(g)||g);
-   if(ok){$('#fb').innerHTML=`<span class="ok">✔ Correct! ${esc(p.a)}</span>`;cheer('Brilliant! 🌍');$('#af').querySelector('button').disabled=true;fin()}
+   if(ok){$('#fb').innerHTML=`<span class="ok">✔ Correct! ${esc(p.a)}</span>`;celebrate(false);$('#af').querySelector('button').disabled=true;fin()}
    else if(++tries<2){$('#fb').innerHTML='<span class="bad">Not quite — check your working and try again.</span>'}
    else{$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(p.a)}</b>.</span>`;$('#af').querySelector('button').disabled=true;$('#ans2').innerHTML='<div style="margin-top:12px"><button class="b2" id="another">Try another problem</button></div>';$('#another').onclick=()=>{Q=null;render()}}}}
  else $('#rev').onclick=()=>{$('#ans2').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}</div></div>`;fin()}}
