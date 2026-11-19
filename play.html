@@ -155,6 +155,18 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .scene::before{content:'';position:absolute;inset:-60px;background:var(--bg) center/cover no-repeat;filter:blur(30px) saturate(1.25) brightness(1.05);z-index:-1}
 .scene .extras{position:relative}
 @media(max-width:600px){.scene{padding:0 0 20px}.scene .hero{border-radius:0;box-shadow:none}}
+.jwrap{max-width:760px;margin:0 auto 10px;border-radius:24px;overflow:hidden;border:5px solid #fff;box-shadow:0 10px 24px rgba(20,90,140,.18)}
+.journey{display:block;width:100%;height:auto}
+.jt{font-family:Fredoka,Arial;font-weight:700}
+.jpad{cursor:pointer}.jpad:focus{outline:none}.jpad:focus-visible path:first-of-type{stroke:#FFD23F;stroke-width:6}
+.jpad.later{opacity:.6}.jpad:hover{opacity:1}
+.jpad.cur .jin{animation:bob 1.6s ease-in-out infinite}
+.spin{animation:spin 8s linear infinite;transform-box:fill-box;transform-origin:center}@keyframes spin{to{transform:rotate(360deg)}}
+.flow{animation:flow 2.5s linear infinite}@keyframes flow{to{stroke-dashoffset:-40}}
+#jboat.rowing .bob{animation:bob .5s ease-in-out infinite}
+@media(max-width:600px){.jwrap{border-radius:0;border-width:0}}
+.jpad.later:hover{opacity:.85}
+@media (prefers-reduced-motion:reduce){.jpad.cur .jin,.spin,.flow{animation:none}}
 </style>
 </head>
 <body>
@@ -551,6 +563,59 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-avk],[data
 /* ---------- the explorer on the map ---------- */
 function avToken(){return avatarSVG(myAv(),120,true)}
 
+/* ---------- land journeys: Fraction Falls river ---------- */
+const QICON={learn:'📖',practise:'✏️',listen:'🎧',play:'⏱️',think:'🤔',use:'🌍'};
+const QSHORT={learn:'Learn',practise:'Practise',listen:'Listen',play:'Play',think:'Think',use:'Use'};
+function wrapTxt(t,max){const w=String(t).split(' ');const L=[];let c='';w.forEach(x=>{if((c+' '+x).trim().length>max&&c){L.push(c);c=x}else c=(c+' '+x).trim()});if(c)L.push(c);return L.slice(0,3)}
+function smoothPath(P){if(P.length<2)return '';let d=`M${P[0][0]} ${P[0][1]}`;for(let i=0;i<P.length-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||p2;
+ const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];d+=` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`}return d}
+function journeyNodes(l){/* docks + quest pads laid out as a winding path */
+ const SM=window.innerWidth<600,W=SM?440:720,XS=SM?[95,220,345,220]:[170,360,550,360];const nodes=[];let y=70,k=0;
+ l.stops.forEach((st,i)=>{y+=i?150:90;nodes.push({kind:'dock',st,x:Math.min(Math.max(XS[k%4],132),W-132),y});k++;y+=40;
+  QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).forEach(q=>{y+=88;nodes.push({kind:'quest',st,q:q[0],x:XS[k%4],y});k++})});
+ y+=150;nodes.push({kind:'end',x:W/2,y});
+ return {nodes,W,H:y+140}}
+function journeyFF(l){const {nodes,W,H}=journeyNodes(l);
+ const qn=nodes.filter(n=>n.kind==='quest');let ci=qn.findIndex(n=>!isDone(n.st,n.q));const allDone=ci<0;if(ci<0)ci=qn.length-1;
+ const P=nodes.map(n=>[n.x,n.y]);const d=smoothPath([[nodes[0].x,-20],...P]);
+ const tuft=(x,y)=>`<path d="M${x} ${y} l-6 -14 M${x} ${y} l0 -18 M${x} ${y} l6 -14" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>`;
+ const deco=Array.from({length:Math.round(H/90)},(_,i)=>{const x=i%2?30+((i*53)%60):W-30-((i*37)%60),y=60+i*90;return i%3===0?`<g transform="translate(${x} ${y})"><circle r="9" fill="#FF8FB1"/><circle r="4" fill="#FFD84D"/></g>`:i%3===1?tuft(x,y):`<ellipse cx="${x}" cy="${y}" rx="16" ry="10" fill="#B9B3A6"/>`}).join('');
+ const docks=nodes.filter(n=>n.kind==='dock').map(n=>{const done=stopDone(n.st),lines=wrapTxt(n.st.topic,22),h=46+lines.length*24;
+  return `<g transform="translate(${n.x} ${n.y})"><rect x="-120" y="${h/2-6}" width="240" height="26" rx="5" fill="#B07A45" stroke="#7A4F26" stroke-width="3"/>${[-90,-45,0,45,90].map(x=>`<path d="M${x} ${h/2-6} V${h/2+20}" stroke="#7A4F26" stroke-width="2"/>`).join('')}
+  <rect x="-125" y="${-h/2-6}" width="250" height="${h+6}" rx="14" fill="${done?'#2DBE6C':'#2F9BE0'}"/><rect x="-118" y="${-h/2+1}" width="236" height="${h-8}" rx="10" fill="#F6DDB0"/>
+  <text x="0" y="${-h/2+31}" text-anchor="middle" class="jt" font-size="26" fill="#1D4E89">${done?'✓ ':'⚓ '}Stop ${n.st.n}</text>${lines.map((t,k)=>`<text x="0" y="${-h/2+57+k*24}" text-anchor="middle" class="jt" font-size="19" fill="#5A4630">${esc(t)}</text>`).join('')}
+  ${done?`<g transform="translate(108 ${-h/2-4})"><path d="M0 0 V-44" stroke="#5A4630" stroke-width="4"/><g class="flag"><path d="M0 -44 L30 -36 L0 -28Z" fill="#2DBE6C"/></g></g>`:''}</g>`}).join('');
+ const pads=qn.map((n,i)=>{const done=isDone(n.st,n.q),cur=i===ci&&!allDone;
+  return `<g class="jpad${done?' done':cur?' cur':' later'}" data-st="${n.st.n}" data-q="${n.q}" tabindex="0" role="button" aria-label="Stop ${n.st.n} ${QSHORT[n.q]}${done?', done':''}" transform="translate(${n.x} ${n.y})"><g class="jin">
+  ${cur?'<circle r="50" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="8 8" class="spin"/>':''}
+  <path d="M0 0 L34 -8 A35 35 0 1 0 34 8 Z" fill="${done?'#3FB35A':'#5CC46A'}" stroke="${done?'#FFD23F':'#2E8A3E'}" stroke-width="${done?5:3}"/>
+  <path d="M-18 -6 Q-4 -2 6 10 M-14 10 Q0 4 10 -12" stroke="#2E8A3E" stroke-width="2" fill="none" opacity=".6"/>
+  <text y="9" text-anchor="middle" font-size="26">${QICON[n.q]}</text>
+  <g transform="translate(0 52)"><rect x="-46" y="-15" width="92" height="28" rx="14" fill="${done?'#FFD23F':'#fff'}" opacity=".95"/><text y="6" text-anchor="middle" class="jt" font-size="18" fill="#1D4E89">${done?'✓ ':''}${QSHORT[n.q]}</text></g></g></g>`}).join('');
+ const end=nodes[nodes.length-1];
+ const boatAt=allDone?[end.x-(W<600?110:150),end.y-20]:[qn[ci].x+(qn[ci].x>W*.6?-96:qn[ci].x<W*.4?96:96),qn[ci].y-6];
+ const av=avatarSVG(myAv(),76).replace('<svg ','<svg x="-38" y="-86" ');
+ const boat=`<g id="jboat" style="transform:translate(${boatAt[0]}px,${boatAt[1]}px)"><g class="bob"><path d="M-56 -8 H56 Q50 22 0 24 Q-50 22 -56 -8Z" fill="#E8693A" stroke="#8A3A1A" stroke-width="3"/><path d="M-50 0 H50" stroke="#FFD23F" stroke-width="5"/>${av}<path d="M30 -20 L64 14" stroke="#8A5A2B" stroke-width="5" stroke-linecap="round"/><ellipse cx="66" cy="18" rx="8" ry="5" fill="#8A5A2B"/></g></g>`;
+ const svg=`<svg class="journey" viewBox="0 0 ${W} ${H}" role="img" aria-label="Your river journey through ${esc(l.name)}">
+ <rect width="${W}" height="${H}" fill="#9BDC72"/>${deco}
+ <path d="${d}" fill="none" stroke="#3DA7D6" stroke-width="92" stroke-linecap="round" stroke-linejoin="round"/>
+ <path d="${d}" fill="none" stroke="#6FD0F2" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/>
+ <path class="flow" d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 26" opacity=".7"/>
+ 
+ ${docks}${pads}
+ <g transform="translate(${end.x} ${end.y})"><ellipse cy="30" rx="120" ry="38" fill="#F3D9A4" stroke="#fff" stroke-width="6"/><g class="${allDone?'bob':''}"><use href="#chest" x="-40" y="-26" width="80" height="64"/></g><g class="twinkle"><use href="#star" x="40" y="-40" width="22" height="22"/><use href="#star" x="-62" y="-30" width="16" height="16"/></g><text y="102" text-anchor="middle" class="jt" font-size="24" fill="#1D4E89">${allDone?'You found the treasure!':'Treasure!'}</text></g>
+ ${boat}</svg>`;
+ return {svg,ci,allDone,qn,W}}
+function bindJourney(l,J){document.querySelectorAll('.jpad').forEach(g=>{const go=()=>{V={s:g.dataset.q,land:l.code,stop:+g.dataset.st};Q=null;render()};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
+ const SK=`mq-j-${ME.code}-g${ME.grade}-${l.code}`;let prev=null;try{prev=localStorage.getItem(SK)}catch(e){}
+ const now=J.allDone?J.qn.length:J.ci;try{localStorage.setItem(SK,String(now))}catch(e){}
+ prev=prev===null?null:+prev;const b=$('#jboat');if(!b||prev===null||prev>=now||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
+ const pts=[];for(let i=prev;i<=Math.min(now,J.qn.length-1);i++){const W=J.W;pts.push([J.qn[i].x+(J.qn[i].x>W*.6?-96:96),J.qn[i].y-6])};if(J.allDone){const t=b.style.transform.match(/-?[\d.]+/g);pts.push([+t[0],+t[1]])}
+ if(pts.length<2)return;b.classList.add('rowing');
+ setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'center'}),100);
+ const an=b.animate(pts.map(([x,y])=>({transform:`translate(${x}px,${y}px)`})),{duration:900*(pts.length-1)+300,easing:'ease-in-out'});
+ an.onfinish=()=>{b.classList.remove('rowing');cheer(J.allDone?'You reached the treasure! 🏆':'Paddle on! 🚣');praise(true)}}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
@@ -624,12 +689,14 @@ function heroHTML(l){const H=HERO[l.code];if(!H)return '';const [a,b]=landProgre
  ${(H.pick||[]).map(([cx,cy,n])=>hot(cx-52,cy-52,cx+52,cy+52,`class="mhot pick" data-pick="${n}" role="button" aria-label="${n}"`)).join('')}</div></div>`}
 function landObj(){return C.lands.find(l=>l.code===V.land)}
 function landView(){const l=landObj();
- $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">Your stops</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
+ const J=l.code==='FF'?journeyFF(l):null;
+ $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">${J?'🚣 Your river journey':'Your stops'}</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
  ${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
- <div class="stops">${(()=>{const curSt=(l.stops.find(x=>!stopDone(x))||{}).n;return l.stops.map(st=>`<div class="stop${st.n===curSt?' here':''}"><h3>${st.n===curSt?`<span class="stopav">${avatarSVG(myAv(),44)}</span>`:''}${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}${st.n===curSt?' <span class="muted" style="font-size:15px">← you are here</span>':''}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')})()}</div>`;
+ ${J?`<div class="jwrap">${J.svg}</div>`:`<div class="stops">${(()=>{const curSt=(l.stops.find(x=>!stopDone(x))||{}).n;return l.stops.map(st=>`<div class="stop${st.n===curSt?' here':''}"><h3>${st.n===curSt?`<span class="stopav">${avatarSVG(myAv(),44)}</span>`:''}${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}${st.n===curSt?' <span class="muted" style="font-size:15px">← you are here</span>':''}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')})()}</div>`}`;
  $('#bk').onclick=()=>{V={s:'map'};render()};
  const m=$('#mtc');if(m)m.onclick=()=>{V={s:'listen',land:'TT',stop:0,mtc:true};render()};
  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{V={s:b.dataset.q,land:V.land,stop:+b.dataset.st};Q=null;render()});
+ if(J)bindJourney(l,J);
  const key2=(el,f)=>{if(!el)return;el.onclick=f;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}}};
  key2($('#cta'),()=>{const nq=nextQuest(l);if(nq){V={s:nq[1],land:l.code,stop:nq[0]};Q=null;render();scrollTo(0,0)}else{$('#stops').scrollIntoView({behavior:'smooth'})}});
  key2($('#hm'),()=>{V={s:'map'};render()});
