@@ -838,6 +838,7 @@ function visTT(t,g){let m;
  m=t.match(/Is (\d+) odd or even\?/);if(m&&+m[1]<=30)return pairsVis(+m[1]);
  m=t.match(/(\d+) shirts and (\d+) hats/);if(m)return outfits(+m[1],+m[2]);
  m=t.match(/(\d+) × (\d+) = \((\d+) × \d+\) \+ \((\d+) × \d+\)/);if(m)return areaModel(+m[3],+m[4],+m[2]);
+ m=t.match(/^\((\d+) \+ (\d+)\) × (\d+) = \?$/);if(m)return areaModel(+m[1],+m[2],+m[3]);
  m=t.match(/(?:What is )?(\d+)²/);if(m&&+m[1]<=10)return dotArray(+m[1],+m[1]);
  if(g<=2){m=t.match(/^(\d+) × (\d+) = \?$/)||t.match(/What is (\d+) times (\d+)\?/);if(m&&+m[1]<=12&&+m[2]<=12&&+m[1]*+m[2]<=60)return dotArray(+m[1],+m[2])}
  return ''}
@@ -850,8 +851,8 @@ function clockSVG(h,m,x,y,r,dig){let o=`<circle cx="${x}" cy="${y}" r="${r}" fil
  const ha=((h%12)+m/60)*30*Math.PI/180,ma=m*6*Math.PI/180;
  o+=`<path d="M${x} ${y} L${x+Math.sin(ha)*r*.5} ${y-Math.cos(ha)*r*.5}" stroke="${VC.r}" stroke-width="${r*.07}" stroke-linecap="round"/><path d="M${x} ${y} L${x+Math.sin(ma)*r*.78} ${y-Math.cos(ma)*r*.78}" stroke="${VC.ln}" stroke-width="${r*.045}" stroke-linecap="round"/><circle cx="${x}" cy="${y}" r="${r*.06}" fill="${VC.ln}"/>`;
  if(dig)o+=`<rect x="${x-r*.55}" y="${y+r+12}" width="${r*1.1}" height="${r*.38}" rx="8" fill="#1D2B3A"/>`+T(x,y+r+12+r*.3,dig,r*.26,'#7CFFB2');return o}
-function timesIn(t){const out=[];const re=/(\d{1,2}):(\d{2})|half past (\d{1,2})|quarter past (\d{1,2})|quarter to (\d{1,2})|(\d{1,2}) past (\d{1,2})|(\d{1,2}) o'clock/gi;let m;
- while((m=re.exec(t))&&out.length<2){if(m[1])out.push([+m[1],+m[2],m[0]]);else if(m[3])out.push([+m[3],30]);else if(m[4])out.push([+m[4],15]);else if(m[5])out.push([+m[5]-1,45]);else if(m[6])out.push([+m[7],+m[6]]);else if(m[8])out.push([+m[8],0])}return out}
+function timesIn(t){const out=[];const re=/(\d{1,2}):(\d{2})|half past (\d{1,2})|quarter past (\d{1,2})|quarter to (\d{1,2})|(\d{1,2}) past (\d{1,2})|(\d{1,2}) o'clock|(\d{1,2}) to (\d{1,2})(?! (?:hours|minutes))/gi;let m;
+ while((m=re.exec(t))&&out.length<2){if(m[1])out.push([+m[1],+m[2],m[0]]);else if(m[3])out.push([+m[3],30]);else if(m[4])out.push([+m[4],15]);else if(m[5])out.push([+m[5]-1,45]);else if(m[6])out.push([+m[7],+m[6]]);else if(m[8])out.push([+m[8],0]);else if(m[9])out.push([+m[10]-1,60-+m[9]])}return out}
 function clocksVis(ts){const r=90,W=ts.length*230;return fpWrap(W,ts.some(x=>x[2])?260:210,ts.map((x,i)=>clockSVG(x[0],x[1],115+i*230,105,r,x[2])).join(''))}
 function cubesRows(list){const s=Math.min(24,Math.floor(400/Math.max(...list.map(x=>x[1])))),W=Math.max(...list.map(x=>x[1]))*s+150;let o='';
  list.forEach(([lab,n],i)=>{const y=14+i*56;o+=T(10,y+s*.8,cap(lab),18,VC.ln,'start');for(let k=0;k<n;k++)o+=`<rect x="${120+k*s}" y="${y}" width="${s}" height="${s}" fill="${PAL[i]}" stroke="#fff" stroke-width="2"/>`});return fpWrap(W,list.length*56+20,o)}
@@ -861,9 +862,9 @@ function balanceVis(a,na,b,nb){let o=`<path d="M200 200 V70" stroke="${VC.ln}" s
 function dialVis(v,unit){const max=[10,20,50,100,200,500,1000].find(x=>x>=v)||Math.ceil(v/100)*100,step=max/10;let o=`<circle cx="150" cy="150" r="130" fill="#fff" stroke="${VC.ln}" stroke-width="8"/>`;
  for(let i=0;i<=40;i++){const a=(-135+i*270/40)*Math.PI/180,l=i%4?10:20;o+=`<path d="M${150+Math.sin(a)*118} ${150-Math.cos(a)*118} L${150+Math.sin(a)*(118-l)} ${150-Math.cos(a)*(118-l)}" stroke="${VC.ln}" stroke-width="${i%4?2:3}"/>`;if(i%4===0)o+=T(150+Math.sin(a)*82,150-Math.cos(a)*82+7,step*i/4,18)}
  const a=(-135+v/max*270)*Math.PI/180;o+=`<path d="M150 150 L${150+Math.sin(a)*105} ${150-Math.cos(a)*105}" stroke="${VC.r}" stroke-width="6" stroke-linecap="round"/><circle cx="150" cy="150" r="10" fill="${VC.r}"/>`+T(150,220,unit,24);return fpWrap(300,300,o)}
-function rulerVis(n){const cm=Math.max(10,n+2),s=Math.min(40,520/cm),W=cm*s+40;let o=`<rect x="20" y="80" width="${cm*s}" height="60" fill="#FFE59A" stroke="${VC.ln}" stroke-width="3"/>`;
+function rulerVis(n,obj){const cm=Math.max(10,n+2),s=Math.min(40,520/cm),W=cm*s+40;let o=`<rect x="20" y="80" width="${cm*s}" height="60" fill="#FFE59A" stroke="${VC.ln}" stroke-width="3"/>`;
  for(let i=0;i<=cm*2;i++){const x=20+i*s/2;o+=`<path d="M${x} 80 v${i%2?10:20}" stroke="${VC.ln}" stroke-width="2"/>`;if(i%2===0)o+=T(x,124,i/2,16)}
- o+=`<path d="M20 30 H${20+n*s-24} L${20+n*s} 46 L${20+n*s-24} 62 H20Z" fill="${VC.y}" stroke="${VC.ln}" stroke-width="3"/><path d="M${20+n*s-24} 30 V62" stroke="${VC.ln}" stroke-width="2"/><path d="M${20+n*s-8} 41 L${20+n*s} 46 L${20+n*s-8} 51Z" fill="${VC.ln}"/><rect x="20" y="30" width="16" height="32" fill="#F7A8CF" stroke="${VC.ln}" stroke-width="2"/>`;
+ o+=(obj&&obj!=='pencil'?T(20+n*s/2,22,cap(obj),16):'')+`<path d="M20 30 H${20+n*s-24} L${20+n*s} 46 L${20+n*s-24} 62 H20Z" fill="${VC.y}" stroke="${VC.ln}" stroke-width="3"/><path d="M${20+n*s-24} 30 V62" stroke="${VC.ln}" stroke-width="2"/><path d="M${20+n*s-8} 41 L${20+n*s} 46 L${20+n*s-8} 51Z" fill="${VC.ln}"/><rect x="20" y="30" width="16" height="32" fill="#F7A8CF" stroke="${VC.ln}" stroke-width="2"/>`;
  return fpWrap(W,150,o)}
 function coin(x,y,lab,small,col){return `<circle cx="${x}" cy="${y}" r="${small?22:28}" fill="${col||'#D7DCE2'}" stroke="#8A96A6" stroke-width="3"/><circle cx="${x}" cy="${y}" r="${small?17:22}" fill="none" stroke="#fff" stroke-width="1.5"/>`+T(x,y+(small?5:6),lab,small?14:16,'#3B4A5A')}
 function coinsVis(groups){/* [[count,label,colour,caption]] */let o='',x=10,maxc=1;groups.forEach(([n,lab,col,cp])=>{const cols=Math.min(n,5);for(let i=0;i<n;i++)o+=coin(x+32+(i%5)*62,40+Math.floor(i/5)*62,lab,false,col);o+=T(x+cols*31,40+Math.ceil(n/5)*62,cp||'',18);maxc=Math.max(maxc,Math.ceil(n/5));x+=cols*62+40});return fpWrap(x,maxc*62+50,o)}
@@ -875,11 +876,11 @@ function lShape(A,B,c,d,unit){/* A×B rectangle with c×d cut from top-right cor
  o+=T(x+w/2,y+h+30,`${A} ${unit}`,20)+T(x-12,y+h/2+6,`${B} ${unit}`,20,VC.ln,'end')+T(x+w-cw/2,y+ch/2+6,`${c} × ${d}`,16,VC.mut)+T(x+w-cw/2,y-10,'cut out',14,VC.mut);return fpWrap(w+140,h+80,o)}
 function triVis(b,h,unit){const sc=Math.min(320/b,180/h),x=60,y=30,w=b*sc,hh=h*sc,ax=x+w*.35;return fpWrap(w+120,hh+80,`<path d="M${x} ${y+hh} H${x+w} L${ax} ${y}Z" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/><path d="M${ax} ${y} V${y+hh}" stroke="${VC.o}" stroke-width="3" stroke-dasharray="7 6"/><rect x="${ax}" y="${y+hh-14}" width="14" height="14" fill="none" stroke="${VC.o}" stroke-width="2"/>`+T(x+w/2,y+hh+30,`base ${b} ${unit}`,20)+T(ax+10,y+hh/2,`height ${h} ${unit}`,18,VC.o,'start'))}
 function visMM(t,g){let m;
- m=t.match(/(?:a|the) (\w+) (\d+) cubes long and (?:a|the) (\w+) (\d+) cubes long/);if(m)return cubesRows([[m[1],+m[2]],[m[3],+m[4]]]);
+ m=t.match(/(?:a|the) ([\w ]+?) (\d+) cubes long and (?:a|the) ([\w ]+?) (\d+) cubes long/);if(m)return cubesRows([[m[1],+m[2]],[m[3],+m[4]]]);
  m=t.match(/The (\w+) is (\d+) cubes long\. The (\w+) is (\d+) cubes long/);if(m)return cubesRows([[m[1],+m[2]],[m[3],+m[4]]]);
  m=t.match(/a balance\. The (\w+) weighs (\d+) cubes, the (\w+) weighs (\d+) cubes/);if(m)return balanceVis(m[1],+m[2],m[3],+m[4]);
  m=t.match(/scale pointing to (\d+) (g|kg)/);if(m)return dialVis(+m[1],m[2]);
- m=t.match(/pencil goes from 0 to (\d+)/);if(m)return rulerVis(+m[1]);
+ m=t.match(/The (\w+) goes from 0 to (\d+)/);if(m)return rulerVis(+m[2],m[1]);
  m=t.match(/How many (\d+)-(dirham|fils) coins make (\d+) dirhams?\?/);if(m)return fpWrap(320,170,coin(160,60,`${m[1]}${m[2]==='fils'?'f':''}`,false,m[2]==='fils'?'#E8C27A':'#D7DCE2').replace(/r="28"/,'r="44"').replace(/r="22"/,'r="36"')+T(160,145,`one ${m[1]}-${m[2]} coin`,22));
  m=t.match(/(\d+)-dirham pile of coins and a (\d+)-dirham pile/);if(m&&+m[1]<=10&&+m[2]<=10)return coinsVis([[+m[1],'1',null,`${m[1]} dirhams`],[+m[2],'1',null,`${m[2]} dirhams`]]);
  m=t.match(/L-shape is an? (\d+) m by (\d+) m rectangle with an? (\d+) m by (\d+) m (?:square|rectangle) cut/)||t.match(/L-shape: an? (\d+) m by (\d+) m rectangle with an? (\d+) m by (\d+) m rectangle cut/);if(m)return lShape(+m[1],+m[2],+m[3],+m[4],'m');
@@ -940,9 +941,10 @@ function compassVis(dir,turn,cw){const i=DIRS.indexOf(dir),a=i*90*Math.PI/180;le
  const s=cw?1:-1,a1=a+s*0.45,a2=a+s*1.25;o=`<defs><marker id="vah" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10Z" fill="${VC.p}"/></marker></defs>`+o+`<path d="M${150+Math.sin(a1)*62} ${150-Math.cos(a1)*62} A62 62 0 0 ${cw?1:0} ${150+Math.sin(a2)*62} ${150-Math.cos(a2)*62}" fill="none" stroke="${VC.p}" stroke-width="5" marker-end="url(#vah)"/>`+T(150,330,cw?'turning clockwise ↻':'turning anticlockwise ↺',18,VC.p);
  return fpWrap(320,345,o+`<use href="#zaza" x="${150+Math.sin(a)*90-26}" y="${150-Math.cos(a)*90-26}" width="52" height="52"/>`).replace('viewBox="0 0 320 345"','viewBox="-10 -10 330 355"')}
 function letterVis(L){return fpWrap(200,200,`<text x="100" y="165" text-anchor="middle" font-family="Arial,Helvetica" font-weight="700" font-size="190" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="5">${esc(L)}</text>`)}
-function positionVis(){return fpWrap(240,220,`<rect x="60" y="120" width="120" height="90" fill="#C98E52" stroke="${VC.ln}" stroke-width="4"/><path d="M60 140 H180" stroke="${VC.ln}" stroke-width="2"/><circle cx="120" cy="60" r="40" fill="${VC.r}" stroke="${VC.ln}" stroke-width="4"/><path d="M84 52 Q120 70 156 52" fill="none" stroke="#fff" stroke-width="4"/>`)}
+function positionVis(p){const ball=(x,y)=>`<circle cx="${x}" cy="${y}" r="38" fill="${VC.r}" stroke="${VC.ln}" stroke-width="4"/><path d="M${x-36} ${y-8} Q${x} ${y+10} ${x+36} ${y-8}" fill="none" stroke="#fff" stroke-width="4"/>`,box=`<rect x="60" y="120" width="120" height="90" fill="#C98E52" stroke="${VC.ln}" stroke-width="4"/><path d="M60 140 H180" stroke="${VC.ln}" stroke-width="2"/>`;
+ const B={above:box+ball(120,50),on:box+ball(120,82),front:box+ball(120,185),under:`<rect x="40" y="40" width="160" height="16" fill="#C98E52" stroke="${VC.ln}" stroke-width="4"/><path d="M52 56 V210 M188 56 V210" stroke="${VC.ln}" stroke-width="8"/>`+ball(120,170)}[p]||box;return fpWrap(240,230,B)}
 function visSF(t,g){let m;
- m=t.match(/\(Picture: an? (.+?)\.\)/);if(m){const n=m[1].toLowerCase();if(/ball above a box/.test(n))return positionVis();for(const s of SHAPES3)if(n===s)return shape3D(s);for(const s of SHAPES2)if(n===s)return shape2D(s)}
+ m=t.match(/\(Picture: an? (.+?)\.\)/);if(m){const n=m[1].toLowerCase();if(/ball above a box/.test(n))return positionVis('above');if(/ball on a box/.test(n))return positionVis('on');if(/ball in front of a box/.test(n))return positionVis('front');if(/ball (?:under|below) a/.test(n))return positionVis('under');for(const s of SHAPES3)if(n===s)return shape3D(s);for(const s of SHAPES2)if(n===s)return shape2D(s)}
  m=t.match(/angle of (\d+)°/)||t.match(/An angle measures (\d+)°/)||t.match(/makes an? (\d+)° angle/);if(m&&+m[1]<360)return angleVis([+m[1]]);
  m=t.match(/Order these angles from smallest: ([\d°, ]+)/);if(m){const a=m[1].match(/\d+/g).map(Number);if(a.length<=4)return angleVis(a)}
  m=t.match(/Angles on a straight line: (\d+)° and \?/);if(m)return lineAngles(+m[1]);
@@ -989,7 +991,28 @@ function pieVis(rows,title){let o='',a0=-90;const cx=150,cy=150,r=120;rows.forEa
  const mid=(a0+d/2)*Math.PI/180;o+=T(cx+Math.cos(mid)*r*.6,cy+Math.sin(mid)*r*.6+6,cap(lab),16,'#fff');a0=a1});return fpWrap(300,310,o+T(150,300,title||'',16))}
 function timetableVis(times,mins){const W=Math.max(420,times.length*90+150),cw=(W-150)/times.length;let o=`<rect x="10" y="10" width="${W-20}" height="100" rx="8" fill="#fff" stroke="${VC.ln}" stroke-width="2"/>`+T(80,48,'Station A',17)+T(80,92,'Station B',17);
  o+=`<path d="M150 10 V110 M10 60 H${W-10}" stroke="${VC.ln}" stroke-width="2"/>`;times.forEach((t,i)=>{o+=T(150+cw*(i+.5),48,t,20)+T(150+cw*(i+.5),92,'?',20,VC.mut)});o+=T(W/2,140,`🚇 The journey takes ${mins} minutes`,18,VC.o);return fpWrap(W,150,o)}
+function valBars(vals,labels,meanLine,qIdx){const mx=Math.max(...vals.filter(v=>v!=null),meanLine||0),H=260,W=Math.max(320,vals.length*80+80),x0=50,y0=H-40,ph=H-70,sy=v=>y0-v/mx*ph;let o='';
+ const bw=(W-x0-20)/vals.length;vals.forEach((v,i)=>{const x=x0+10+i*bw;if(v==null){o+=`<rect x="${x+bw*.15}" y="${y0-ph*.5}" width="${bw*.7}" height="${ph*.5}" fill="#fff" stroke="${VC.mut}" stroke-width="3" stroke-dasharray="8 6"/>`+T(x+bw/2,y0-ph*.25,'?',28,VC.mut)}
+  else o+=`<rect x="${x+bw*.15}" y="${sy(v)}" width="${bw*.7}" height="${y0-sy(v)}" fill="${PAL[i%PAL.length]}" stroke="${VC.ln}" stroke-width="2"/>`+T(x+bw/2,sy(v)-8,v,18);o+=T(x+bw/2,y0+24,labels?labels[i]:'',14)});
+ if(meanLine)o+=`<path d="M${x0} ${sy(meanLine)} H${W-10}" stroke="${VC.r}" stroke-width="3" stroke-dasharray="10 6"/>`+T(W-12,sy(meanLine)-8,`mean ${meanLine}`,15,VC.r,'end');
+ o+=`<path d="M${x0} 20 V${y0} H${W-10}" fill="none" stroke="${VC.ln}" stroke-width="3"/>`;return fpWrap(W,H,o)}
 function visDD(t,g){let m;
+ m=t.match(/What is the mean of ([\d, and.]+)\?/)||t.match(/(?:scored|times:|read) ([\d, and.]+?)(?: goals| seconds| books|\.|$)/);
+ if(m){const v=m[1].match(/\d+(?:\.\d+)?/g);if(v&&v.length>=2&&v.length<=8)return valBars(v.map(Number))}
+ m=t.match(/[Tt]he mean of ([\d, and]+?) (?:is|=) \d/);if(m){const v=m[1].match(/\d+/g);if(v&&v.length>=2)return valBars(v.map(Number))}
+ m=t.match(/The mean of (\d+) numbers is (\d+)\. The first \d+ are ([\d, and]+)\./);if(m){const v=m[3].match(/\d+/g).map(Number);return valBars([...v,null],null,+m[2])}
+ m=t.match(/pictogram uses (\S+) = (\d+) (\w+)\. There are (\d+)/);if(m)return fpWrap(Math.max(300,+m[4]*60+40),130,Array.from({length:+m[4]},(_,i)=>T(40+i*60,60,m[1],46)).join('')+T(20,115,`${m[1]} = ${m[2]} ${m[3]}`,20,VC.ln,'start'));
+ m=t.match(/A slice is (\d+)° of an? (\d+)-person pie chart/);if(m){const d=+m[1],r=110,a=(-90+d)*Math.PI/180;return fpWrap(260,260,`<circle cx="130" cy="130" r="${r}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/><path d="M130 130 L130 20 A${r} ${r} 0 ${d>180?1:0} 1 ${130+r*Math.cos(a)} ${130+r*Math.sin(a)}Z" fill="${VC.o}" stroke="${VC.ln}" stroke-width="3"/>`+T(130+50*Math.cos((-90+d/2)*Math.PI/180),130+50*Math.sin((-90+d/2)*Math.PI/180)+7,d+'°',20,'#fff'))}
+ m=t.match(/plant growing (\d+) cm every day for (\d+) days/);if(m)return lineChart(Array.from({length:+m[2]+1},(_,i)=>['Day '+i,i*+m[1]]));
+ if(/doesn't belong/i.test(t))return '';
+ if(/bar chart/i.test(t)&&!/^\(/.test(t))return barChart([['Mon',4],['Tue',8],['Wed',6],['Thu',10]],2);
+ if(/(line|time) graph/i.test(t)&&!/^\(/.test(t))return /flat/i.test(t)?lineChart([['1',10],['2',20],['3',20],['4',20],['5',30]]):lineChart([['8 am',24],['10 am',27],['12 pm',33],['2 pm',31],['4 pm',29]],'°C');
+ if(/pie chart/i.test(t)&&!/^\(/.test(t))return pieVis([['Bus',.5],['Walk',.25],['Car',.25]],'');
+ if(/pictogram/i.test(t)&&!/^\(/.test(t))return pictoVis([['Cats',3],['Dogs',5],['Birds',2]],2);
+ if(/A tally of 卌/.test(t))return fpWrap(80,50,tallyMarks(5,14,10));
+ if(/each picture means|half picture/i.test(t))return pictoVis([['Cats',3],['Dogs',4]],2);
+ if(/^Graph the|axis does not start/i.test(t))return lineChart([['Mon',30],['Tue',32],['Wed',31],['Thu',34],['Fri',33]],'°C');
+ if(/tally/i.test(t)&&!/^\(/.test(t)&&!/卌/.test(t))return tallyChart([['Bus',7],['Walk',12],['Car',4]]);
  m=t.match(/sorting hoops — ([^)]+?)\.?\)/);if(m)return hoopsVis(parsePairs(m[1]));
  m=t.match(/\(Tally chart: ([^)]+)\)/);if(m)return tallyChart(m[1].split(';').map(s=>{const k=s.trim().match(/^(\S+)\s+(.*)$/);return [k[1],tallyCount(k[2])]}));
  m=t.match(/a tally — ([卌|\s]+)\)/);if(m){const n=tallyCount(m[1]);return fpWrap(Math.floor(n/5)*46+(n%5)*9+40,50,tallyMarks(n,14,10))}
