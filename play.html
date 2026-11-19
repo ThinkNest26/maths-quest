@@ -96,7 +96,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .fall path{stroke-dasharray:6 4;animation:fall .6s linear infinite}@keyframes fall{to{stroke-dashoffset:-10}}
 .bob2{animation:bob 3.2s ease-in-out infinite .8s}.flag{animation:flap 1.8s ease-in-out infinite;transform-box:fill-box;transform-origin:0 50%}@keyframes flap{50%{transform:skewY(4deg) scaleX(.94)}}
 @media (prefers-reduced-motion:reduce){.bob2,.flag,.bob,.waves,.cloud,.boat,.fish,.spout,.gull,.glow,.twinkle,.fall path{animation:none}}
-.hero{position:relative;max-width:520px;margin:0 auto;border-radius:24px;overflow:hidden;container-type:inline-size;box-shadow:0 10px 26px rgba(20,90,140,.2)}
+.hero{position:relative;max-width:760px;margin:0 auto;border-radius:24px;overflow:hidden;container-type:inline-size;box-shadow:0 10px 26px rgba(20,90,140,.2)}
 .hero img{display:block;width:100%;height:100%}
 .mhot{cursor:pointer;border-radius:22px}.mhot:focus-visible{outline:4px solid #FFD23F}
 .mhot:hover{background:rgba(255,255,255,.12)}
@@ -151,7 +151,11 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
  .avstage .row{margin:0!important;gap:6px;justify-content:flex-start}.avstage .row button{padding:6px 10px;font-size:13px}.avstage>p{display:none}
  .avgrid{grid-template-columns:repeat(3,1fr)}}
 .stop.here{border-color:#FFD23F;box-shadow:0 0 0 3px #FFD23F}@media(max-width:480px){.logo{font-size:0!important;gap:0}.logo svg{width:40px;height:40px}}
-.logo{white-space:nowrap}</style>
+.logo{white-space:nowrap}.scene{position:relative;margin:-16px calc(50% - 50vw) 0;padding:28px 16px 36px;overflow:hidden;isolation:isolate}
+.scene::before{content:'';position:absolute;inset:-60px;background:var(--bg) center/cover no-repeat;filter:blur(30px) saturate(1.25) brightness(1.05);z-index:-1}
+.scene .extras{position:relative}
+@media(max-width:600px){.scene{padding:0 0 20px}.scene .hero{border-radius:0;box-shadow:none}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -595,9 +599,9 @@ function mapView(){const L=C.lands;
  const onMap=L.filter(l=>MAPROW[l.code]);let ti=allDone?onMap.length-1:onMap.indexOf(L[cur]);if(ti<0)ti=onMap.length-1;
  const tokAt=i=>{const [cx,cy]=MAPROW[onMap[i].code];return [cx-178,cy+8]};const [tx,ty]=tokAt(ti);
  const tok=`<button class="tok" id="tok" aria-label="My explorer — tap to dress up" style="left:${px(tx)};top:${py(ty)};width:${px(150)};font-size:${fz(22)}"><span class="tokbub">${allDone?'All done! 🎉':'Next stop! ➜'}</span><span class="tokav bob">${avatarSVG(myAv(),120)}</span><span class="tokname">${esc(ME.first_name)}</span></button>`;
- $('#app').innerHTML=`<div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
- ${extra?`<div class="extras"><div class="f" style="font-size:20px;color:#1D4E89;margin-bottom:8px">⛰️ Keep going, explorer!</div>${extra}</div>`:''}
- ${allDone?`<div class="card center" style="max-width:520px;margin:14px auto"><b class="f" style="font-size:24px">🎉 You finished every land!</b></div>`:''}`;
+ $('#app').innerHTML=`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
+ ${extra?`<div class="extras"><div class="f" style="font-size:20px;color:#1D4E89;margin-bottom:8px;background:#fff;display:inline-block;padding:4px 14px;border-radius:99px">⛰️ Keep going, explorer!</div>${extra}</div>`:''}
+ ${allDone?`<div class="card center" style="max-width:520px;margin:14px auto"><b class="f" style="font-size:24px">🎉 You finished every land!</b></div>`:''}</div>`;
  document.querySelectorAll('[data-land]').forEach(g=>{const go=()=>{V={s:'land',land:g.dataset.land};render();scrollTo(0,0)};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
  $('#tok').onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};
  /* walk the explorer along the road from the last land they were at */
@@ -613,11 +617,11 @@ function mapView(){const L=C.lands;
 function nextQuest(l){for(const st of l.stops)for(const q of QUESTS){if(q[0]==='listen'&&!st.listen.length)continue;if(!isDone(st,q[0]))return [st.n,q[0]]}return null}
 function heroHTML(l){const H=HERO[l.code];if(!H)return '';const [a,b]=landProgress(l);const [x,y,s,c]=H.prog;
  const prog=l.code==='MM'?`<span style="color:#F2502E">${a}</span>/${b}`:`${a}/${b}`;
- return `<div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/${H.img}.webp" alt="${esc(l.name)}" width="${IW}" height="${IH}">
+ return `<div class="scene" style="--bg:url(img/${H.img}.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/${H.img}.webp" alt="${esc(l.name)}" width="${IW}" height="${IH}">
  <div class="hprog" style="left:${px(x)};top:${py(y)};font-size:${fz(s)};color:${c}">${prog}</div>
  ${hot(...H.cta,`class="mhot" id="cta" tabindex="0" role="button" aria-label="Start the next quest"`)}
  ${H.home?hot(...H.home,`class="mhot" id="hm" tabindex="0" role="button" aria-label="Back to the map"`):''}
- ${(H.pick||[]).map(([cx,cy,n])=>hot(cx-52,cy-52,cx+52,cy+52,`class="mhot pick" data-pick="${n}" role="button" aria-label="${n}"`)).join('')}</div>`}
+ ${(H.pick||[]).map(([cx,cy,n])=>hot(cx-52,cy-52,cx+52,cy+52,`class="mhot pick" data-pick="${n}" role="button" aria-label="${n}"`)).join('')}</div></div>`}
 function landObj(){return C.lands.find(l=>l.code===V.land)}
 function landView(){const l=landObj();
  $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">Your stops</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
