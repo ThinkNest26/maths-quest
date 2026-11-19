@@ -185,7 +185,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .burst{position:fixed;inset:0;pointer-events:none;z-index:9;overflow:hidden}
 .burst i{position:absolute;top:-40px;font-style:normal;font-size:30px;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.party .cf,.pav,.pstar,.pclap,.burst i{animation:none}.party .cf,.burst{display:none}}
-</style>
+.fpwrap{margin:10px auto 6px;max-width:420px;background:#FFFDF6;border:3px dashed #FFD23F;border-radius:20px;padding:12px}.fpic{display:block;width:100%;height:auto;max-height:240px}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -680,6 +680,81 @@ function miniParty(){STREAK++;happySound(false);clapSound(false,1.1);const b=doc
  document.body.appendChild(b);setTimeout(()=>b.remove(),2200)}
 function oops(){STREAK=0;gentleSound();setTimeout(()=>praise(false),300)}
 
+/* ---------- fraction pictures: drawn from the question text ---------- */
+const FP={sh:'#FF8A3D',sh2:'#2F9BE0',ln:'#1D4E89',bg:'#FFFFFF',soft:'#FFE3CF'};
+function fpWrap(w,h,inner,label){return `<svg class="fpic" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(label||'Picture to help')}">${inner}</svg>`}
+function fpLabel(x,y,t,size,anchor){return `<text x="${x}" y="${y}" text-anchor="${anchor||'middle'}" font-family="Fredoka,Arial" font-weight="700" font-size="${size||22}" fill="${FP.ln}">${esc(t)}</text>`}
+function fpFracLabel(x,y,a,b){return `<g font-family="Fredoka,Arial" font-weight="700" fill="${FP.ln}" text-anchor="middle"><text x="${x}" y="${y-6}" font-size="22">${a}</text><rect x="${x-14}" y="${y-1}" width="28" height="3" rx="1.5" fill="${FP.ln}"/><text x="${x}" y="${y+23}" font-size="22">${b}</text></g>`}
+/* a bar split into b equal parts, first a shaded (a may be > b for several wholes) */
+function fpBar(x,y,w,h,b,a,col){let o='';const cw=w/b;for(let i=0;i<b;i++)o+=`<rect x="${(x+i*cw).toFixed(1)}" y="${y}" width="${cw.toFixed(1)}" height="${h}" fill="${i<a?(col||FP.sh):FP.bg}" stroke="${FP.ln}" stroke-width="3"/>`;return o+`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${FP.ln}" stroke-width="4" rx="3"/>`}
+function fpPie(cx,cy,r,parts,shade,unequal,cross){let o='';const n=parts;let angs;
+ if(unequal){const U={2:[130,230],3:[80,130,150],4:[60,120,70,110]};angs=U[n]||Array(n).fill(360/n)}else angs=Array(n).fill(360/n);
+ let a0=-90;angs.forEach((d,i)=>{const a1=a0+d,r0=a0*Math.PI/180,r1=a1*Math.PI/180;const x0=cx+r*Math.cos(r0),y0=cy+r*Math.sin(r0),x1=cx+r*Math.cos(r1),y1=cy+r*Math.sin(r1);
+  const fill=cross&&i<cross?'#D9D9D9':i<shade?FP.sh:FP.bg;
+  o+=n===1?`<circle cx="${cx}" cy="${cy}" r="${r}" fill="${fill}" stroke="${FP.ln}" stroke-width="4"/>`:`<path d="M${cx} ${cy} L${x0.toFixed(1)} ${y0.toFixed(1)} A${r} ${r} 0 ${d>180?1:0} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}Z" fill="${fill}" stroke="${FP.ln}" stroke-width="3" stroke-linejoin="round"/>`;
+  if(cross&&i<cross){const m=(a0+d/2)*Math.PI/180,mx=cx+r*.55*Math.cos(m),my=cy+r*.55*Math.sin(m);o+=`<path d="M${mx-10} ${my-10} l20 20 M${mx+10} ${my-10} l-20 20" stroke="#C0392B" stroke-width="4" stroke-linecap="round"/>`}
+  a0=a1});return o+`<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="${FP.ln}" stroke-width="4"/>`}
+function fpRect(x,y,w,h,parts,shade,unequal,grid){let o='';
+ if(grid&&parts===4&&!unequal){[[0,0],[1,0],[0,1],[1,1]].forEach(([i,j],k)=>{o+=`<rect x="${x+i*w/2}" y="${y+j*h/2}" width="${w/2}" height="${h/2}" fill="${k<shade?FP.sh:FP.bg}" stroke="${FP.ln}" stroke-width="3"/>`})}
+ else{const U={2:[.33,.67],3:[.2,.45,.35],4:[.14,.36,.2,.3]};const ws=unequal?(U[parts]||Array(parts).fill(1/parts)):Array(parts).fill(1/parts);let xx=x;ws.forEach((f,k)=>{o+=`<rect x="${xx.toFixed(1)}" y="${y}" width="${(f*w).toFixed(1)}" height="${h}" fill="${k<shade?FP.sh:FP.bg}" stroke="${FP.ln}" stroke-width="3"/>`;xx+=f*w})}
+ return o+`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="none" stroke="${FP.ln}" stroke-width="4" rx="3"/>`}
+function fpShape(shape,parts,shade,unequal,x,y,s){s=s||1;
+ if(/circle|pizza|cake/.test(shape))return fpPie(x+90*s,y+90*s,85*s,parts,shade,unequal);
+ if(/square/.test(shape))return fpRect(x+10*s,y+10*s,170*s,170*s,parts,shade,unequal,true);
+ if(/bar|strip|chocolate/.test(shape))return fpRect(x,y+60*s,300*s,60*s,parts,shade,unequal);
+ return fpRect(x,y+30*s,260*s,130*s,parts,shade,unequal)}
+const WORDN={a:1,one:1,two:2,three:3,four:4,half:2,halves:2,quarter:4,quarters:4,third:3,thirds:3};
+function fpDots(N,b,a){/* N things shared into b equal groups, a groups highlighted */
+ const per=N/b,cols=Math.min(per,5),rows=Math.ceil(per/cols),bw=cols*30+24,bh=rows*30+24,gap=16,GW=b*bw+(b-1)*gap,W=Math.max(GW,380),H=bh+46,ox=(W-GW)/2;let o='';
+ for(let g=0;g<b;g++){const gx=ox+g*(bw+gap);o+=`<rect x="${gx+2}" y="2" width="${bw-4}" height="${bh-4}" rx="16" fill="${g<a?FP.soft:'#F2F7FB'}" stroke="${g<a?FP.sh:'#9DB4C8'}" stroke-width="4"/>`;
+  for(let k=0;k<per;k++){const cx=gx+12+15+(k%cols)*30,cy=12+15+Math.floor(k/cols)*30;o+=`<circle cx="${cx}" cy="${cy}" r="11" fill="${g<a?FP.sh:'#7FB3D5'}"/>`}}
+ o+=fpLabel(W/2,H-10,`${N} shared into ${b} equal groups`,20);return fpWrap(W,H,o)}
+function fpBarModel(N,b,a){/* bar model: whole = N, a of b parts shaded, ? for the answer */
+ const W=520,x=20,w=480,y=46,h=60;let o=fpLabel(W/2,26,String(N),26)+`<path d="M${x} 36 V30 H${x+w} V36" fill="none" stroke="${FP.ln}" stroke-width="3"/>`+fpBar(x,y,w,h,b,a);
+ const cw=w/b;o+=`<path d="M${x} ${y+h+8} V${y+h+16} H${x+cw*a} V${y+h+8}" fill="none" stroke="${FP.sh}" stroke-width="3"/>`+`<text x="${x+cw*a/2}" y="${y+h+46}" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="28" fill="${FP.sh}">?</text>`;
+ return fpWrap(W,y+h+60,o)}
+function fpPercent(p){const s=26,x=10,y=10;let o='';for(let i=0;i<100;i++){const c=i%10,r=Math.floor(i/10);o+=`<rect x="${x+c*s}" y="${y+r*s}" width="${s}" height="${s}" fill="${i<p?FP.sh:FP.bg}" stroke="#9DB4C8" stroke-width="1.5"/>`}
+ o+=`<rect x="${x}" y="${y}" width="${s*10}" height="${s*10}" fill="none" stroke="${FP.ln}" stroke-width="4"/>`;return fpWrap(s*10+20,s*10+20,o,`${p} out of 100 squares shaded`)}
+function fpBars(list){/* list of [whole,a,b,label]: one bar per fraction, all the same width so they can be compared */
+ const W=560,rowH=78;let o='',y=12;list.forEach(([w,a,b,lab])=>{const tot=w*b+a;const wholes=Math.max(1,Math.ceil(tot/b));const bw=wholes>1?(430-(wholes-1)*12)/wholes:430;
+  for(let k=0;k<wholes;k++){const sh=Math.max(0,Math.min(b,tot-k*b));o+=fpBar(110+k*(bw+12),y,bw,52,b,sh)}
+  const [la,lb,lw]=lab;o+=lw?fpLabel(34,y+36,String(lw),30)+fpFracLabel(66,y+24,la,lb):fpFracLabel(50,y+24,la,lb);y+=rowH});
+ return fpWrap(W,y,o)}
+function gcd(a,b){return b?gcd(b,a%b):a}
+function fracPic(q,grade){const t=String(q);let m;
+ /* described pictures */
+ m=t.match(/\(Picture: an? (\w+) (?:cut|split) into (\d+) (equal|unequal) parts(?:, (\d+) shaded)?\.?\)/i);
+ if(m){const sh=m[1].toLowerCase(),n=+m[2],un=m[3]==='unequal',k=m[4]?+m[4]:0;const W=/bar/.test(sh)?320:300;return fpWrap(W,190,`<g transform="translate(${/bar/.test(sh)?10:(W-(/square|circle/.test(sh)?190:260))/2} 0)">${fpShape(sh,n,k,un,0,0,1)}</g>`)}
+ m=t.match(/\(a bar with (\d+) parts, (\d+) shaded\)/i);if(m)return fpWrap(320,90,fpRect(10,15,300,60,+m[1],+m[2]));
+ if(/\(Pictures: 3 shapes cut in half, 1 cut into 2 unequal parts\)/i.test(t))return fpWrap(600,170,[['square',0],['circle',0],['rect',1],['circle',0]].map(([s,u],i)=>`<g transform="translate(${i*150} 10) scale(.75)">${s==='rect'?fpRect(10,40,170,110,2,0,true):fpShape(s,2,0,false,0,0,1)}</g>`).join(''));
+ /* percent of a square */
+ m=t.match(/(\d{1,3})% of a square is shaded/i);if(m)return fpPercent(+m[1]);
+ /* half of a number is N */
+ m=t.match(/(half|a quarter|a third) of a number is (\d+)/i);if(m){const b=WORDN[m[1].split(' ').pop().toLowerCase()],n=m[2];const W=520;let o=fpLabel(W/2,26,'?',28)+`<path d="M20 36 V30 H500 V36" fill="none" stroke="${FP.ln}" stroke-width="3"/>`+fpBar(20,46,480,60,b,1);o+=fpLabel(20+480/b/2,86,n,26);return fpWrap(W,120,o)}
+ /* a/b of N, half of N, a quarter of N */
+ m=t.match(/(\d+)\/(\d+) of (?:a |an )?(\d+)\b/)||t.match(/\b(half|a half|a quarter|quarter|a third|third) of (?:a |an |the )?(?:class of )?(\d+)\b/i);
+ if(m){let a,b,N;if(m.length===4){a=+m[1];b=+m[2];N=+m[3]}else{a=1;b=WORDN[m[1].split(' ').pop().toLowerCase()];N=+m[2]}
+  if(b&&N%b===0&&N<=200){return (grade<=1&&N<=24)?fpDots(N,b,a):fpBarModel(N,b,a)}
+  if(b&&N<=200)return fpBarModel(N,b,a)}
+ /* how many halves/quarters/thirds make N wholes */
+ m=t.match(/how many (halves|quarters|thirds) make (a|one|\d+) wholes?/i);if(m){const b=WORDN[m[1].toLowerCase()],n=m[2]==='a'||m[2]==='one'?1:+m[2];if(n<=3)return fpWrap(n*200,190,Array.from({length:n},(_,i)=>`<g transform="translate(${i*200+5} 5)">${fpPie(90,90,85,b,b)}</g>`).join(''))}
+ /* pizza / cake in quarters */
+ m=t.match(/(pizza|cake) is cut into (quarters|halves|thirds)\. You eat (\d+)/i);if(m)return fpWrap(190,190,fpPie(95,95,88,WORDN[m[2].toLowerCase()],0,false,+m[3]));
+ m=t.match(/You have (\d+) quarters of a pizza/i);if(m)return fpWrap(190,190,fpPie(95,95,88,4,+m[1]));
+ /* a/b of a shape is shaded */
+ m=t.match(/(\d+)\/(\d+) of a shape is shaded/i);if(m)return fpWrap(470,80,fpRect(10,10,450,60,+m[2],+m[1]));
+ /* count in tenths */
+ m=t.match(/Count in tenths: .*?(\d+)\/10, __/i);if(m)return fpBars([[0,+m[1],10,[m[1],10]]]);
+ /* any 1–4 fractions in the question (simple, mixed or improper) */
+ const F=[];const re=/(?:(\d+) )?(\d+)\/(\d+)/g;let r;while((r=re.exec(t))&&F.length<5){const w=r[1]?+r[1]:0,a=+r[2],b=+r[3];if(b<2||b>12||a>36)continue;const tot=w*b+a;if(Math.ceil(tot/b)>5)continue;
+  const lab=[a,b,w];if(!F.some(f=>f[0]===w&&f[1]===a&&f[2]===b))F.push([w,a,b,lab])}
+ if(F.length&&F.length<=4)return fpBars(F);
+ /* percentages */
+ m=t.match(/\b(\d{1,2}|100)%/);if(m)return fpPercent(+m[1]);
+ m=t.match(/(\d+)\/(100)\b/);if(m&&+m[1]<=100)return fpPercent(+m[1]);
+ return ''}
+
+function fpFor(q){if(V.land!=='FF')return '';const s=fracPic(q,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
@@ -799,7 +874,7 @@ function practiseView(){const st=stopObj();
  if(Q.i>=Q.list.length)return finishPractise();
  const it=Q.list[Q.i];const [pic,text]=splitPic(it.q);
  $('#app').innerHTML=qhead('✏️ Practise it',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`)+
- `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:''}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+ `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${fpFor(it.q)||(pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;
  bindBack();$('#hear').onclick=()=>say(text,it.k);
  bindAnswer(it,async g=>{const ok=check(it,g);
@@ -827,12 +902,12 @@ function listenView(){clearInterval(TIMER);
   bindBack();$('#again').onclick=()=>{Q=null;render()};return}
  const it=Q.list[Q.i],sec=it.sec||8;
  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
- `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div><div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
+ `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div>${V.mtc?'':fpFor(it.q)}<div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
  <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
  bindBack();const go=()=>{say(it.q,it.k)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
  let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
-  if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=it.q;
+  if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=splitPic(it.q)[1];
   setTimeout(()=>{Q.i++;render()},ok?800:1800)};
  TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
  $('#ans').focus();$('#af').onsubmit=e=>{e.preventDefault();done($('#ans').value)}}
@@ -844,7 +919,7 @@ function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practi
   if(s>=3)complete('play');
   $('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div class="big">${s}</div><h2 style="color:var(--sea)">${s>best?'New best score! 🏆':'Time\'s up!'}</h2><p class="muted">Best: ${Math.max(s,best)}</p><button class="b1" id="again">Play again</button></div>`;bindBack();$('#again').onclick=()=>{Q=null;render()};return}
  Q.cur=pool[Math.floor(Math.random()*pool.length)];const it=Q.cur;const [pic,text]=splitPic(it.q);
- $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:''}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
+ $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${fpFor(it.q)||(pic?`<div class="pic">🖼️ ${esc(pic)}</div>`:'')}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
  bindBack();clearInterval(TIMER);TIMER=setInterval(()=>{if(!Q||V.s!=='play'){clearInterval(TIMER);return}Q.left--;const b=$('#tb');if(b)b.style.width=(Q.left/6)+'%';if(Q.left<=0){clearInterval(TIMER);render()}},100);
  bindAnswer(it,g=>{if(check(it,g)){Q.score++;miniParty();cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}setTimeout(()=>{if(Q&&Q.left>0)render()},check(it,g)?250:900)})}
 /* ---------- think it ---------- */
@@ -854,7 +929,7 @@ function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.
  if(tf)ui=`<div class="choices"><button class="b2" data-t="true">True</button><button class="b2" data-t="false">False</button></div>`;
  else if(asn)ui=`<div class="choices"><button class="b2" data-t="always">Always</button><button class="b2" data-t="sometimes">Sometimes</button><button class="b2" data-t="never">Never</button></div>`;
  else ui=`<textarea id="ex" rows="3" placeholder="Explain your thinking…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`;
- $('#app').innerHTML=qhead('🤔 Think it')+`<div class="card center"><div class="stars" style="display:inline-block;background:var(--sun)">${esc(ty)}</div><div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${ui}<div class="msg" id="fb"></div><div id="ans"></div></div>`;
+ $('#app').innerHTML=qhead('🤔 Think it')+`<div class="card center"><div class="stars" style="display:inline-block;background:var(--sun)">${esc(ty)}</div>${fpFor(p.q)}<div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${ui}<div class="msg" id="fb"></div><div id="ans"></div></div>`;
  bindBack();$('#hear').onclick=()=>say(p.q,p.k);
  const reveal=(good)=>{$('#ans').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}<br><span class="muted" style="font-weight:600">The important part is explaining <i>why</i>.</span></div></div><div style="margin-top:14px">${good===undefined?'<button class="b1" id="gotit">I got it ✓</button> <button class="b2" id="notyet">Not yet</button>':'<button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another puzzle</button>'}</div>`;
   $('#gotit').onclick=async()=>{await complete('think');Q=null;V={s:'land',land:V.land};render()};const n=$('#notyet')||$('#another');if(n)n.onclick=()=>{Q=null;render()}};
@@ -863,7 +938,7 @@ function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.
 /* ---------- use it ---------- */
 function useView(){const st=stopObj();if(!Q){const p=st.use[Math.floor(Math.random()*st.use.length)];Q={kind:'use',p}}
  const p=Q.p,num=firstNum(p.a)&&!/answers will vary|e\.g\./i.test(p.a)&&!/,.*\d/.test(p.a.replace(/,(?=\d{3})/g,''));
- $('#app').innerHTML=qhead('🌍 Use it')+`<div class="card center"><div style="width:110px;margin:0 auto">${friendSvg()}</div><div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+ $('#app').innerHTML=qhead('🌍 Use it')+`<div class="card center">${fpFor(p.q)||`<div style="width:110px;margin:0 auto">${friendSvg()}</div>`}<div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${num?`<form id="af"><input class="ans" id="ans" autocomplete="off"><div style="margin-top:12px"><button class="b1">Check</button></div></form>`:`<textarea id="ex" rows="3" placeholder="Work it out and write your answer…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`}<div class="msg" id="fb"></div><div id="ans2"></div></div>`;
  bindBack();$('#hear').onclick=()=>say(p.q,p.k);
  const fin=()=>{$('#ans2').innerHTML+=`<div style="margin-top:14px"><button class="b1" id="gotit">Finish ✓</button> <button class="b2" id="another">Another problem</button></div>`;$('#gotit').onclick=async()=>{await complete('use');Q=null;V={s:'land',land:V.land};render()};$('#another').onclick=()=>{Q=null;render()}};
