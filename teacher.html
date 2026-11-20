@@ -71,6 +71,7 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;fo
 .plg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}.plc{border:2px solid #EFE6D2;border-radius:18px;padding:14px;cursor:pointer;display:block}.plc:has(input:checked){border-color:#F2704E;background:#FFF6F2}.plc input{float:right}.plc ul{padding-left:18px;margin:8px 0 0}
 .tfoot{text-align:center;color:#5B7177;font-size:13px;padding:24px}.tfoot a{color:#127C8C}
 @media print{.tfoot{display:none}}
+.tabadm{display:inline-flex;align-items:center;border:2px solid #1D3A5F;background:#1D3A5F;color:#fff!important;border-radius:999px;padding:8px 16px;font-weight:800;text-decoration:none;margin-left:auto}
 </style>
 </head>
 <body>
@@ -520,7 +521,7 @@ function analyse(kid,cont){const p=PROG[kid.id]||{},done=p.done||{},R=p.facts||{
   return {n:st.n,topic:st.topic,qd,qt:kinds.length,acc,ans:n,s}})}))}
 const SCOL={new:['#F1ECDD','#8A7F66','Not started','⬜'],learning:['#FFF1C9','#8A6100','Learning','🟡'],secure:['#DDF5E7','#1E7B4E','Secure','🟢'],tricky:['#FDE3DD','#B23A1E','Tricky','🔴']};
 function chip(s){const c=SCOL[s];return `<span class="chip" style="background:${c[0]};color:${c[1]}">${c[3]} ${c[2]}</span>`}
-function tabsBar(){return `<div class="tabs"><button class="${TV==='school'?'on':''}" data-tv="school">🏛️ School</button><button class="${TV==='classes'?'on':''}" data-tv="classes">🏫 Classes</button><button class="${TV==='list'?'on':''}" data-tv="list">👧 Explorers</button><button class="${TV==='tasks'?'on':''}" data-tv="tasks">📝 Tasks</button><button class="${TV==='class'?'on':''}" data-tv="class">📊 Class progress</button><button class="${TV==='checks'?'on':''}" data-tv="checks">📋 Checks</button>${TV==='child'&&RKID?`<button class="on">📄 ${esc((KIDS.find(k=>k.id===RKID)||{}).first_name||'')}</button>`:''}</div>`}
+function tabsBar(){return `<div class="tabs"><button class="${TV==='school'?'on':''}" data-tv="school">🏛️ School</button><button class="${TV==='classes'?'on':''}" data-tv="classes">🏫 Classes</button><button class="${TV==='list'?'on':''}" data-tv="list">👧 Explorers</button><button class="${TV==='tasks'?'on':''}" data-tv="tasks">📝 Tasks</button><button class="${TV==='class'?'on':''}" data-tv="class">📊 Class progress</button><button class="${TV==='checks'?'on':''}" data-tv="checks">📋 Checks</button>${SCHOOL&&SCHOOL.is_admin?'<a class="tabadm" href="admin.html">⚙️ Admin</a>':''}${TV==='child'&&RKID?`<button class="on">📄 ${esc((KIDS.find(k=>k.id===RKID)||{}).first_name||'')}</button>`:''}</div>`}
 function bindTabsT(){document.querySelectorAll('[data-tv]').forEach(b=>b.onclick=()=>{TV=b.dataset.tv;render()})}
 /* ----- one child ----- */
 async function renderChild(){const kid=KIDS.find(k=>k.id===RKID);if(!kid){TV='list';render();return}
