@@ -233,6 +233,8 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .cf{display:flex;justify-content:space-between;font-weight:800;color:#1D4E89;margin-top:8px}.cp{font-size:12px;color:#6B7F8E;margin-top:6px}
 @media(max-width:700px){.funrow,.spgrid{grid-template-columns:1fr}.lane .who{width:90px}}
 .lbw small{display:block;font-family:Nunito;font-size:12px;color:var(--muted);font-weight:700;text-align:right}.lbw{text-align:right}.trt{width:100%;border-collapse:collapse;margin:6px 0;font-size:16px}.trt th{font-size:12px;color:var(--muted);text-transform:uppercase;text-align:center;padding:4px}.trt td{text-align:center;padding:5px;border-top:1px solid #EFE6D2}.trt tr.tbest td{background:#FFF3C4}.mytries{max-height:330px;overflow:auto}
+.focusl{display:flex;flex-direction:column;gap:8px;max-width:460px;margin:12px auto;text-align:left}.focusi{display:flex;align-items:center;gap:12px;background:#FFF3C4;border-radius:16px;padding:8px 14px}.focusi svg{width:40px;height:40px;flex:none}
+.topres{list-style:none;padding:0;max-width:480px;margin:10px auto;text-align:left}.topres li{display:flex;align-items:center;gap:10px;padding:6px 4px;border-top:1px solid #EFE6D2}.topres svg{width:30px;height:30px;flex:none}.fchip{background:#FFE7A3;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800}
 </style>
 </head>
 <body>
@@ -1456,8 +1458,10 @@ function raceView(){const r=SP.race;let body='';
 /* ---------- ⭐ Champion mode and 🔁 daily challenge (shared engine) ---------- */
 function champStars(l){let n=0;for(let i=1;i<=3;i++)if(ME.done&&ME.done[`G${ME.grade}-${l.code}-C-${i}`])n=i;return n}
 function mixView(){const champ=V.s==='champ',l=champ?landObj():null;
- if(!Q){let pool=[];if(champ)l.stops.forEach(st=>pool.push(...st.practise));else C.lands.forEach(L=>L.stops.forEach(st=>{if(QUESTS.some(q=>ME.done&&ME.done[`G${ME.grade}-${L.code}-${st.n}-${q[0]}`]))pool.push(...st.practise)}));
-  Q={kind:V.s,list:champ?pool.sort(()=>Math.random()-.5).slice(0,10):pickQs(pool,10),i:0,res:[]}}
+ if(!Q){let pool=[];if(champ)l.stops.forEach(st=>pool.push(...st.practise));
+  if(champ)Q={kind:V.s,list:pool.sort(()=>Math.random()-.5).slice(0,10),i:0,res:[]};
+  else{const P=dailyPlan();if(!P){V={s:'map'};render();return}Q={kind:V.s,list:P.list,focus:P.focus,i:0,res:[],intro:true}}}
+ if(Q.intro)return dailyIntro();
  const title=champ?`⭐ ${esc(l.name)} Champion challenge`:'🔁 Daily mixed challenge';
  if(Q.i>=Q.list.length)return mixEnd();
  const it=Q.list[Q.i],[pic,text]=splitPic(it.q),sec=30;
@@ -1465,16 +1469,44 @@ function mixView(){const champ=V.s==='champ',l=champ?landObj():null;
   <div class="card center">${champ?`<div class="timer"><i id="tb" style="width:100%"></i></div>`:''}<div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}${champ?' · no hints, one try!':''}</div>${visFor(it.q,findLand(it.id),ME.grade)?`<div class="fpwrap">${visFor(it.q,findLand(it.id),ME.grade)}</div>`:pic?picBox(pic):''}
   <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
  $('#bk').onclick=()=>{Q=null;V=champ?{s:'land',land:l.code}:{s:'map'};render()};$('#hear').onclick=()=>say(text,it.k);
- let gone=false;const go=g=>{if(gone)return;gone=true;clearInterval(TIMER);const ok=g!==null&&check(it,g);Q.res.push(ok);rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok});
+ let gone=false;const go=g=>{if(gone)return;gone=true;clearInterval(TIMER);const ok=g!==null&&check(it,g);Q.res.push(ok);rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok});if(ok){ME.facts=ME.facts||{};ME.facts[it.id]=(ME.facts[it.id]||0)+1}else{ME.wrong=ME.wrong||{};ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
   if(ok){celebrate(false,()=>{Q.i++;render()})}else{oops();$('#fb').innerHTML=`<span class="bad">${g===null?'⏰ Time’s up! ':''}The answer is <b>${esc(it.a)}</b>.</span> <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;$('#nx').onclick=()=>{Q.i++;render()}}};
  bindAnswer(it,go);
  if(champ){let left=sec*10;TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/(sec*10))+'%';if(left<=0)go(null)},100)}}
+/* ---------- daily challenge plan: built from the child's own answers ---------- */
+function stopStats(){const f=ME.facts||{},w=ME.wrong||{},out=[];
+ C.lands.forEach(L=>L.stops.forEach(st=>{if(!st.practise||!st.practise.length)return;const pre=`${L.code}${ME.grade}-${st.n}-`;let r=0,x=0;
+  for(const k in f)if(k.startsWith(pre))r+=f[k];for(const k in w)if(k.startsWith(pre))x+=w[k];
+  const quests=QUESTS.some(q=>ME.done&&ME.done[`G${ME.grade}-${L.code}-${st.n}-${q[0]}`]);
+  const task=(MYTASKS||[]).some(t=>t.land===L.code&&t.stop===st.n&&!taskDone(t));
+  const n=r+x,acc=n?r/n:null;
+  /* how much help this topic needs: wrong answers matter most, then low accuracy, then teacher tasks */
+  const need=(x?Math.min(x,10)*2:0)+(acc!==null&&n>=3?(1-acc)*20:0)+(task?8:0);
+  out.push({L,st,r,w:x,n,acc,started:quests||n>0,task,need,weak:(n>=3&&acc<.75)||x>=2||task})}));return out}
+function dailyPlan(){const S=stopStats().filter(s=>s.started||s.task);if(!S.length)return null;
+ const focus=S.filter(s=>s.weak).sort((a,b)=>b.need-a.need).slice(0,3),rest=S.filter(s=>!focus.includes(s));
+ const list=[],used=new Set(),take=(arr,n)=>{pickQs(arr.filter(q=>!used.has(q.id)),n).forEach(q=>{used.add(q.id);list.push(q)})};
+ if(focus.length){const per=[[7],[4,3],[3,2,2]][focus.length-1];focus.forEach((s,i)=>take(s.st.practise,per[i]));
+  take(rest.flatMap(s=>s.st.practise),10-list.length);if(list.length<10)take(focus.flatMap(s=>s.st.practise),10-list.length)}
+ else take(S.flatMap(s=>s.st.practise),10);
+ return {list:list.sort(()=>Math.random()-.5),focus:focus.map(s=>({land:s.L.code,landName:s.L.name,n:s.st.n,topic:s.st.topic,task:s.task,acc:s.acc}))}}
+function topicOfQ(id){const m=String(id).match(/^([A-Z]{2})\d-(\d+)-/);if(!m)return null;const L=C.lands.find(l=>l.code===m[1]);const st=L&&L.stops.find(s=>s.n===+m[2]);return st?{key:m[1]+m[2],topic:st.topic,land:L.code}:null}
 function findLand(id){const m=String(id).match(/^([A-Z]{2})/);return m?m[1]:''}
+function dailyIntro(){const F=Q.focus||[];
+ $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← Map</button><span class="f">🔁 Daily challenge</span></div><div class="card center" style="max-width:720px;margin:0 auto">
+  <div style="font-size:60px;line-height:1">🎯</div><h2 style="color:var(--sea);font-size:28px;margin:6px 0">${F.length?'Today we’ll practise the tricky bits!':'Today’s mixed review'}</h2>
+  ${F.length?`<p class="muted" style="font-size:18px">Your challenge is made just for you, from the questions you found tricky:</p><div class="focusl">${F.map(f=>`<div class="focusi">${LANDICON[f.land]}<div><b>${esc(f.topic)}</b><div class="muted small">${esc(f.landName)}${f.task?' · 📝 from your teacher':''}</div></div></div>`).join('')}</div><p class="muted">Plus a few questions from other topics to keep them fresh.</p>`
+   :`<p class="muted" style="font-size:18px">Great work, nothing tricky right now! Here are 10 questions from the topics you’ve explored.</p>`}
+  <button class="b1" id="dgo" style="font-size:24px;padding:14px 36px;margin-top:8px">Let’s go! 🚀</button></div>`;
+ $('#bk').onclick=()=>{Q=null;V={s:'map'};render()};$('#dgo').onclick=()=>{Q.intro=false;render()};
+ say(F.length?'Today we will practise the tricky bits!':'Here is your mixed review for today.',F.length?'d-tricky':'d-mixed')}
+function topicResults(){const T={};Q.list.forEach((q,i)=>{const t=topicOfQ(q.id);if(!t)return;(T[t.key]=T[t.key]||{t,r:0,n:0});T[t.key].n++;if(Q.res[i])T[t.key].r++});
+ const fk=new Set((Q.focus||[]).map(f=>f.land+f.n));return Object.values(T).sort((a,b)=>(fk.has(b.t.key)-fk.has(a.t.key))||b.n-a.n).map(x=>`<li>${LANDICON[x.t.land]}<span style="flex:1"><b>${esc(x.t.topic)}</b>${fk.has(x.t.key)?' <span class="fchip">🎯 focus</span>':''}</span><span class="${x.r===x.n?'ok':x.r/x.n>=.5?'':'bad'}" style="font-weight:800">${x.r}/${x.n}${x.r===x.n?' ✔':''}</span></li>`).join('')}
 async function mixEnd(){const champ=Q.kind==='champ',l=champ?landObj():null,n=Q.res.filter(Boolean).length,t=Q.list.length,stars=champ?(n===t?3:n>=8?2:n>=6?1:0):0;
  const prev=champ?champStars(l):0;
  $('#app').innerHTML=`<div class="card center"><div style="font-size:70px;line-height:1">${champ?(stars?'⭐'.repeat(stars):'💪'):'🔁'}</div><div class="big">${n}/${t}</div>
   <h2 style="color:var(--sea)">${champ?(stars===3?'Perfect! You are a '+esc(l.name)+' Champion! 🏆':stars?`You earned ${stars} gold star${stars>1?'s':''}!`:'Good try! Get 6 or more right to earn a gold star.'):'Daily challenge complete! 🎉'}</h2>
-  ${champ?`<p class="muted">6 right = ⭐ · 8 right = ⭐⭐ · 10 right = ⭐⭐⭐</p>`:'<p class="muted">Come back tomorrow for a new mix!</p>'}
+  ${champ?`<p class="muted">6 right = ⭐ · 8 right = ⭐⭐ · 10 right = ⭐⭐⭐</p>`:`<ul class="topres">${topicResults()}</ul><p class="muted">Tomorrow’s challenge will use today’s answers to pick what to practise next.</p>`}
   <div class="row" style="justify-content:center;gap:10px"><button class="b1" id="mx1">${champ?'Try again':'Back to the map'}</button>${champ?'<button class="b2" id="mx2">Back to '+esc(l.name)+'</button>':''}</div></div>`;
  const back=()=>{Q=null;V=champ?{s:'land',land:l.code}:{s:'map'};render()};$('#mx1').onclick=champ?()=>{Q=null;render()}:back;const b2=$('#mx2');if(b2)b2.onclick=back;
  if(champ){for(let i=prev+1;i<=stars;i++){const lb=landDone(l);const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:`G${ME.grade}-${l.code}-C-${i}`,p_kind:'champ'});if(data){ME.stars=data.stars;ME.done=data.done;afterComplete(data,lb)}}header();if(stars>prev)happySound(true),clapSound(true)}
@@ -1484,7 +1516,7 @@ function startedStops(){let n=0;C.lands.forEach(L=>L.stops.forEach(st=>{if(QUEST
 /* ---------- 🏆 the Grand Treasure ---------- */
 function funRow(){const fin=allLandsDone(),sst=startedStops(),dd=dailyDone();
  return `<div class="funrow"><button class="fun" id="fspeed"><span class="fe">⚡</span><b>Beat the clock</b><span class="small">60 seconds of mental maths · race your friends</span></button>
-  <button class="fun${sst?'':' locked'}" id="fdaily"><span class="fe">${dd?'✅':'🔁'}</span><b>Daily challenge</b><span class="small">${dd?'Done today! Back tomorrow.':sst?'10 mixed questions · +5 ⭐':'Finish a quest to unlock'}</span></button>
+  <button class="fun${sst?'':' locked'}" id="fdaily"><span class="fe">${dd?'✅':'🔁'}</span><b>Daily challenge</b><span class="small">${dd?'Done today! Back tomorrow.':sst?(()=>{const f=stopStats().filter(x=>x.weak&&(x.started||x.task)).sort((a,b)=>b.need-a.need)[0];return f?'🎯 Focus: '+esc(f.st.topic)+' · +5 ⭐':'10 mixed questions · +5 ⭐'})():'Finish a quest to unlock'}</span></button>
   <button class="fun${fin?' gold':' locked'}" id="ffin"><span class="fe">🏆</span><b>Grand Treasure</b><span class="small">${fin?'You finished every land!':'Finish every land to unlock'}</span></button></div>`}
 function bindFun(){$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
  $('#ffin').onclick=()=>{if(!allLandsDone()){cheer(`${C.lands.filter(landDone).length} of ${C.lands.length} lands done — keep going! 🧭`);return}V={s:'finale'};render()};
