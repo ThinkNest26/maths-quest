@@ -213,6 +213,25 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .tasksh{font-size:21px;color:#1D4E89;margin-bottom:8px}.task{display:flex;gap:12px;align-items:center;padding:10px;border-radius:16px;background:#F2F9FE;margin-bottom:8px}.task.tdone{background:#E6F7EE}
 .tland svg{width:46px;height:46px;display:block}.tks{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.tks span{background:#fff;border:2px solid #D6E6F2;border-radius:999px;padding:2px 10px;font-size:14px;font-weight:700}.tks span.ok{background:#DDF5E7;border-color:#9ED9B6;color:#1E7B4E}
 .tgo{font-size:18px;padding:10px 18px;white-space:nowrap}.tbad{font-family:Fredoka;font-weight:700;color:#1E7B4E;font-size:18px;white-space:nowrap}
+.funrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:1000px;margin:0 auto 14px}
+.fun{display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:3px solid #2F9BE0;border-radius:22px;padding:12px;color:#1D4E89;box-shadow:0 6px 16px rgba(20,90,140,.1);font-family:Fredoka}.fun b{font-size:20px}.fun .fe{font-size:36px;line-height:1}.fun .small{font-family:Nunito;color:var(--muted)}
+.fun.locked{border-color:#D6D0C2;filter:grayscale(.6);opacity:.75}.fun.gold{border-color:#FFC93C;background:linear-gradient(180deg,#FFF6D6,#fff)}
+.spgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.lbtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.lbtabs button{background:#F2F9FE;border:2px solid #D6E6F2;color:#1D4E89;padding:6px 12px;font-size:15px}.lbtabs button.on{background:#2F9BE0;color:#fff;border-color:#2F9BE0}
+.lbl{list-style:none;padding:0;margin:0}.lbl li{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:14px}.lbl li.me{background:#FFF3C4}.lbl svg{border-radius:50%;flex:none}.lbm{width:30px;text-align:center;font-family:Fredoka;font-weight:700}.lbn{flex:1;font-weight:800}.lbw{font-family:Fredoka;font-weight:700;font-size:20px;color:#1D4E89}
+.sprun{max-width:520px;margin:0 auto}.sptime{font-family:Fredoka;font-weight:700;font-size:26px;color:#F2483A}.spq{font-family:Fredoka;font-weight:700;font-size:clamp(44px,10vw,72px);color:#1D4E89;margin:14px 0}.spq.pop{animation:pin .25s}.spans{font-size:34px;text-align:center;max-width:260px}
+.kpad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;max-width:300px;margin:14px auto 0}.kpad button{font-size:26px;padding:12px 0}.kpad .kgo{grid-column:1/-1}
+.race{max-width:760px;margin:0 auto 12px;background:#fff;border-radius:20px;padding:10px 14px;border:3px solid #FFD23F}.lane{display:flex;align-items:center;gap:10px;padding:4px 0}.lane .who{width:150px;display:flex;align-items:center;gap:6px;font-weight:800;font-size:14px;white-space:nowrap;overflow:hidden}.lane .who svg{border-radius:50%}
+.track{position:relative;flex:1;height:44px;background:repeating-linear-gradient(90deg,#EAF4FB 0 30px,#F6FBFF 30px 60px);border-radius:999px;border-right:6px solid #2DBE6C}.runner{position:absolute;top:5px;transition:left .5s}.runner svg{border-radius:50%;border:2px solid #fff;display:block}.lane.me .track{background:repeating-linear-gradient(90deg,#FFF3C4 0 30px,#FFFBEA 30px 60px)}.rsc{position:absolute;right:8px;top:10px;font-family:Fredoka;font-weight:700;color:#1D4E89}
+.rcode{font-family:Fredoka;font-weight:700;font-size:56px;letter-spacing:6px;color:#F2483A;margin:6px 0}.rplayers{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}.rplayers span{display:flex;align-items:center;gap:6px;background:#F2F9FE;border-radius:999px;padding:4px 12px 4px 4px;font-weight:800}.rplayers svg{border-radius:50%}
+.champ{border:3px solid #FFC93C!important;background:linear-gradient(180deg,#FFF6D6,#fff)}.cst{font-size:20px;letter-spacing:2px;color:#E8A90E}
+.finale{position:relative;overflow:hidden}.favav svg{border-radius:50%;border:6px solid #FFC93C;box-shadow:0 0 0 10px #FFF3C4}.fburst{font-size:60px}
+#printArea{display:none}#rjoin::placeholder{text-transform:none}
+@media print{body.printing>*:not(#printArea){display:none!important}body.printing #printArea{display:block}@page{size:A4 landscape;margin:10mm}}
+.cert{border:10px solid #FFC93C;border-radius:24px;padding:10px;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-family:Nunito,Arial}.cin{border:3px dashed #2F9BE0;border-radius:16px;padding:20px 30px;text-align:center}
+.ck{font-family:Fredoka;letter-spacing:.2em;text-transform:uppercase;color:#2B8A6E;font-weight:700}.ct{font-family:Fredoka;font-weight:700;font-size:40px;color:#1D4E89}.cs{font-size:18px;color:#3E5466}.cn{font-family:Fredoka;font-weight:700;font-size:56px;color:#F2483A;margin:2px 0}
+.cav svg{border-radius:50%;border:5px solid #FFC93C}.clands{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:12px 0}.clands span{display:flex;flex-direction:column;align-items:center;font-size:12px}.clands svg{width:38px;height:38px}.clands i{font-style:normal}
+.cf{display:flex;justify-content:space-between;font-weight:800;color:#1D4E89;margin-top:8px}.cp{font-size:12px;color:#6B7F8E;margin-top:6px}
+@media(max-width:700px){.funrow,.spgrid{grid-template-columns:1fr}.lane .who{width:90px}}
 </style>
 </head>
 <body>
@@ -413,10 +432,10 @@ const AV_PARTS=[
  {k:'acc',tab:'extras',label:'Things to hold & wear',opts:[{id:'none',name:'None'},{id:'acc-glasses',name:'Glasses',price:30},{id:'acc-bowtie',name:'Bow tie',price:30},{id:'acc-necklace',name:'Pearl necklace',price:35},{id:'acc-sunglasses',name:'Sunglasses',price:40},{id:'acc-backpack',name:'Explorer backpack',price:20},{id:'acc-wand',name:'Magic wand',price:50},{id:'acc-sword',name:'Sword',price:50},{id:'acc-shield',name:'Shield',price:50},{id:'acc-headphones',name:'Headphones',price:50},{id:'acc-pencil',name:'Magic pencil',price:60}]},
  {k:'back',tab:'extras',label:'Special',opts:[{id:'none',name:'None'},{id:'back-cape',name:'Royal cape',price:80},{id:'back-fairy',name:'Fairy wings',price:120},{id:'back-wings',name:'Butterfly wings',price:150},{id:'back-jetpack',name:'Rocket jet-pack',price:150}]},
  {k:'pet',tab:'extras',label:'Pets',opts:[{id:'none',name:'None'},{id:'pet-bee',name:'Pet bee',price:100},{id:'pet-cat',name:'Pet kitten',price:120}]},
- {k:'medal',tab:'extras',label:'Medals',opts:[{id:'none',name:'None'},{id:'medal-champ',name:'Champion medal',price:250}]},
+ {k:'medal',tab:'extras',label:'Medals',opts:[{id:'none',name:'None'},{id:'medal-champ',name:'Champion medal',price:250},{id:'medal-compass',name:'Golden compass',price:0,need:'allLands'}]},
  {k:'bg',tab:'bg',label:'Background',opts:[{id:'honey'},{id:'sky'},{id:'mint'},{id:'pink'},{id:'lilac'},{id:'bg-garden',name:'Garden',price:60},{id:'bg-castle',name:'Castle',price:60},{id:'bg-beach',name:'Beach',price:60},{id:'bg-space',name:'Space',price:60},{id:'bg-library',name:'Library',price:60}]}];
 const AV_TABS=[['char','🐾 Character'],['look','😊 Look'],['clothes','👕 Clothes'],['hats','👑 Hats'],['extras','✨ Extras'],['bg','🖼️ Background']];
-const NEEDS={};
+const NEEDS={allLands:'Finish every land to unlock the Golden compass 🧭'};
 function avOpt(id){for(const p of AV_PARTS){const o=p.opts.find(o=>o.id===id);if(o)return Object.assign({k:p.k},o)}return null}
 function isShopItem(id){const o=avOpt(id);return !!o&&(o.price>0||!!o.need)}
 function avOf(a){const r=Object.assign({},AV_DEFAULT,(a&&typeof a==='object')?a:{});if(!ANIMALS[r.char]&&!PEOPLE[r.char])r.char='fox';return r}
@@ -548,6 +567,7 @@ function avatarSVG(a0,size,round){const a=avOf(a0);const id='av'+(++AVN);const k
  if(H==='hat-crown')o+=`<path d="M38 36 L40 12 L50 24 L60 6 L70 24 L80 12 L82 36 Z" fill="#F5B700" ${OL} stroke-linejoin="round"/><circle cx="60" cy="28" r="3.5" fill="#D62839"/><circle cx="47" cy="31" r="2.5" fill="#3D7DD8"/><circle cx="73" cy="31" r="2.5" fill="#3DBB76"/>`;
  o=pre+(kind==='frog'&&o?`<g transform="translate(0 -14)">${o}</g>`:o);
  if(a.acc==='acc-headphones')o+=`<path d="M24 60 C20 12 100 12 96 60" fill="none" stroke="#1F2A44" stroke-width="5"/><rect x="16" y="52" width="13" height="20" rx="6" fill="#E25555" ${OL}/><rect x="91" y="52" width="13" height="20" rx="6" fill="#E25555" ${OL}/>`;
+ if(a.medal==='medal-compass')o+=`<path d="M50 90 L60 102 L70 90" fill="none" stroke="#1D4E89" stroke-width="4"/><circle cx="60" cy="110" r="11" fill="#FFC93C" stroke="#B9820E" stroke-width="2.5"/><circle cx="60" cy="110" r="7.5" fill="#FFF6D6"/><path d="M60 103.5 L62.4 110 L60 116.5 L57.6 110Z" fill="#F2483A"/><path d="M53.5 110 L60 107.6 L66.5 110 L60 112.4Z" fill="#1D4E89" opacity=".7"/>`;
  if(a.medal==='medal-champ')o+=`<path d="M52 92 L60 104 L68 92" fill="none" stroke="#D62839" stroke-width="4"/><circle cx="60" cy="110" r="8" fill="#F5B700" ${OL}/><path d="M60 105 l1.6 3.2 3.4 .5 -2.5 2.4 .6 3.4 -3.1 -1.6 -3.1 1.6 .6 -3.4 -2.5 -2.4 3.4 -.5z" fill="#fff"/>`;
  if(a.medal==='medal-trophy')o+=`<g transform="translate(72 102)"><path d="M0 0 H16 V5 Q16 13 8 14 Q0 13 0 5 Z" fill="#F5B700" stroke="#B7791F" stroke-width="1.5"/><rect x="6" y="14" width="4" height="4" fill="#B7791F"/><rect x="3" y="18" width="10" height="3" rx="1" fill="#B7791F"/></g>`;
  if(a.acc==='acc-wand')o+=`<path d="M98 120 L104 82" stroke="#8A55D6" stroke-width="4" stroke-linecap="round"/><path d="M104 70 l3 7 7 .5 -5.5 4.5 2 7 -6.5 -4 -6.5 4 2 -7 -5.5 -4.5 7 -.5z" fill="#FFD54A" ${OL} stroke-width="1.5"/>`;
@@ -564,7 +584,7 @@ let AVS={tab:'char',mode:'dress',buy:null,msg:'',saveT:null,dirty:false};
 function myP(){return ME}
 function myAv(){const p=myP();return avOf(p.avatar)}
 function hasAvatar(){const p=myP();return p.avatar&&Object.keys(p.avatar).length>0}
-function owns(id){const o=avOpt(id);if(!o||!isShopItem(id))return true;return (myP().owned||[]).includes(id)}
+function owns(id){if(id==='medal-compass')return allLandsDone();const o=avOpt(id);if(!o||!isShopItem(id))return true;return (myP().owned||[]).includes(id)}
 function balance(){return stars()}
 function savePR(){}
 function avSave(){AVS.dirty=true;clearTimeout(AVS.saveT);AVS.saveT=setTimeout(async()=>{const c=sb;if(!c||!ME){AVS.dirty=false;return}
@@ -1341,12 +1361,149 @@ function tasksPanel(){if(!MYTASKS)return '';const td=dubaiDay();const list=MYTAS
 async function loadTasks(){const {data}=await rpc('mq_my_tasks',{p_code:ME.code});MYTASKS=Array.isArray(data)?data:[];const b=$('#tasksBox');if(b){b.innerHTML=tasksPanel();bindTasks()}}
 function bindTasks(){document.querySelectorAll('[data-tgo]').forEach(b=>b.onclick=()=>{const t=MYTASKS.find(x=>x.id===b.dataset.tgo);const [l,st]=taskStop(t);const k=taskKinds(t,st).find(k=>!(ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`]))||'practise';V={s:k,land:t.land,stop:t.stop};Q=null;render()})}
 
+/* ================= finishers, Champion mode, daily challenge, Beat the clock and races ================= */
+function allLandsDone(){return !!C&&C.lands.every(landDone)}
+/* ---------- mental maths questions for each grade (seeded, so a race gives everyone the same questions) ---------- */
+function rng(seed){let a=seed>>>0;return ()=>{a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function mmGen(g,R){const r=(a,b)=>a+Math.floor(R()*(b-a+1)),p=a=>a[Math.floor(R()*a.length)],k=R();
+ const add=(x,y)=>({q:`${x} + ${y}`,a:x+y}),sub=(x,y)=>({q:`${x} − ${y}`,a:x-y}),mul=(x,y)=>({q:`${x} × ${y}`,a:x*y}),dv=(x,y)=>({q:`${x*y} ÷ ${x}`,a:y});
+ if(g===0){if(k<.55){const x=r(0,9);return add(x,r(0,10-x))}const x=r(1,10);return sub(x,r(0,x))}
+ if(g===1){if(k<.35){const x=r(2,15);return add(x,r(1,20-x))}if(k<.6){const x=r(5,20);return sub(x,r(1,x))}if(k<.85)return mul(r(1,10),p([2,5,10]));return {q:`${p([10,20,30,40,50,60,70,80,90])} + 10`,a:null,f:()=>0}}
+ if(g===2){if(k<.25){const x=r(11,89);return add(x,p([1,2,3,4,5,6,7,8,9,10,20,30]))}if(k<.45){const x=r(20,99);return sub(x,p([1,2,3,4,5,6,7,8,9,10,20]))}if(k<.85)return mul(r(1,12),p([2,3,4,5,8,10]));return dv(p([2,3,4,5,8,10]),r(1,10))}
+ if(g===3){if(k<.6)return mul(r(2,12),r(2,12));if(k<.85)return dv(r(2,12),r(2,12));const x=r(11,89);return p([()=>add(x,r(11,99-x)),()=>sub(r(50,99),r(11,49))])()}
+ if(g===4){if(k<.35)return mul(r(2,12),r(2,12));if(k<.5)return dv(r(2,12),r(2,12));if(k<.62){const x=r(2,99),m=p([10,100]);return {q:`${x} × ${m}`,a:x*m}}if(k<.72){const x=r(11,49);return {q:`double ${x}`,a:2*x}}if(k<.8){const x=2*r(11,60);return {q:`half of ${x}`,a:x/2}}if(k<.9){const x=r(2,12);return {q:`${x}²`,a:x*x}}const x=r(101,899);return add(x,p([10,100,99,9,200]))}
+ /* grade 5 */
+ if(k<.3)return mul(r(3,12),r(3,12));if(k<.45)return dv(r(3,12),r(3,12));
+ if(k<.58){const x=r(11,99)/10,m=p([10,100]);return {q:`${x} × ${m}`,a:Math.round(x*m*100)/100}}
+ if(k<.68){const x=r(2,99)*10,m=p([10,100]);return x%m===0?{q:`${x} ÷ ${m}`,a:x/m}:{q:`${x} ÷ 10`,a:x/10}}
+ if(k<.8){const pc=p([10,20,25,50,75]),N=p([40,60,80,100,120,200,400]);return {q:`${pc}% of ${N}`,a:pc*N/100}}
+ if(k<.9){const b=p([2,3,4,5,10]),N=b*r(2,12);return {q:`${b===2?'half':'1/'+b} of ${N}`,a:N/b}}
+ const x=r(2,9);return {q:`${x}³`,a:x*x*x}}
+function mmQ(g,R){let q;for(let i=0;i<20;i++){q=mmGen(g,R);if(q.a!==null&&q.a!==undefined&&isFinite(q.a))break;const m=q.q.match(/^(\d+) \+ 10$/);if(m){q={q:q.q,a:+m[1]+10};break}}return q}
+function mmSay(q){return String(q).replace('×','times').replace('÷','divided by').replace('−','minus').replace('+','plus').replace('²',' squared').replace('³',' cubed').replace('%',' per cent')}
+/* ---------- ⚡ Beat the clock ---------- */
+let SP=null;
+function speedHead(t){return `<div class="qhead"><button class="back" id="bk">← Map</button><span class="f">${t}</span></div>`}
+function bindSpeedBack(){const b=$('#bk');if(b)b.onclick=()=>{raceStop();SP=null;V={s:'map'};render()}}
+function speedView(){if(!SP)SP={stage:'menu',scope:'class',period:'today'};
+ if(SP.stage==='run')return speedRun();if(SP.stage==='end')return speedEnd();if(SP.race)return raceView();
+ $('#app').innerHTML=speedHead('⚡ Beat the clock')+`<div class="spgrid"><div class="card center"><div style="font-size:64px;line-height:1">⏱️</div><h2 style="color:var(--sea);margin:6px 0">How many can you get right in 60 seconds?</h2>
+  <p class="muted">Quick mental maths for ${GRADE[ME.grade]}. Your first go each day earns stars!</p><div class="row" style="justify-content:center;gap:10px;margin:10px 0"><span class="stars">Today’s best: <b id="spt">…</b></span><span class="stars">Personal best: <b id="spp">…</b></span></div>
+  <button class="b1" id="spgo" style="font-size:26px;padding:16px 40px">Start! ⚡</button><div style="margin-top:14px"><button class="b2" id="sprace">🏁 Race a friend</button></div></div>
+  <div class="card"><div class="f" style="font-size:22px;color:#1D4E89;margin-bottom:8px">🏆 Leaderboard</div><div class="lbtabs"><button data-sc="class" class="${SP.scope==='class'?'on':''}">My class</button><button data-sc="grade" class="${SP.scope==='grade'?'on':''}">My grade</button><span style="width:10px"></span><button data-pe="today" class="${SP.period==='today'?'on':''}">Today</button><button data-pe="week" class="${SP.period==='week'?'on':''}">This week</button></div><div id="lbrows" class="muted">Loading…</div></div></div>`;
+ bindSpeedBack();$('#spgo').onclick=()=>speedStart();$('#sprace').onclick=()=>{SP.race={stage:'menu'};render()};
+ document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{SP.scope=b.dataset.sc;render()});document.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>{SP.period=b.dataset.pe;render()});
+ rpc('mq_speed_board',{p_code:ME.code,p_scope:SP.scope,p_period:SP.period}).then(({data})=>{const el=$('#lbrows');if(!el)return;const L=Array.isArray(data)?data:[];const me=L.find(x=>x.me);
+  if($('#spt'))$('#spt').textContent=SP.todayBest!=null?SP.todayBest:(SP.period==='today'&&me?me.best:'—');if($('#spp'))$('#spp').textContent=SP.pb!=null?SP.pb:'—';
+  el.innerHTML=L.length?`<ol class="lbl">${L.map((x,i)=>`<li class="${x.me?'me':''}"><span class="lbm">${['🥇','🥈','🥉'][i]||i+1}</span>${avatarSVG(x.avatar,40)}<span class="lbn">${esc(x.name)}${x.me?' (you)':''}</span><span class="lbw">${x.best}</span></li>`).join('')}</ol>`:'<p class="muted">No scores yet. Be the first! ⚡</p>'})}
+function speedStart(race){const seed=race?race.seed:Math.floor(Math.random()*1e9),R=rng(seed),g=race?race.grade:ME.grade;
+ SP.stage='run';SP.R=R;SP.g=g;SP.score=0;SP.wrong=0;SP.ms=0;SP.end=Date.now()+60000;SP.q=mmQ(g,R);SP.t0=Date.now();SP.inRace=!!race;render()}
+function speedRun(){const left=Math.max(0,Math.ceil((SP.end-Date.now())/1000));
+ $('#app').innerHTML=(SP.inRace?'':speedHead('⚡ Beat the clock'))+`${SP.inRace?raceLanes():''}<div class="card center sprun"><div class="row" style="justify-content:space-between"><span class="stars">✔ <b id="sps">${SP.score}</b></span><span class="sptime" id="spl">${left}s</span></div>
+  <div class="timer"><i id="tb" style="width:${100*left/60}%"></i></div><div class="spq" id="spq">${esc(SP.q.q)} = ?</div><input class="ans spans" id="spa" inputmode="${matchMedia('(pointer:coarse)').matches?'none':'decimal'}" autocomplete="off" aria-label="Your answer">
+  <div class="kpad">${['7','8','9','4','5','6','1','2','3','.','0','⌫'].map(k=>`<button class="b2" data-kp="${k}">${k}</button>`).join('')}<button class="b1 kgo" data-kp="go">✓</button></div><div class="msg" id="spf"></div></div>`;
+ bindSpeedBack();const inp=$('#spa');inp.focus();
+ const submit=()=>{const v=inp.value.trim().replace(',','.');if(v==='')return;const ok=Math.abs(parseFloat(v)-SP.q.a)<1e-9;
+  if(ok){SP.score++;SP.ms+=Date.now()-SP.t0;bell(1318.5,0,.35,.06);if(SP.inRace)raceScore()}else{SP.wrong++;gentleSound();$('#spf').innerHTML=`<span class="bad">${esc(SP.q.q)} = <b>${SP.q.a}</b></span>`}
+  SP.q=mmQ(SP.g,SP.R);SP.t0=Date.now();inp.value='';$('#spq').textContent=SP.q.q+' = ?';$('#sps').textContent=SP.score;if(ok)$('#spf').innerHTML='<span class="ok">✔</span>';$('#spq').classList.remove('pop');void $('#spq').offsetWidth;$('#spq').classList.add('pop')};
+ inp.onkeydown=e=>{if(e.key==='Enter'){e.preventDefault();submit()}};
+ document.querySelectorAll('[data-kp]').forEach(b=>b.onclick=()=>{const k=b.dataset.kp;if(k==='go')submit();else if(k==='⌫')inp.value=inp.value.slice(0,-1);else inp.value+=k;inp.focus()});
+ clearInterval(TIMER);TIMER=setInterval(()=>{const l=Math.max(0,(SP.end-Date.now())/1000);const t=$('#spl'),b=$('#tb');if(t)t.textContent=Math.ceil(l)+'s';if(b)b.style.width=(100*l/60)+'%';if(SP.inRace)raceLanesUpdate();
+  if(l<=0){clearInterval(TIMER);SP.stage='end';if(SP.inRace)raceScore(true);else speedSave();render()}},250)}
+async function speedSave(){const avg=SP.score?Math.round(SP.ms/SP.score):0;const {data}=await rpc('mq_speed_save',{p_code:ME.code,p_score:SP.score,p_avg_ms:avg});
+ if(data){const newPB=data.pb===SP.score&&SP.score>0&&(SP.pb==null||SP.score>SP.pb);SP.todayBest=data.today;SP.pb=data.pb;if(typeof data.stars==='number'){ME.stars=data.stars;header()}SP.give=data.give;SP.newPB=newPB;if(SP.stage==='end'&&V.s==='speed')render();if(newPB)celebrate(false)}}
+function speedEnd(){if(SP.inRace)return raceView();const avg=SP.score?(SP.ms/SP.score/1000).toFixed(1):'—';
+ $('#app').innerHTML=speedHead('⚡ Beat the clock')+`<div class="card center"><div style="font-size:70px;line-height:1">${SP.newPB?'🏆':SP.score>=10?'🌟':'⚡'}</div><div class="big">${SP.score}</div><h2 style="color:var(--sea)">${SP.newPB?'New personal best!':'right in 60 seconds'}</h2>
+  <p class="muted">About <b>${avg}</b> seconds per answer${SP.give?` · <b>+${SP.give} ⭐</b> for today’s first go`:''}</p><div class="row" style="justify-content:center;gap:10px"><button class="b1" id="spagain">Go again ⚡</button><button class="b2" id="spmenu">Leaderboard</button></div></div>`;
+ bindSpeedBack();$('#spagain').onclick=()=>speedStart();$('#spmenu').onclick=()=>{SP.stage='menu';render()};if(SP.score)praise(true)}
+/* ---------- 🏁 race a friend (live) ---------- */
+let RPOLL=null;
+function raceStop(){if(RPOLL){clearInterval(RPOLL);RPOLL=null}}
+function racePoll(){raceStop();RPOLL=setInterval(async()=>{if(V.s!=='speed'||!SP||!SP.race||!SP.race.code){raceStop();return}const {data}=await rpc('mq_race_state',{p_code:ME.code,p_race:SP.race.code});raceApply(data)},1000)}
+function raceApply(d){if(!SP||!SP.race)return;if(d&&!d.error&&SP.race.err){SP.race.err=''}if(!d||d.error){SP.race.err=d&&d.error==='norace'?'That race has ended.':'Couldn’t reach the race.';if(SP.stage!=='run')render();return}
+ const r=SP.race,old=r.status,sig=JSON.stringify([d.status,d.players.map(p=>p.name)]),same=r.sig===sig;r.sig=sig;r.d=d;if(r.stage==='menu')r.stage='live';r.code=d.code;r.status=d.status;r.seed=d.seed;r.grade=d.grade;
+ if(d.status==='run'&&SP.stage!=='run'&&SP.stage!=='end'){const st=Date.now()+Math.max(0,d.starts_in)*1000;if(d.starts_in>0){r.stage='count';r.goAt=st;render();setTimeout(()=>{if(SP&&SP.race&&SP.race.stage==='count'){SP.race.stage='run';speedStart(SP.race);SP.end=st+60000}},Math.max(0,st-Date.now()))}
+  else if(d.starts_in>-55){speedStart(r);SP.end=st+60000}return}
+ if(SP.stage==='run'){raceLanesUpdate();return}if(SP.stage==='end'){if(d.status==='done'){raceStop();render()}else raceLanesUpdate();return}if(r.stage!=='count'&&(!same||r.err))render()}
+function raceLanes(){const d=SP.race&&SP.race.d;if(!d)return '';const top=Math.max(15,...d.players.map(p=>p.score));
+ return `<div class="race">${d.players.map((p,i)=>`<div class="lane${p.me?' me':''}"><span class="who">${avatarSVG(p.avatar,26)} ${esc(p.name)}${p.me?' (you)':''}</span><div class="track"><div class="runner" id="rr${i}" style="left:${Math.min(88,88*p.score/top)}%">${avatarSVG(p.avatar,34)}</div><span class="rsc" id="rs${i}">${p.score}</span></div></div>`).join('')}</div>`}
+function raceLanesUpdate(){const d=SP.race&&SP.race.d;if(!d)return;const me=d.players.find(p=>p.me);if(me&&SP.stage==='run')me.score=Math.max(me.score,SP.score);const top=Math.max(15,...d.players.map(p=>p.score));d.players.forEach((p,i)=>{const r=$('#rr'+i),s=$('#rs'+i);if(r)r.style.left=Math.min(88,88*p.score/top)+'%';if(s)s.textContent=p.score})}
+let RLAST=0;async function raceScore(final){const now=Date.now();if(!final&&now-RLAST<600)return;RLAST=now;const {data}=await rpc('mq_race_score',{p_code:ME.code,p_race:SP.race.code,p_score:SP.score});if(data&&!data.error){SP.race.d=data;if(SP.stage==='run')raceLanesUpdate()}}
+function raceView(){const r=SP.race;let body='';
+ if(r.stage==='menu')body=`<div class="spgrid"><div class="card center"><div style="font-size:56px">🏁</div><h2 style="color:var(--sea)">Start a race</h2><p class="muted">Get a race code and tell it to your friends (up to 6).</p><button class="b1" id="rnew">Get a race code</button></div>
+  <div class="card center"><div style="font-size:56px">🤝</div><h2 style="color:var(--sea)">Join a race</h2><p class="muted">Type the code your friend gives you.</p><input class="ans" id="rjoin" maxlength="6" style="max-width:220px;text-transform:uppercase" placeholder="e.g. K7QPA"><div style="margin-top:10px"><button class="b1" id="rjo">Join</button></div></div></div>`;
+ else if(r.status==='wait'){const d=r.d;body=`<div class="card center"><p class="muted">Your race code is</p><div class="rcode">${esc(d.code)}</div><p>Friends in your grade tap <b>⚡ Beat the clock → 🏁 Race a friend → Join</b> and type this code.</p>
+  <div class="rplayers">${d.players.map(p=>`<span>${avatarSVG(p.avatar,34)} ${esc(p.name)}${p.me?' (you)':''}</span>`).join('')}${d.players.length<6?'<span class="muted">waiting…</span>':''}</div>
+  ${d.host?(d.players.length>=2?'<button class="b1" id="rgo" style="font-size:24px;padding:14px 34px">Start the race! 🏁</button>':'<p class="muted">The Start button appears when a friend joins.</p>'):`<p class="muted">Waiting for the host to start…</p>`}</div>`}
+ else if(r.stage==='count')body=raceLanes()+`<div class="card center"><p style="font-size:22px">Get ready…</p><div class="rcode" id="rcd">${Math.max(1,Math.ceil((r.goAt-Date.now())/1000))}</div></div>`;
+ else if(SP.stage==='end'&&r.d.status!=='done')body=raceLanes()+`<div class="card center"><div style="font-size:60px">⏱️</div><h2 style="color:var(--sea)">Time’s up! You got ${SP.score} right.</h2><p class="muted">Waiting for everyone to finish…</p></div>`;
+ else if(SP.stage==='end'||r.status==='done'){const d=r.d,ps=d.players.slice().sort((a,b)=>b.score-a.score),me=ps.find(p=>p.me),won=me&&ps[0]===me&&me.score>0;
+  body=raceLanes()+`<div class="card center"><div style="font-size:80px;line-height:1">${won?'🏆':'⚡'}</div><h2 style="color:var(--sea);font-size:30px">${won?'You won the race!':esc(ps[0].name)+' won this time!'}</h2><ol class="lbl" style="max-width:420px;margin:10px auto">${ps.map((p,i)=>`<li class="${p.me?'me':''}"><span class="lbm">${['🥇','🥈','🥉'][i]||i+1}</span>${avatarSVG(p.avatar,36)}<span class="lbn">${esc(p.name)}</span><span class="lbw">${p.score}</span></li>`).join('')}</ol>
+  <div class="row" style="justify-content:center;gap:10px"><button class="b1" id="ragain">New race 🔁</button><button class="b2" id="rmenu">Back</button></div></div>`;if(won&&!r.cheered){r.cheered=1;celebrate(false)}}
+ $('#app').innerHTML=speedHead('🏁 Race a friend')+(r.err?`<div class="card" style="background:#FDE7E1">${esc(r.err)}</div>`:'')+body;bindSpeedBack();
+ const n=$('#rnew');if(n)n.onclick=async()=>{n.disabled=true;const {data}=await rpc('mq_race_create',{p_code:ME.code});if(!data||data.error){r.err='Couldn’t start a race. Try again.';render();return}r.err='';raceApply(data);racePoll()};
+ const j=$('#rjo');if(j)j.onclick=async()=>{const v=$('#rjoin').value.trim();if(!v)return;const {data}=await rpc('mq_race_join',{p_code:ME.code,p_race:v});
+  if(!data||data.error){r.err={norace:'We couldn’t find that race code.',grade:'That race is for a different grade.',started:'That race has already started.',full:'That race is full.'}[data&&data.error]||'Couldn’t join. Try again.';render();return}r.err='';raceApply(data);racePoll()};
+ const g=$('#rgo');if(g)g.onclick=async()=>{g.disabled=true;const {data}=await rpc('mq_race_start',{p_code:ME.code,p_race:r.code});raceApply(data)};
+ const a=$('#ragain');if(a)a.onclick=()=>{raceStop();SP={stage:'menu',scope:'class',period:'today',race:{stage:'menu'}};render()};const m=$('#rmenu');if(m)m.onclick=()=>{raceStop();SP={stage:'menu',scope:'class',period:'today'};render()};
+ if(r.stage==='count'){clearInterval(TIMER);TIMER=setInterval(()=>{const e=$('#rcd');if(e)e.textContent=Math.max(1,Math.ceil((r.goAt-Date.now())/1000))},200)}}
+/* ---------- ⭐ Champion mode and 🔁 daily challenge (shared engine) ---------- */
+function champStars(l){let n=0;for(let i=1;i<=3;i++)if(ME.done&&ME.done[`G${ME.grade}-${l.code}-C-${i}`])n=i;return n}
+function mixView(){const champ=V.s==='champ',l=champ?landObj():null;
+ if(!Q){let pool=[];if(champ)l.stops.forEach(st=>pool.push(...st.practise));else C.lands.forEach(L=>L.stops.forEach(st=>{if(QUESTS.some(q=>ME.done&&ME.done[`G${ME.grade}-${L.code}-${st.n}-${q[0]}`]))pool.push(...st.practise)}));
+  Q={kind:V.s,list:champ?pool.sort(()=>Math.random()-.5).slice(0,10):pickQs(pool,10),i:0,res:[]}}
+ const title=champ?`⭐ ${esc(l.name)} Champion challenge`:'🔁 Daily mixed challenge';
+ if(Q.i>=Q.list.length)return mixEnd();
+ const it=Q.list[Q.i],[pic,text]=splitPic(it.q),sec=30;
+ $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← ${champ?esc(l.name):'Map'}</button><span class="f">${title}</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>
+  <div class="card center">${champ?`<div class="timer"><i id="tb" style="width:100%"></i></div>`:''}<div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}${champ?' · no hints, one try!':''}</div>${visFor(it.q,findLand(it.id),ME.grade)?`<div class="fpwrap">${visFor(it.q,findLand(it.id),ME.grade)}</div>`:pic?picBox(pic):''}
+  <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
+ $('#bk').onclick=()=>{Q=null;V=champ?{s:'land',land:l.code}:{s:'map'};render()};$('#hear').onclick=()=>say(text,it.k);
+ let gone=false;const go=g=>{if(gone)return;gone=true;clearInterval(TIMER);const ok=g!==null&&check(it,g);Q.res.push(ok);rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok});
+  if(ok){celebrate(false,()=>{Q.i++;render()})}else{oops();$('#fb').innerHTML=`<span class="bad">${g===null?'⏰ Time’s up! ':''}The answer is <b>${esc(it.a)}</b>.</span> <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;$('#nx').onclick=()=>{Q.i++;render()}}};
+ bindAnswer(it,go);
+ if(champ){let left=sec*10;TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/(sec*10))+'%';if(left<=0)go(null)},100)}}
+function findLand(id){const m=String(id).match(/^([A-Z]{2})/);return m?m[1]:''}
+async function mixEnd(){const champ=Q.kind==='champ',l=champ?landObj():null,n=Q.res.filter(Boolean).length,t=Q.list.length,stars=champ?(n===t?3:n>=8?2:n>=6?1:0):0;
+ const prev=champ?champStars(l):0;
+ $('#app').innerHTML=`<div class="card center"><div style="font-size:70px;line-height:1">${champ?(stars?'⭐'.repeat(stars):'💪'):'🔁'}</div><div class="big">${n}/${t}</div>
+  <h2 style="color:var(--sea)">${champ?(stars===3?'Perfect! You are a '+esc(l.name)+' Champion! 🏆':stars?`You earned ${stars} gold star${stars>1?'s':''}!`:'Good try! Get 6 or more right to earn a gold star.'):'Daily challenge complete! 🎉'}</h2>
+  ${champ?`<p class="muted">6 right = ⭐ · 8 right = ⭐⭐ · 10 right = ⭐⭐⭐</p>`:'<p class="muted">Come back tomorrow for a new mix!</p>'}
+  <div class="row" style="justify-content:center;gap:10px"><button class="b1" id="mx1">${champ?'Try again':'Back to the map'}</button>${champ?'<button class="b2" id="mx2">Back to '+esc(l.name)+'</button>':''}</div></div>`;
+ const back=()=>{Q=null;V=champ?{s:'land',land:l.code}:{s:'map'};render()};$('#mx1').onclick=champ?()=>{Q=null;render()}:back;const b2=$('#mx2');if(b2)b2.onclick=back;
+ if(champ){for(let i=prev+1;i<=stars;i++){const lb=landDone(l);const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:`G${ME.grade}-${l.code}-C-${i}`,p_kind:'champ'});if(data){ME.stars=data.stars;ME.done=data.done;afterComplete(data,lb)}}header();if(stars>prev)happySound(true),clapSound(true)}
+ else{const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:`G${ME.grade}-daily-${dubaiDay()}`,p_kind:'daily'});if(data){ME.stars=data.stars;ME.done=data.done;header();if(data.prize)cheer(`+${data.prize} ⭐ Daily challenge!`);afterComplete(data,true)}happySound(true);clapSound(true)}}
+function dailyDone(){return !!(ME.done&&ME.done[`G${ME.grade}-daily-${dubaiDay()}`])}
+function startedStops(){let n=0;C.lands.forEach(L=>L.stops.forEach(st=>{if(QUESTS.some(q=>ME.done&&ME.done[`G${ME.grade}-${L.code}-${st.n}-${q[0]}`]))n++}));return n}
+/* ---------- 🏆 the Grand Treasure ---------- */
+function funRow(){const fin=allLandsDone(),sst=startedStops(),dd=dailyDone();
+ return `<div class="funrow"><button class="fun" id="fspeed"><span class="fe">⚡</span><b>Beat the clock</b><span class="small">60 seconds of mental maths · race your friends</span></button>
+  <button class="fun${sst?'':' locked'}" id="fdaily"><span class="fe">${dd?'✅':'🔁'}</span><b>Daily challenge</b><span class="small">${dd?'Done today! Back tomorrow.':sst?'10 mixed questions · +5 ⭐':'Finish a quest to unlock'}</span></button>
+  <button class="fun${fin?' gold':' locked'}" id="ffin"><span class="fe">🏆</span><b>Grand Treasure</b><span class="small">${fin?'You finished every land!':'Finish every land to unlock'}</span></button></div>`}
+function bindFun(){$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
+ $('#ffin').onclick=()=>{if(!allLandsDone()){cheer(`${C.lands.filter(landDone).length} of ${C.lands.length} lands done — keep going! 🧭`);return}V={s:'finale'};render()};
+ if(allLandsDone()){const k='mq-fin-'+ME.code+'-g'+ME.grade;let seen=null;try{seen=localStorage.getItem(k)}catch(e){}if(!seen){try{localStorage.setItem(k,'1')}catch(e){}setTimeout(()=>{V={s:'finale'};render()},2200)}}}
+function finaleView(){const sch=ME.school?esc(ME.school):'',owned=myAv().medal==='medal-compass';
+ $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← Map</button><span class="f">🏆 The Grand Treasure</span></div><div class="card center finale"><div class="fburst">🎉</div><div class="favav">${avatarSVG(Object.assign({},myAv(),{medal:'medal-compass'}),180)}</div>
+  <h1 style="color:var(--sea);font-size:clamp(30px,5vw,46px)">You found the Grand Treasure!</h1><p style="font-size:20px">${esc(ME.first_name)}, you finished <b>every land</b> in ${GRADE[ME.grade]}. You are a true Maths Quest explorer! 🧭</p>
+  <p class="muted">Your prize: the <b>Golden compass</b>, only for explorers who finish every land.</p>
+  <div class="row" style="justify-content:center;gap:10px"><button class="b1" id="fwear">${owned?'✓ Wearing your Golden compass':'Wear my Golden compass 🧭'}</button><button class="b2" id="fcert">🖨 Print my certificate</button></div>
+  <p class="muted" style="margin-top:16px">Keep exploring: earn ⭐⭐⭐ in every land’s <b>Champion challenge</b>, and race your friends in ⚡ Beat the clock!</p></div>`;
+ $('#bk').onclick=()=>{V={s:'map'};render()};$('#fwear').onclick=()=>{avPick('medal','medal-compass');V={s:'finale',noted:1};render();cheer('Looking great! 🧭')};$('#fcert').onclick=printCert;
+ if(!V.noted){V.noted=1;bigNote('🏆 You found the Grand Treasure!','<div style="font-size:90px;line-height:1">🏆</div>','b-land')}}
+function printCert(){const sch=ME.school?esc(ME.school):'',dt=new Date().toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'});let pa=$('#printArea');if(!pa){pa=document.createElement('div');pa.id='printArea';document.body.appendChild(pa)}
+ pa.innerHTML=`<div class="cert"><div class="cin"><svg viewBox="0 0 64 64" style="width:70px;height:70px"><use href="#logo"/></svg><div class="ck">Certificate of achievement</div><div class="ct">Maths Quest Explorer</div><div class="cs">This certificate is proudly given to</div>
+  <div class="cav">${avatarSVG(Object.assign({},myAv(),{medal:'medal-compass'}),130)}</div><div class="cn">${esc(ME.first_name)}</div><div class="cs">for finishing every land of Maths Quest in ${GRADE[ME.grade]}</div>
+  <div class="clands">${C.lands.map(l=>`<span>${LANDICON[l.code]}<i>${esc(l.name)}</i></span>`).join('')}</div><div class="cf"><span>${sch}</span><span>${dt}</span></div><div class="cp">Powered by ThinkNest</div></div></div>`;
+ document.body.classList.add('printing');setTimeout(()=>{window.print();setTimeout(()=>document.body.classList.remove('printing'),800)},200)}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
  if(!C){a.innerHTML='<p class="center muted">Loading your map…</p>';return}
  if(V.s==='avatar'){a.innerHTML=avatarView();bindAv();if(!V.keep)window.scrollTo(0,0);V.keep=false;return}
- ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView}[V.s]||mapView)();window.scrollTo(0,0)}
+ if(V.s!=='speed')raceStop();
+ ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,champ:mixView,daily:mixView,finale:finaleView}[V.s]||mapView)();window.scrollTo(0,0)}
 function bindAv(){const b=$('#bk');if(b)b.onclick=()=>{V={s:'map'};render()};const d=$('#avdone');if(d)d.onclick=()=>{if(!hasAvatar()){ME.avatar=myAv();avSave()}AVS.first=false;V={s:'map'};render()}}
 function signinView(){return `<div class="signin card center"><svg class="z bob" viewBox="0 0 220 220"><use href="#zaza"/></svg>
  <h1 style="font-size:34px;color:var(--sea)">Ready for your quest?</h1><p class="muted">Type your secret Maths Quest code.</p>
@@ -1389,12 +1546,12 @@ function mapView(){const L=C.lands;
  const onMap=L.filter(l=>MAPROW[l.code]);let ti=allDone?onMap.length-1:onMap.indexOf(L[cur]);if(ti<0)ti=onMap.length-1;
  const tokAt=i=>{const [cx,cy]=MAPROW[onMap[i].code];return [cx-178,cy+8]};const [tx,ty]=tokAt(ti);
  const tok=`<button class="tok" id="tok" aria-label="My explorer — tap to dress up" style="left:${px(tx)};top:${py(ty)};width:${px(150)};font-size:${fz(22)}"><span class="tokbub">${allDone?'All done! 🎉':'Next stop! ➜'}</span><span class="tokav bob">${avatarSVG(myAv(),120)}</span><span class="tokname">${esc(ME.first_name)}</span></button>`;
- $('#app').innerHTML=`<div id="tasksBox">${tasksPanel()}</div>`+todayPanel()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
+ $('#app').innerHTML=`<div id="tasksBox">${tasksPanel()}</div>`+todayPanel()+funRow()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
  ${extra?`<div class="extras"><div class="f" style="font-size:20px;color:#1D4E89;margin-bottom:8px;background:#fff;display:inline-block;padding:4px 14px;border-radius:99px">⛰️ Keep going, explorer!</div>${extra}</div>`:''}
  ${allDone?`<div class="card center" style="max-width:520px;margin:14px auto"><b class="f" style="font-size:24px">🎉 You finished every land!</b></div>`:''}</div>`;
  document.querySelectorAll('[data-land]').forEach(g=>{const go=()=>{V={s:'land',land:g.dataset.land};render();scrollTo(0,0)};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
  $('#tok').onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};
- bindTasks();if(!MYTASKS||!mapView.t||Date.now()-mapView.t>60000){mapView.t=Date.now();loadTasks()}
+ bindFun();bindTasks();if(!MYTASKS||!mapView.t||Date.now()-mapView.t>60000){mapView.t=Date.now();loadTasks()}
  /* walk the explorer along the road from the last land they were at */
  const SK='mq-at-'+ME.code+'-g'+ME.grade;let prev=null;try{prev=localStorage.getItem(SK)}catch(e){}
  try{localStorage.setItem(SK,String(ti))}catch(e){}
@@ -1418,9 +1575,9 @@ function landObj(){return C.lands.find(l=>l.code===V.land)}
 function landView(){const l=landObj();
  const J=journey(l);
  $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">${J?J.th.head:'Your stops'}</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
- ${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
+ ${landDone(l)?`<div class="card champ" style="margin:14px auto;max-width:760px"><div class="row"><span style="font-size:44px">⭐</span><div style="flex:1"><b class="f" style="font-size:22px;color:#1D4E89">${esc(l.name)} Champion challenge</b><div class="muted">10 mixed questions from every stop · 30 seconds each · no hints. Your best: <span class="cst">${'⭐'.repeat(champStars(l))}${'☆'.repeat(3-champStars(l))}</span></div></div><button class="b1" id="chgo">Take the challenge</button></div></div>`:''}${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
  ${J&&!HERO[l.code]&&sidePanels(l)?(()=>{const SP=sidePanels(l);return `<div class="scene" style="--bg:none;background:linear-gradient(180deg,#E6DDFB,#FFF6E6)"><div class="sgrid">${SP.left}<div><h2 class="f" style="text-align:center;color:#1D4E89;margin:0 0 10px">${J.th.head}</h2><div class="jwrap">${J.svg}</div></div>${SP.right}</div></div>`})():J?`<div class="jwrap">${J.svg}</div>`:`<div class="stops">${(()=>{const curSt=(l.stops.find(x=>!stopDone(x))||{}).n;return l.stops.map(st=>`<div class="stop${st.n===curSt?' here':''}"><h3>${st.n===curSt?`<span class="stopav">${avatarSVG(myAv(),44)}</span>`:''}${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}${st.n===curSt?' <span class="muted" style="font-size:15px">← you are here</span>':''}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')})()}</div>`}`;
- $('#bk').onclick=()=>{V={s:'map'};render()};
+ $('#bk').onclick=()=>{V={s:'map'};render()};const chg=$('#chgo');if(chg)chg.onclick=()=>{Q=null;V={s:'champ',land:l.code};render()};
  const m=$('#mtc');if(m)m.onclick=()=>{V={s:'listen',land:'TT',stop:0,mtc:true};render()};
  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{V={s:b.dataset.q,land:V.land,stop:+b.dataset.st};Q=null;render()});
  if(J)bindJourney(l,J);
