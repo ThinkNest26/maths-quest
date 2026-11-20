@@ -436,6 +436,7 @@ async function loadContent(){const r=await fetch(`content/grade${ME.grade}.json`
 async function signIn(code){const {data,error}=await rpc('mq_login',{p_code:code});
  if(error)return 'Could not connect. Please try again.';
  if(!data)return 'We could not find that code. Check it with your teacher.';
+ if(data.error==='wait')return 'Too many wrong codes. Please wait 10 minutes, then try again (ask your teacher to check your code).';
  if(data.error==='sbcode')return 'That is a Spelling Bee code! Maths Quest has its own code — ask your teacher.';
  if(data.error==='paused')return 'Maths Quest is paused for your school. Please ask your teacher.';
  ME=Object.assign({code:code.toUpperCase().replace(/[^A-Z0-9]/g,'')},data);ME.home_grade=data.grade;SUP=data.support||{};if(SUP.play_grade!=null&&SUP.play_grade!==''&&GRADE[+SUP.play_grade])ME.grade=+SUP.play_grade;applySupport();save();await loadContent();if(hasAvatar()){V={s:'map'}}else{AVS.first=true;AVS.tab='char';V={s:'avatar'}}render();afterSignin();return null}

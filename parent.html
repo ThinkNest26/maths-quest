@@ -246,6 +246,7 @@ function signin(m){$('#app').innerHTML=`<div class="card center" style="max-widt
  $('#pf').onsubmit=async e=>{e.preventDefault();const v=$('#pc').value.toUpperCase().replace(/[^A-Z0-9]/g,'');if(v.length<6){$('#pm').textContent='The code has 6 letters and numbers.';return}await open(v)}}
 async function open(code){$('#pm')&&($('#pm').textContent='Loading…');let r={data:null,error:{}};try{r=await sb.rpc('mq_parent',{p_code:code})}catch(e){}
  if(r.error&&!r.data){signin('Could not connect. Please try again.');return}if(!r.data){signin('We could not find that code. Please check it with your child’s teacher.');return}
+ if(r.data.error==='wait'){signin('Too many wrong codes. Please wait 10 minutes and try again.');return}
  if(r.data.error==='paused'){signin('Maths Quest is paused for this school at the moment.');return}
  D=r.data;D.code=code;try{sessionStorage.setItem('mq-parent',code)}catch(e){}
  const pg=D.support&&D.support.play_grade!=null&&D.support.play_grade!==''?+D.support.play_grade:D.grade;D.pg=pg;
