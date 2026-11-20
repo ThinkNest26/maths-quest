@@ -81,6 +81,16 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;fo
 .cupbn{font-size:44px;width:64px;text-align:center;font-family:Fredoka;font-weight:700;color:#1D3A5F}.cupbc{color:#fff;font-family:Fredoka;font-weight:700;font-size:34px;border-radius:18px;padding:8px 20px;min-width:150px;text-align:center}
 .cupbt{flex:1;height:46px;background:#fff;border-radius:999px;overflow:hidden;box-shadow:inset 0 2px 6px rgba(0,0,0,.08)}.cupbt i{display:block;height:100%;border-radius:999px;transition:width 1.2s cubic-bezier(.2,.9,.3,1)}
 .cupbv{font-family:Fredoka;font-size:44px;color:#1D3A5F;width:120px;text-align:right}.cupbl{text-align:center;font-size:28px;font-family:Fredoka;color:#7A5600}.cupbf{text-align:center;color:#5B7177;font-weight:800}
+@keyframes pin{50%{transform:scale(1.08)}}
+.crrun{gap:10px!important}.crrun .cupbt{height:36px}.crrun .cupbn,.crrun .cupbv{font-size:34px}
+.crjoin{text-align:center;font-size:30px;color:#1D3A5F;font-weight:800}.crcode{font-family:Fredoka;font-size:140px;letter-spacing:18px;color:#F2483A;line-height:1.1;margin:6px 0}
+.crkids{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;max-height:34vh;overflow:auto}.crkids span{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:18px;width:96px}.crkids svg{border-radius:50%;border:3px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.1)}
+.crgo{font-size:30px!important;padding:16px 48px!important}.crgo:disabled{opacity:.5}.crbig{font-family:Fredoka;font-size:260px;color:#F2483A;text-align:center;line-height:1;margin-top:8vh;animation:pin .6s infinite}
+.crtime{font-family:Fredoka;font-size:64px;color:#F2483A}.crname{font-family:Fredoka;font-size:30px;color:#1D3A5F;width:170px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.cupbr svg{border-radius:50%;flex:none}
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:26px;margin-top:10px}.pod{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:26px;color:#1D3A5F}.pod svg{border-radius:50%;border:5px solid #FFC93C}.pod span{font-size:20px;color:#5B7177;font-weight:800}
+.pblock{background:#FFE7A0;border-radius:14px 14px 0 0;width:170px;text-align:center;font-size:54px}.p1 .pblock{height:170px;background:#FFC93C}.p2 .pblock{height:120px}.p3 .pblock{height:90px;background:#FAD7A0}
+.crrest{display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;font-size:22px;color:#1D3A5F}
+.crcf{position:absolute;top:-20px;width:14px;height:18px;border-radius:3px;animation:crfall linear forwards;pointer-events:none}@keyframes crfall{to{transform:translateY(110vh) rotate(600deg)}}
 </style>
 </head>
 <body>
@@ -285,17 +295,51 @@ async function loadCupT(){const box=$('#cupT');if(!box)return;const [{data:a},{d
  const lastW=(b&&b.table||[]).filter(t=>(CUPG==='all'||t.grade===+CUPG)&&+t.total>0)[0];const fd=d=>new Date(d+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'short'});
  box.innerHTML=`<div class="card cupcard"><div class="row" style="flex-wrap:wrap;gap:8px"><h2 style="color:var(--sea);font-size:22px">🏆 Class Cup</h2><span class="muted small">${fd(a.week_start)} – ${fd(a.week_end)}${CUPW?'':' · this week'}</span><div class="spacer"></div>
   <select id="cupg" style="width:auto"><option value="all">Whole school</option>${grades.map(g=>`<option value="${g}" ${String(g)===String(CUPG)?'selected':''}>${GL(g)}</option>`).join('')}</select>
-  <select id="cupw" style="width:auto">${[0,1,2,3].map(w=>`<option value="${w}" ${w===CUPW?'selected':''}>${w===0?'This week':w===1?'Last week':w+' weeks ago'}</option>`).join('')}</select><button class="b1" id="cupbig">📺 Show on the board</button></div>
+  <button class="b1" id="craceb">🏁 Class race on the board</button><select id="cupw" style="width:auto">${[0,1,2,3].map(w=>`<option value="${w}" ${w===CUPW?'selected':''}>${w===0?'This week':w===1?'Last week':w+' weeks ago'}</option>`).join('')}</select><button class="b1" id="cupbig">📺 Show on the board</button></div>
   ${lastW&&CUPW===0?`<p style="margin:8px 0">🏆 Last week’s winner: <b>${GL(lastW.grade)} · ${esc(lastW.class_name)}</b> (${lastW.avg} points per child)</p>`:''}
   <div class="cupbarsT">${T.map((t,i)=>`<div class="cuprT"><span class="cupnT">${['🥇','🥈','🥉'][i]||i+1}</span><span class="cupcT" style="background:${CUPCOLT[i%8]}">${CUPG==='all'?GL(t.grade).replace('Grade ','G')+' · ':''}${esc(t.class_name)}</span><div class="cuptT"><i style="width:${Math.max(3,100*t.avg/mx)}%;background:${CUPCOLT[i%8]}"></i></div><b class="cupvT">${t.avg}</b><span class="small muted">${t.playing}/${t.kids} playing · ${t.total} pts</span></div>`).join('')||'<p class="muted">Add children to classes to start the Cup.</p>'}</div>
   <p class="small muted" style="margin:10px 0 0">1 point for every right answer and 5 for every quest finished, Monday to Sunday. Classes are ranked by the average per child, so class size doesn’t matter. Children see their own grade’s Cup on their map.</p></div>`;
- $('#cupg').onchange=e=>{CUPG=e.target.value;loadCupT()};$('#cupw').onchange=e=>{CUPW=+e.target.value;loadCupT()};$('#cupbig').onclick=()=>cupBoard(T,a,lastW)}
+ $('#cupg').onchange=e=>{CUPG=e.target.value;loadCupT()};$('#cupw').onchange=e=>{CUPW=+e.target.value;loadCupT()};$('#cupbig').onclick=()=>cupBoard(T,a,lastW);$('#craceb').onclick=craceSetup}
 function cupBoard(T,a,lastW){const ov=document.createElement('div');ov.className='cupboard';const mx=Math.max(1,...T.map(t=>+t.avg));
  ov.innerHTML=`<button class="cupx" title="Close">✕</button><div class="cuph"><svg viewBox="0 0 64 64" style="width:70px;height:70px"><use href="#logo"/></svg><div><div class="f" style="font-size:54px;color:#1D3A5F">🏆 Class Cup</div><div style="font-size:22px;color:#5B7177;font-weight:800">${CUPG==='all'?'Whole school':GL(+CUPG)} · ${new Date(a.week_start+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long'})} – ${new Date(a.week_end+'T12:00:00Z').toLocaleDateString('en-GB',{day:'numeric',month:'long'})}</div></div></div>
   <div class="cupbb">${T.slice(0,10).map((t,i)=>`<div class="cupbr"><span class="cupbn">${['🥇','🥈','🥉'][i]||i+1}</span><span class="cupbc" style="background:${CUPCOLT[i%8]}">${CUPG==='all'?GL(t.grade).replace('Grade ','G')+' · ':''}${esc(t.class_name)}</span><div class="cupbt"><i style="width:0%;background:${CUPCOLT[i%8]}" data-w="${Math.max(3,100*t.avg/mx)}"></i></div><b class="cupbv">${t.avg}</b></div>`).join('')}</div>
   ${lastW?`<div class="cupbl">Last week’s winner: <b>${esc(lastW.class_name)}</b> 🏆</div>`:''}<div class="cupbf">1 point per right answer · 5 points per quest · average per child · Powered by ThinkNest</div>`;
  document.body.appendChild(ov);ov.querySelector('.cupx').onclick=()=>{ov.remove();try{document.exitFullscreen()}catch(e){}};try{ov.requestFullscreen&&ov.requestFullscreen()}catch(e){}
  setTimeout(()=>ov.querySelectorAll('[data-w]').forEach((e,i)=>setTimeout(()=>e.style.width=e.dataset.w+'%',i*180)),200)}
+/* ---------- 🏁 class race on the board ---------- */
+let CRACE=null,CRPOLL=null;
+function craceSetup(){const grades=[...new Set(KIDS.map(k=>k.grade))].sort();if(!grades.length){toast('Add children first');return}
+ const draw=g=>{const cls=[...new Set(KIDS.filter(k=>k.grade===g).map(k=>k.class_name).filter(Boolean))].sort();
+  $('#modal').innerHTML=`<div class="modal"><div class="card" style="max-width:480px"><h2 style="color:var(--sea)">🏁 Class race on the board</h2><p class="muted small">Everyone answers the same quick mental maths for 60 seconds. Put this on the projector; children join on their devices with a 4-digit code.</p>
+   <label class="supl"><b>Questions for</b><select id="crg" style="width:auto">${grades.map(x=>`<option value="${x}" ${x===g?'selected':''}>${GL(x)}</option>`).join('')}</select></label>
+   <label class="supl"><b>Class (for the title)</b><select id="crc" style="width:auto"><option value="">Any class</option>${cls.map(c=>`<option>${esc(c)}</option>`).join('')}</select></label>
+   <div class="row" style="margin-top:12px"><div class="spacer"></div><button class="b2" id="crx">Cancel</button><button class="b1" id="cro">Open the race</button></div></div></div>`;
+  $('#crg').onchange=e=>draw(+e.target.value);$('#crx').onclick=()=>$('#modal').innerHTML='';
+  $('#cro').onclick=async()=>{const g2=+$('#crg').value,c2=$('#crc').value;const {data}=await sb.rpc('mq_crace_create',{p_grade:g2,p_class:c2});if(!data||!data.ok){toast('Could not open the race');return}$('#modal').innerHTML='';craceBoard(data.code,g2,c2)}};
+ draw(grades[0])}
+function craceBoard(code,g,cls){CRACE={code,g,cls,d:null,st:''};let ov=document.querySelector('.cupboard.crb');if(!ov){ov=document.createElement('div');ov.className='cupboard crb';document.body.appendChild(ov);try{ov.requestFullscreen&&ov.requestFullscreen()}catch(e){}}
+ const close=()=>{clearInterval(CRPOLL);CRACE=null;ov.remove();try{document.exitFullscreen()}catch(e){}};
+ const title=`${GL(g)}${cls?' · '+esc(cls):''}`;
+ const paint=()=>{const d=CRACE&&CRACE.d;if(!d)return;const P=d.players||[];const st=d.status==='run'&&d.starts_in>0?'count':d.status;
+  if(st==='wait'){ov.innerHTML=`<button class="cupx" title="Close">✕</button><div class="cuph"><svg viewBox="0 0 64 64" style="width:70px;height:70px"><use href="#logo"/></svg><div><div class="f" style="font-size:48px;color:#1D3A5F">🏁 Class race</div><div style="font-size:22px;color:#5B7177;font-weight:800">${title}</div></div></div>
+   <div class="crjoin"><div>Go to <b>${esc(location.host)}/race</b><br>and type this code:</div><div class="crcode">${esc(code)}</div><div class="small" style="font-size:18px">or tap ⚡ Beat the clock → 🏁 Race a friend → Join</div></div>
+   <div class="crkids">${P.map(p=>`<span>${avatarSVG(p.avatar,54)}<b>${esc(p.name)}</b></span>`).join('')||'<span class="muted" style="font-size:22px">Waiting for explorers to join…</span>'}</div>
+   <div style="text-align:center"><div style="font-size:24px;font-weight:800;color:#1D3A5F;margin-bottom:10px">${P.length} joined</div><button class="b1 crgo" ${P.length?'':'disabled'}>Start the race! 🏁</button></div>`}
+  else if(st==='count'){ov.innerHTML=`<button class="cupx">✕</button><div class="crbig">${Math.max(1,Math.ceil(d.starts_in))}</div><div style="text-align:center;font-size:30px;font-weight:800;color:#1D3A5F">Get ready, ${P.length} explorers!</div>`}
+  else if(st==='run'){const left=Math.max(0,Math.ceil(60+d.starts_in)),mx=Math.max(10,...P.map(p=>p.score));
+   ov.innerHTML=`<button class="cupx">✕</button><div class="cuph" style="justify-content:space-between"><div class="f" style="font-size:44px;color:#1D3A5F">🏁 ${title}</div><div class="crtime">${left}s</div></div>
+   <div class="cupbb crrun">${P.slice(0,8).map((p,i)=>`<div class="cupbr"><span class="cupbn">${['🥇','🥈','🥉'][i]||i+1}</span>${avatarSVG(p.avatar,50)}<span class="crname">${esc(p.name)}</span><div class="cupbt"><i style="width:${Math.max(2,100*p.score/mx)}%;background:${CUPCOLT[i%8]}"></i></div><b class="cupbv">${p.score}</b></div>`).join('')}</div>
+   <div class="cupbf">${P.length} racing${P.length>8?' · top 8 shown':''}</div>`}
+  else{const top=P.slice(0,3);ov.innerHTML=`<button class="cupx">✕</button><div class="f" style="font-size:52px;color:#1D3A5F;text-align:center">🏆 Results · ${title}</div>
+   <div class="podium">${[1,0,2].map(i=>top[i]?`<div class="pod p${i+1}">${avatarSVG(top[i].avatar,i?90:120)}<b>${esc(top[i].name)}</b><span>${top[i].score} right</span><div class="pblock">${['🥇','🥈','🥉'][i]}</div></div>`:'').join('')}</div>
+   <div class="crrest">${P.slice(3).map((p,i)=>`<span>${i+4}. ${esc(p.name)} <b>${p.score}</b></span>`).join('')}</div>
+   <div style="text-align:center;display:flex;gap:12px;justify-content:center"><button class="b1 cragain" style="font-size:22px">🔁 Race again</button><button class="b2 crclose" style="font-size:22px">Close</button></div>`;
+   if(CRACE.st!=='done'){CRACE.st='done';crConfetti(ov)}}
+  ov.querySelectorAll('.cupx,.crclose').forEach(b=>b.onclick=close);const go=ov.querySelector('.crgo');if(go)go.onclick=async()=>{go.disabled=true;const {data}=await sb.rpc('mq_crace_start',{p_race:code});if(data&&!data.error){CRACE.d=data;paint()}};
+  const ag=ov.querySelector('.cragain');if(ag)ag.onclick=async()=>{clearInterval(CRPOLL);const {data}=await sb.rpc('mq_crace_create',{p_grade:g,p_class:cls});if(data&&data.ok)craceBoard(data.code,g,cls)}};
+ const poll=async()=>{if(!CRACE||CRACE.code!==code)return;const {data}=await sb.rpc('mq_crace_board',{p_race:code});if(!CRACE||!data||data.error)return;CRACE.d=data;paint()};
+ clearInterval(CRPOLL);CRPOLL=setInterval(poll,1000);poll()}
+function crConfetti(ov){const cols=['#F2483A','#2F9BE0','#2DBE6C','#F7B538','#9B6BE0'];for(let i=0;i<70;i++){const c=document.createElement('i');c.className='crcf';c.style.cssText=`left:${Math.random()*100}%;background:${cols[i%5]};animation-delay:${Math.random()*.6}s;animation-duration:${2+Math.random()*1.5}s`;ov.appendChild(c)}}
 function isFinisher(kid){const c=CONT[PG(kid)];if(!c||!c.lands||!c.lands.length)return false;return analyse(kid,c).every(l=>l.stops.length&&l.stops.every(s=>s.qd===s.qt))}
 function trophy(kid){return isFinisher(kid)?' <span title="Finished every land" class="trophy">🏆</span>':''}
 function speedOf(kid){const L=SPEED[kid.id]||[];if(!L.length)return null;const td=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dubai'}).format(new Date());const t=L.find(x=>x.day===td);const B=L.slice().sort((a,b)=>b.best-a.best||a.avg_ms-b.avg_ms)[0];return {pb:B.best,pb_s:B.avg_ms?(B.avg_ms/1000).toFixed(1):null,today_s:t&&t.avg_ms?(t.avg_ms/1000).toFixed(1):null,today:t?t.best:null,days:L.length,last:L.map(x=>x.day).sort().pop(),list:L.slice().sort((a,b)=>a.day<b.day?-1:1)}}
