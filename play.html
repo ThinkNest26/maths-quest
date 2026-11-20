@@ -232,6 +232,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .cav svg{border-radius:50%;border:5px solid #FFC93C}.clands{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:12px 0}.clands span{display:flex;flex-direction:column;align-items:center;font-size:12px}.clands svg{width:38px;height:38px}.clands i{font-style:normal}
 .cf{display:flex;justify-content:space-between;font-weight:800;color:#1D4E89;margin-top:8px}.cp{font-size:12px;color:#6B7F8E;margin-top:6px}
 @media(max-width:700px){.funrow,.spgrid{grid-template-columns:1fr}.lane .who{width:90px}}
+.lbw small{display:block;font-family:Nunito;font-size:12px;color:var(--muted);font-weight:700;text-align:right}.lbw{text-align:right}.trt{width:100%;border-collapse:collapse;margin:6px 0;font-size:16px}.trt th{font-size:12px;color:var(--muted);text-transform:uppercase;text-align:center;padding:4px}.trt td{text-align:center;padding:5px;border-top:1px solid #EFE6D2}.trt tr.tbest td{background:#FFF3C4}.mytries{max-height:330px;overflow:auto}
 </style>
 </head>
 <body>
@@ -1389,13 +1390,18 @@ function speedView(){if(!SP)SP={stage:'menu',scope:'class',period:'today'};
  if(SP.stage==='run')return speedRun();if(SP.stage==='end')return speedEnd();if(SP.race)return raceView();
  $('#app').innerHTML=speedHead('⚡ Beat the clock')+`<div class="spgrid"><div class="card center"><div style="font-size:64px;line-height:1">⏱️</div><h2 style="color:var(--sea);margin:6px 0">How many can you get right in 60 seconds?</h2>
   <p class="muted">Quick mental maths for ${GRADE[ME.grade]}. Your first go each day earns stars!</p><div class="row" style="justify-content:center;gap:10px;margin:10px 0"><span class="stars">Today’s best: <b id="spt">…</b></span><span class="stars">Personal best: <b id="spp">…</b></span></div>
-  <button class="b1" id="spgo" style="font-size:26px;padding:16px 40px">Start! ⚡</button><div style="margin-top:14px"><button class="b2" id="sprace">🏁 Race a friend</button></div></div>
+  <button class="b1" id="spgo" style="font-size:26px;padding:16px 40px">Start! ⚡</button><div style="margin-top:14px"><button class="b2" id="sprace">🏁 Race a friend</button></div>
+  <div id="mytries" class="mytries"></div></div>
   <div class="card"><div class="f" style="font-size:22px;color:#1D4E89;margin-bottom:8px">🏆 Leaderboard</div><div class="lbtabs"><button data-sc="class" class="${SP.scope==='class'?'on':''}">My class</button><button data-sc="grade" class="${SP.scope==='grade'?'on':''}">My grade</button><span style="width:10px"></span><button data-pe="today" class="${SP.period==='today'?'on':''}">Today</button><button data-pe="week" class="${SP.period==='week'?'on':''}">This week</button></div><div id="lbrows" class="muted">Loading…</div></div></div>`;
  bindSpeedBack();$('#spgo').onclick=()=>speedStart();$('#sprace').onclick=()=>{SP.race={stage:'menu'};render()};
  document.querySelectorAll('[data-sc]').forEach(b=>b.onclick=()=>{SP.scope=b.dataset.sc;render()});document.querySelectorAll('[data-pe]').forEach(b=>b.onclick=()=>{SP.period=b.dataset.pe;render()});
+ if(SP.mine)showMine(SP.mine);rpc('mq_speed_mine',{p_code:ME.code}).then(({data})=>{if(data){SP.mine=data;if(V.s==='speed'&&SP.stage==='menu'&&!SP.race)showMine(data)}});
  rpc('mq_speed_board',{p_code:ME.code,p_scope:SP.scope,p_period:SP.period}).then(({data})=>{const el=$('#lbrows');if(!el)return;const L=Array.isArray(data)?data:[];const me=L.find(x=>x.me);
-  if($('#spt'))$('#spt').textContent=SP.todayBest!=null?SP.todayBest:(SP.period==='today'&&me?me.best:'—');if($('#spp'))$('#spp').textContent=SP.pb!=null?SP.pb:'—';
-  el.innerHTML=L.length?`<ol class="lbl">${L.map((x,i)=>`<li class="${x.me?'me':''}"><span class="lbm">${['🥇','🥈','🥉'][i]||i+1}</span>${avatarSVG(x.avatar,40)}<span class="lbn">${esc(x.name)}${x.me?' (you)':''}</span><span class="lbw">${x.best}</span></li>`).join('')}</ol>`:'<p class="muted">No scores yet. Be the first! ⚡</p>'})}
+  el.innerHTML=L.length?`<ol class="lbl">${L.map((x,i)=>`<li class="${x.me?'me':''}"><span class="lbm">${['🥇','🥈','🥉'][i]||i+1}</span>${avatarSVG(x.avatar,40)}<span class="lbn">${esc(x.name)}${x.me?' (you)':''}</span><span class="lbw">${x.best}<small>${x.ms?secs(x.ms)+' s each':''}</small></span></li>`).join('')}</ol><p class="muted" style="font-size:13px;margin:8px 0 0">Number of right answers in 60 seconds · seconds per answer</p>`:'<p class="muted">No scores yet. Be the first! ⚡</p>'})}
+function secs(ms){return (Math.round(ms/100)/10).toFixed(1)}
+function showMine(m){if(!m)return;const T=$('#spt'),P=$('#spp'),L=$('#mytries');
+ if(T)T.textContent=m.today!=null?`${m.today} right · ${secs(m.today_ms)} s each`:'—';if(P)P.textContent=m.pb!=null?`${m.pb} right${m.pb_ms?' · '+secs(m.pb_ms)+' s each':''}`:'—';
+ const t=(m.tries||[]).slice().reverse();if(L)L.innerHTML=t.length?`<div class="f" style="font-size:19px;color:#1D4E89;margin-top:16px">My goes today</div><table class="trt"><thead><tr><th>Go</th><th>Time</th><th>Right</th><th>Seconds per answer</th></tr></thead><tbody>${t.map((x,i)=>`<tr${x.s===m.today?' class="tbest"':''}><td>${t.length-i}</td><td>${esc(x.at||'')}</td><td><b>${x.s}</b>${x.s===m.today?' 🏆':''}</td><td>${x.s?secs(x.ms)+' s':'—'}</td></tr>`).join('')}</tbody></table><div class="muted" style="font-size:13px">Every go lasts 60 seconds. Fewer seconds per answer = faster!</div>`:''}
 function speedStart(race){const seed=race?race.seed:Math.floor(Math.random()*1e9),R=rng(seed),g=race?race.grade:ME.grade;
  SP.stage='run';SP.R=R;SP.g=g;SP.score=0;SP.wrong=0;SP.ms=0;SP.end=Date.now()+60000;SP.q=mmQ(g,R);SP.t0=Date.now();SP.inRace=!!race;render()}
 function speedRun(){const left=Math.max(0,Math.ceil((SP.end-Date.now())/1000));
@@ -1411,10 +1417,10 @@ function speedRun(){const left=Math.max(0,Math.ceil((SP.end-Date.now())/1000));
  clearInterval(TIMER);TIMER=setInterval(()=>{const l=Math.max(0,(SP.end-Date.now())/1000);const t=$('#spl'),b=$('#tb');if(t)t.textContent=Math.ceil(l)+'s';if(b)b.style.width=(100*l/60)+'%';if(SP.inRace)raceLanesUpdate();
   if(l<=0){clearInterval(TIMER);SP.stage='end';if(SP.inRace)raceScore(true);else speedSave();render()}},250)}
 async function speedSave(){const avg=SP.score?Math.round(SP.ms/SP.score):0;const {data}=await rpc('mq_speed_save',{p_code:ME.code,p_score:SP.score,p_avg_ms:avg});
- if(data){const newPB=data.pb===SP.score&&SP.score>0&&(SP.pb==null||SP.score>SP.pb);SP.todayBest=data.today;SP.pb=data.pb;if(typeof data.stars==='number'){ME.stars=data.stars;header()}SP.give=data.give;SP.newPB=newPB;if(SP.stage==='end'&&V.s==='speed')render();if(newPB)celebrate(false)}}
+ if(data){const prevPB=SP.mine?SP.mine.pb:SP.pb;const newPB=data.pb===SP.score&&SP.score>0&&(prevPB==null||SP.score>prevPB);SP.mine=Object.assign({},SP.mine||{},{today:data.today,today_ms:data.today_ms,pb:data.pb,tries:data.tries||(SP.mine&&SP.mine.tries)||[]});if(newPB)SP.mine.pb_ms=SP.score?Math.round(SP.ms/SP.score):0;SP.todayBest=data.today;SP.pb=data.pb;if(typeof data.stars==='number'){ME.stars=data.stars;header()}SP.give=data.give;SP.newPB=newPB;if(SP.stage==='end'&&V.s==='speed')render();if(newPB)celebrate(false)}}
 function speedEnd(){if(SP.inRace)return raceView();const avg=SP.score?(SP.ms/SP.score/1000).toFixed(1):'—';
  $('#app').innerHTML=speedHead('⚡ Beat the clock')+`<div class="card center"><div style="font-size:70px;line-height:1">${SP.newPB?'🏆':SP.score>=10?'🌟':'⚡'}</div><div class="big">${SP.score}</div><h2 style="color:var(--sea)">${SP.newPB?'New personal best!':'right in 60 seconds'}</h2>
-  <p class="muted">About <b>${avg}</b> seconds per answer${SP.give?` · <b>+${SP.give} ⭐</b> for today’s first go`:''}</p><div class="row" style="justify-content:center;gap:10px"><button class="b1" id="spagain">Go again ⚡</button><button class="b2" id="spmenu">Leaderboard</button></div></div>`;
+  <p style="font-size:20px">60 seconds · about <b>${avg} seconds</b> per answer${SP.give?` · <b>+${SP.give} ⭐</b> for today’s first go`:''}</p><div class="row" style="justify-content:center;gap:10px"><button class="b1" id="spagain">Go again ⚡</button><button class="b2" id="spmenu">Leaderboard</button></div></div>`;
  bindSpeedBack();$('#spagain').onclick=()=>speedStart();$('#spmenu').onclick=()=>{SP.stage='menu';render()};if(SP.score)praise(true)}
 /* ---------- 🏁 race a friend (live) ---------- */
 let RPOLL=null;
