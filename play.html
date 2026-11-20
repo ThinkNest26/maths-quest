@@ -248,6 +248,10 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 @media(max-width:700px){.ckcard{flex-wrap:wrap}}
 .ckor{display:flex;align-items:center;gap:10px;margin:14px 0 8px;color:var(--muted);font-weight:800}.ckor:before,.ckor:after{content:'';flex:1;height:2px;background:#EFE6D2}
 .ckbtn{font-size:19px;border-color:#2F9BE0!important;color:#1D4E89!important;background:#EEF6FF!important}.ckhint{background:#EEF6FF;border-radius:14px;padding:8px 12px;margin-top:12px}
+#savechip{position:fixed;left:12px;bottom:12px;z-index:90;background:#1D4E89;color:#fff;font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px;box-shadow:0 6px 16px rgba(0,0,0,.2);display:flex;align-items:center;gap:8px}
+#savechip .spin{width:14px;height:14px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spn 1s linear infinite}@keyframes spn{to{transform:rotate(360deg)}}
+.card{position:relative}.flagb{position:absolute;right:10px;bottom:8px;background:none;border:0;font-size:18px;opacity:.45;cursor:pointer;padding:4px;box-shadow:none}.flagb:hover{opacity:1}
+.flr{display:grid;gap:6px;margin:10px 0}.flr label{display:flex;gap:8px;align-items:center;font-weight:800;background:#F7FBFE;border:2px solid #E3EEF6;border-radius:12px;padding:8px 10px;cursor:pointer}
 </style>
 </head>
 <body>
@@ -413,7 +417,21 @@ function check(item,given){const a=String(item.a),g=String(given??'');if(!g.trim
  return false}
 function firstNum(s){const m=norm(s).replace(/,(?=\d{3})/g,'').match(/-?\d+(?:\.\d+)?(?: \d+\/\d+)?/);return m?m[0]:null}
 /* ---------- data ---------- */
-async function rpc(fn,args){if(!sb)return {data:null,error:{message:'offline'}};try{return await sb.rpc(fn,args)}catch(e){return {data:null,error:e}}}
+async function rpc0(fn,args){if(!sb)return {data:null,error:{message:'offline'}};try{return await sb.rpc(fn,args)}catch(e){return {data:null,error:e}}}
+/* answers, quests and scores are kept and sent again if the internet drops */
+const SAFE=['mq_answer','mq_complete','mq_check_save','mq_check_done','mq_speed_save','mq_avatar_save','mq_report'];
+const netErr=e=>!!e&&/fetch|network|offline|timeout|load failed|connection|abort/i.test(String(e.message||e));
+let OUTBOX=[];try{OUTBOX=JSON.parse(localStorage.getItem('mq-outbox')||'[]')}catch(e){}
+function saveBox(){try{localStorage.setItem('mq-outbox',JSON.stringify(OUTBOX.slice(-300)))}catch(e){}savingChip()}
+function savingChip(){let c=document.getElementById('savechip');if(!OUTBOX.length){if(c)c.remove();return}if(!c){c=document.createElement('div');c.id='savechip';document.body.appendChild(c)}
+ c.innerHTML=`<span class="spin"></span> Saving your work… (${OUTBOX.length})`;c.title='No internet right now. Your answers are kept and will be saved when the internet is back.'}
+let FLUSHING=false;async function flushBox(){if(FLUSHING||!OUTBOX.length)return;FLUSHING=true;
+ while(OUTBOX.length){const j=OUTBOX[0];const r=await rpc0(j.fn,j.args);if(r.error&&netErr(r.error))break;OUTBOX.shift();saveBox();
+  if(r.data&&typeof r.data==='object'&&typeof r.data.stars==='number'&&ME){ME.stars=r.data.stars;if(r.data.done)ME.done=r.data.done;header()}}
+ FLUSHING=false;savingChip()}
+async function rpc(fn,args){if(SAFE.includes(fn)&&OUTBOX.length){OUTBOX.push({fn,args,t:Date.now()});saveBox();flushBox();return {data:null,error:null,queued:true}}
+ const r=await rpc0(fn,args);if(SAFE.includes(fn)&&r.error&&netErr(r.error)){OUTBOX.push({fn,args,t:Date.now()});saveBox();return {data:null,error:null,queued:true}}return r}
+setInterval(flushBox,15000);window.addEventListener('online',flushBox);setTimeout(()=>{savingChip();flushBox()},1500);
 async function loadContent(){const r=await fetch(`content/grade${ME.grade}.json`,{cache:'no-cache'});C=await r.json()}
 async function signIn(code){const {data,error}=await rpc('mq_login',{p_code:code});
  if(error)return 'Could not connect. Please try again.';
@@ -1485,7 +1503,7 @@ function mixView(){const champ=V.s==='champ',l=champ?landObj():null;
  const it=Q.list[Q.i],[pic,text]=splitPic(it.q),sec=Math.round(30*(TM()||1));
  $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← ${champ?esc(l.name):'Map'}</button><span class="f">${title}</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>
   <div class="card center">${champ?`<div class="timer"><i id="tb" style="width:100%"></i></div>`:''}<div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}${champ?' · no hints, one try!':''}</div>${visFor(it.q,findLand(it.id),ME.grade)?`<div class="fpwrap">${visFor(it.q,findLand(it.id),ME.grade)}</div>`:pic?picBox(pic):''}
-  <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
+  <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div>${flagBtn()}</div>`;bindFlag(it);
  $('#bk').onclick=()=>{Q=null;V=champ?{s:'land',land:l.code}:{s:'map'};render()};$('#hear').onclick=()=>say(text,it.k);
  let gone=false;const go=g=>{if(gone)return;gone=true;clearInterval(TIMER);const ok=g!==null&&check(it,g);Q.res.push(ok);rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok});if(ok){ME.facts=ME.facts||{};ME.facts[it.id]=(ME.facts[it.id]||0)+1}else{ME.wrong=ME.wrong||{};ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
   if(ok){celebrate(false,()=>{Q.i++;render()})}else{oops();$('#fb').innerHTML=`<span class="bad">${g===null?'⏰ Time’s up! ':''}The answer is <b>${esc(it.a)}</b>.</span> ${howBtn(it)} <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;bindHow(it);$('#nx').onclick=()=>{Q.i++;render()}}};
@@ -1823,6 +1841,18 @@ const HOW=(()=>{
   return {steps:[it.h?`💡 ${it.h}`:'Read the question slowly and find the important numbers.','Try it again on paper, step by step.',`The answer is ${B(it.a)}.`],ok:false}}
  return {steps};
 })();
+/* 🚩 report a problem with a question */
+function flagBtn(){return `<button class="flagb" id="flagb" title="Report a problem with this question" aria-label="Report a problem with this question">🚩</button>`}
+function bindFlag(it,given){const b=$('#flagb');if(b)b.onclick=()=>flagModal(it,given)}
+function flagModal(it,given){const ov=document.createElement('div');ov.className='howov';const R=['The answer is wrong','The picture does not match','The question is confusing','Something else'];
+ ov.innerHTML=`<div class="howcard"><div class="row"><b class="f" style="font-size:24px;color:#1D4E89">🚩 Something wrong?</b><div class="spacer"></div><button class="b2 sm" id="flX">✕</button></div>
+  <p class="muted" style="margin:6px 0">Thank you for helping! Tell us what is wrong with this question.</p><div class="howq" style="font-size:20px">${esc(splitPic(it.q)[1])}</div>
+  <div class="flr">${R.map((r,i)=>`<label><input type="radio" name="flr" value="${esc(r)}" ${i?'':'checked'}> ${esc(r)}</label>`).join('')}</div>
+  <textarea id="flN" rows="2" maxlength="300" placeholder="Anything else? (optional)" style="width:100%;font:inherit;border:2px solid #DCE8F0;border-radius:12px;padding:8px"></textarea>
+  <div class="row" style="justify-content:center;gap:10px;margin-top:12px"><button class="b1" id="flS">Send</button><button class="b2" id="flC">Cancel</button></div></div>`;
+ document.body.appendChild(ov);const close=()=>ov.remove();ov.querySelector('#flX').onclick=close;ov.querySelector('#flC').onclick=close;
+ ov.querySelector('#flS').onclick=async()=>{const reason=(ov.querySelector('[name=flr]:checked')||{}).value||'';close();
+  await rpc('mq_report',{p_code:ME.code,p_qid:it.id||'',p_grade:ME.grade,p_question:it.q||'',p_answer:String(it.a||''),p_given:String(given==null?'':given),p_reason:reason,p_note:ov.querySelector('#flN').value||''});cheer('Thank you! 🚩 We’ll check it.')}}
 function howBtn(it){return `<button class="b2 howb" id="howb">💡 Show me how</button>`}
 function bindHow(it){const b=$('#howb');if(b)b.onclick=()=>showHow(it)}
 function showHow(it){const H=HOW.steps(it),S=H.steps;let n=1;const ov=document.createElement('div');ov.className='howov';
@@ -1996,7 +2026,7 @@ function practiseView(){const st=stopObj();
  const it=Q.list[Q.i];const [pic,text]=splitPic(it.q);
  $('#app').innerHTML=qhead('✏️ Practise it',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`)+
  `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${fpFor(it.q)||(pic?`${picBox(pic)}`:'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
- ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;autoRead(text,it.k);
+ ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div>${flagBtn()}</div>`;autoRead(text,it.k);bindFlag(it);
  bindBack();$('#hear').onclick=()=>say(text,it.k);
  bindAnswer(it,async g=>{const ok=check(it,g);
   if(ok||Q.tries>=1){if(Q.tries===0){rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
