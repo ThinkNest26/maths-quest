@@ -67,6 +67,7 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;fo
 .sovt{border-collapse:collapse;width:100%;font-size:14px}.sovt th{font-size:12px;color:var(--muted);text-transform:uppercase;text-align:left;padding:6px}.sovt td{padding:7px 6px;border-top:1px solid #EFE6D2;white-space:nowrap}.sovt tr.tot td{background:#F7F1E3;font-weight:800}
 .pbar{position:relative;background:#F1ECDD;border-radius:999px;height:20px;min-width:90px}.pbar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.pbar span{position:relative;font-size:12px;font-weight:800;padding-left:8px;line-height:20px}
 .idle{display:flex;flex-wrap:wrap;gap:6px}.idlek{border:2px solid #EFE6D2;border-radius:999px;padding:3px 10px;text-decoration:none;color:var(--ink,#1D2B36)}
+.cklink{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#EEF6FF;border:2px solid #CFE3F7;border-radius:14px;padding:8px 12px;margin:0 0 12px}.cklink span{flex:1}
 </style>
 </head>
 <body>
@@ -570,8 +571,9 @@ async function renderChecks(){await loadNC();if(CKID){renderCheckRes();return}
    <button class="b1 sm" data-ckres="${ck.id}">📊 Results</button><button class="b2 sm" data-ckopen="${ck.id}">${ck.open?'Close':'Reopen'}</button><button class="b2 sm" data-ckdel="${ck.id}">✕</button></div>`}).join('');
  $('#app').innerHTML=tabsBar()+`<div class="card"><div class="row"><h2 style="color:var(--sea);font-size:22px">📋 Maths checks</h2><div class="spacer"></div><button class="b1" id="cknew">+ New check</button></div>
   <p class="muted" style="margin:6px 0 12px">A check is a short, untimed quiz with questions from every topic in the grade, so you can see what each child knows. Run one at the <b>start of the year</b> and one at the <b>end of each term</b>, then compare them to see each child’s growth. Children see it on their map until you close it. Every question is linked to a National Curriculum objective.</p>
+  <div class="cklink"><span>🔗 Quickest way in for children: <b>${location.origin}/check</b> · they type their code and the check opens straight away. They can also tap <b>📋 I’m doing a maths check</b> on the sign-in page.</span><button class="b2 sm" id="ckcopy">Copy link</button></div>
   ${rows||'<p class="muted">No checks yet. Click <b>+ New check</b> to set your first one.</p>'}</div>`;
- bindTabsT();$('#cknew').onclick=newCheckModal;
+ bindTabsT();$('#cknew').onclick=newCheckModal;$('#ckcopy').onclick=()=>{try{navigator.clipboard.writeText(location.origin+'/check');toast('Link copied')}catch(e){toast(location.origin+'/check')}};
  document.querySelectorAll('[data-ckres]').forEach(b=>b.onclick=()=>{CKID=+b.dataset.ckres;CKCMP=null;CKCLS='all';renderChecks()});
  document.querySelectorAll('[data-ckopen]').forEach(b=>b.onclick=async()=>{const ck=CHECKS.find(c=>c.id===+b.dataset.ckopen);const {error}=await sb.from('mq_checks').update({open:!ck.open}).eq('id',ck.id);if(error){toast('Could not update');return}ck.open=!ck.open;toast(ck.open?'Check reopened':'Check closed. Children no longer see it.');renderChecks()});
  document.querySelectorAll('[data-ckdel]').forEach(b=>b.onclick=async()=>{const ck=CHECKS.find(c=>c.id===+b.dataset.ckdel);if(!confirm(`Delete “${ck.name}” and all its results? This cannot be undone.`))return;const {error}=await sb.from('mq_checks').delete().eq('id',ck.id);if(error){toast('Could not delete');return}CHECKS=CHECKS.filter(c=>c.id!==ck.id);CRES=CRES.filter(r=>r.check_id!==ck.id);renderChecks()})}
