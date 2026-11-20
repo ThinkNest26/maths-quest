@@ -285,6 +285,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .sndrow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid #EFE6D2;cursor:pointer}.sndi{font-size:28px;width:36px;text-align:center}
 .tgl{appearance:none;-webkit-appearance:none;width:54px;height:30px;border-radius:999px;background:#D6D0C2;position:relative;cursor:pointer;transition:background .2s;flex:none}.tgl:checked{background:#2DBE6C}
 .tgl::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:left .2s}.tgl:checked::after{left:27px}
+.spdrow{display:flex;gap:6px;width:100%;margin-top:8px}.spd{flex:1;font-family:Fredoka,Arial;font-weight:700;font-size:16px;padding:9px 6px;border-radius:14px;border:3px solid #DCE7F2;background:#fff;color:#1D4E89;cursor:pointer}.spd.on{border-color:#2F9BE0;background:#E6F3FB}
 </style>
 </head>
 <body>
@@ -423,12 +424,13 @@ let HAVE=new Set(),KATE=null,PLAYTOK=0;
 fetch('audio/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))HAVE=new Set(a)}).catch(()=>{});
 function unlockAudio(){if(KATE)return;KATE=new Audio();KATE.preload='auto';try{KATE.src='data:audio/mp4;base64,';KATE.play().catch(()=>{})}catch(e){}}
 document.addEventListener('pointerdown',unlockAudio,{once:true});document.addEventListener('keydown',unlockAudio,{once:true});
-function robot(t,slow){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=slow?.72:.9;speechSynthesis.speak(u)}catch(e){}}
+function robot(t,r){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9*(r||kRate());speechSynthesis.speak(u)}catch(e){}}
 /* say(text, clipName): plays Kate's recording if we have it, otherwise the device voice */
-function say(t,k,slow){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
+const KSPEED={fast:1,slow:.85,vslow:.7};function kRate(){return KSPEED[(typeof SND!=='undefined'&&SND.speed)||'slow']||.85}
+function say(t,k,r){if(!t&&!k)return;const rate=r||kRate();try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
  if(k&&HAVE.has(k)){if(!KATE)unlockAudio();const tok=++PLAYTOK;try{KATE.pause()}catch(e){}
-  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;try{KATE.preservesPitch=true;KATE.webkitPreservesPitch=true;KATE.defaultPlaybackRate=KATE.playbackRate=slow?.8:1}catch(e){}KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t,slow)});return}
- if(t)robot(t,slow)}
+  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;try{KATE.preservesPitch=true;KATE.webkitPreservesPitch=true;KATE.defaultPlaybackRate=KATE.playbackRate=rate}catch(e){}KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t,rate)});return}
+ if(t)robot(t,rate)}
 function talking(){try{return (KATE&&!KATE.paused&&!KATE.ended&&KATE.currentTime>0)||speechSynthesis.speaking}catch(e){return false}}
 function praise(ok){const n=ok?1+Math.floor(Math.random()*10):1+Math.floor(Math.random()*4);say('',(ok?'p-':'e-')+n)}
 /* ---------- answer checking ---------- */
@@ -814,7 +816,7 @@ let ROOM=null;function room(){if(typeof SND!=='undefined'&&!SND.fx)return null;c
  inp.gain.value=SND.vol;ROOM=inp;return ROOM}
 function bell(f,t,d,vol){const a=ac();if(!a)return;const r=room();if(!r)return;const n=a.currentTime+t;[[f,1],[f*2.01,0.22],[f*3.02,0.06]].forEach(([fr,m])=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(Math.max((vol||0.1)*m,0.0002),n+0.008);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(r);o.start(n);o.stop(n+d+0.05)})}
 /* ================= 🔊 Sound and music settings ================= */
-let SND={fx:true,voice:true,music:false,vol:0.8};try{Object.assign(SND,JSON.parse(localStorage.getItem('mq-snd')||'{}'))}catch(e){}
+let SND={fx:true,voice:true,music:false,vol:0.8,speed:'slow'};try{Object.assign(SND,JSON.parse(localStorage.getItem('mq-snd')||'{}'))}catch(e){}
 function saveSnd(){try{localStorage.setItem('mq-snd',JSON.stringify(SND))}catch(e){}if(KATE)KATE.volume=SND.vol;if(ROOM)ROOM.gain.value=SND.vol;if(MUS.g)MUS.g.gain.value=0.22*SND.vol;musicFor(V&&V.s)}
 /* gentle tunes made in the browser: one for the map and one for each land (no music files needed) */
 const TUNES={map:{bpm:96,root:60,mel:[0,4,7,9,7,4,2,4, 0,2,4,7,9,7,4,0],bass:[0,0,5,5,7,7,5,5]},
@@ -838,10 +840,12 @@ function sndPanel(){const ov=document.createElement('div');ov.className='howov';
  const sw=(k,ic,t,d)=>`<label class="sndrow"><span class="sndi">${ic}</span><span style="flex:1"><b>${t}</b><br><span class="small muted">${d}</span></span><input type="checkbox" class="tgl" data-snd="${k}" ${SND[k]?'checked':''}></label>`;
  ov.innerHTML=`<div class="howcard" style="max-width:460px"><div class="row"><b class="f" style="font-size:24px;color:#1D4E89">🔊 Sound and music</b><div class="spacer"></div><button class="b2 sm" id="sndX">✕</button></div>
   ${sw('voice','🗣️','Kate’s voice','Reads questions, praise and tips')}${sw('fx','🔔','Sound effects','Bells, cheers and claps')}${sw('music','🎵','Music','A gentle tune for each land')}
+  <div class="sndrow" style="flex-wrap:wrap"><span class="sndi">🐢</span><span style="flex:1"><b>How Kate reads</b><br><span class="small muted">Choose how fast Kate speaks</span></span><div class="spdrow">${[['fast','🐇 Fast'],['slow','🐢 Slow'],['vslow','🐌 Very slow']].map(([k,l])=>`<button class="spd ${(SND.speed||'slow')===k?'on':''}" data-spd="${k}">${l}</button>`).join('')}</div></div>
   <label class="sndrow"><span class="sndi">🔉</span><span style="flex:1"><b>Volume</b><input type="range" id="sndV" min="0" max="1" step="0.05" value="${SND.vol}" style="width:100%"></span></label>
   <p class="small muted" style="margin:6px 0 0">These settings are saved on this device.</p></div>`;
  document.body.appendChild(ov);ov.querySelector('#sndX').onclick=()=>ov.remove();ov.onclick=e=>{if(e.target===ov)ov.remove()};
  ov.querySelectorAll('[data-snd]').forEach(c=>c.onchange=()=>{SND[c.dataset.snd]=c.checked;saveSnd();if(c.dataset.snd==='fx'&&c.checked)bell(1046.5,0,.5,.08);if(c.dataset.snd==='voice'&&c.checked)say('Hello!','hello');header()});
+ ov.querySelectorAll('[data-spd]').forEach(b=>b.onclick=()=>{SND.speed=b.dataset.spd;saveSnd();ov.querySelectorAll('[data-spd]').forEach(x=>x.classList.toggle('on',x===b));const w=SND.voice;SND.voice=true;say('Hello! This is how I will read to you.','spd-hello');SND.voice=w});
  ov.querySelector('#sndV').oninput=e=>{SND.vol=+e.target.value;saveSnd()};ov.querySelector('#sndV').onchange=()=>bell(1046.5,0,.5,.08)}
 
 function happySound(big){[1046.5,1318.5,1568,2093].forEach((f,i)=>bell(f,i*0.075,1.0,0.085));if(big)[1568,2093,2637,3136].forEach((f,i)=>bell(f,0.45+i*0.08,1.2,0.07))}
@@ -2339,7 +2343,7 @@ function listenView(){clearInterval(TIMER);
  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
  `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div>${V.mtc?'':fpFor(it.q)}<div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
  <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
- bindBack();const go=()=>{if(!V.mtc&&it.k&&HAVE.has('ls-'+it.k))say(it.q,'ls-'+it.k);else say(it.q,it.k,!V.mtc)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
+ bindBack();const go=()=>{const sp=SND.speed||'slow';if(V.mtc){say(it.q,it.k,1);return}if(sp!=='fast'&&it.k&&HAVE.has('ls-'+it.k))say(it.q,'ls-'+it.k,sp==='vslow'?.85:1);else say(it.q,it.k,{fast:1,slow:.8,vslow:.7}[sp]||.8)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
  let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
   if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=splitPic(it.q)[1];
