@@ -240,6 +240,8 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .howcard{background:#fff;border-radius:26px;border:4px solid #FFC93C;max-width:620px;width:100%;padding:20px 22px;box-shadow:0 20px 50px rgba(0,0,0,.25);max-height:92vh;overflow:auto}
 .howq{font-family:Fredoka;font-size:clamp(22px,4vw,30px);color:#1D4E89;text-align:center;margin:10px 0 6px;font-weight:700}
 .howl{font-size:20px;line-height:1.45;padding-left:28px;margin:8px 0 16px}.howl li{margin:8px 0;padding:6px 10px;border-radius:12px}.howl li.new{background:#FFF6D6;animation:pin .35s}.howl b{color:#F2483A}
+.sup-big .qtext{font-size:clamp(32px,5vw,46px)!important}.sup-big .ans{font-size:34px!important}.sup-big .choices .b2{font-size:26px!important;padding:14px 22px!important}.sup-big .fact,.sup-big .howl,.sup-big p{font-size:1.15em}
+.sup-easy,.sup-easy button,.sup-easy input,.sup-easy .qtext,.sup-easy .f,.sup-easy h1,.sup-easy h2,.sup-easy .howq{font-family:Lexend,Verdana,Arial,sans-serif!important;letter-spacing:.03em;word-spacing:.12em}.sup-easy .qtext,.sup-easy .howl,.sup-easy p{line-height:1.6}.sup-easy .card{background:#FFFDF5}
 </style>
 </head>
 <body>
@@ -359,6 +361,11 @@ DD:'<svg viewBox="0 0 40 40"><path d="M2 34 Q18 18 34 34Z" fill="#F0C97F"/><rect
 PP:'<svg viewBox="0 0 40 40"><path d="M2 36 L14 12 L22 26 L28 16 L38 36Z" fill="#8E7CC3"/><path d="M14 12 L18 20 L10 20Z" fill="#fff"/><text x="22" y="11" font-family="Arial" font-weight="700" font-size="9" fill="#0E5E6F">a:b</text></svg>'};
 const FRIEND={NI:'parrot',TT:'zaza',FF:'turtle',MM:'owl',SF:'fox',DD:'zaza',PP:'zaza'};const FNAME={parrot:'Pip',zaza:'Zaza',turtle:'Shelly',owl:'Professor Hoot',fox:'Finn'};function fname(){return FNAME[FRIEND[V.land]||'zaza']}
 const QUESTS=[['learn','📖','Learn it'],['practise','✏️','Practise it'],['listen','🎧','Listen'],['play','⏱️','Play it'],['think','🤔','Think it'],['use','🌍','Use it']];
+let SUP={};
+function TM(){return SUP.timer==='extra'?1.5:SUP.timer==='off'?0:1}
+function applySupport(){const b=document.body;b.classList.toggle('sup-big',!!SUP.big);b.classList.toggle('sup-easy',!!SUP.easy);
+ if(SUP.easy&&!document.getElementById('lexend')){const l=document.createElement('link');l.id='lexend';l.rel='stylesheet';l.href='https://fonts.googleapis.com/css2?family=Lexend:wght@400;600;700&display=swap';document.head.appendChild(l)}}
+function autoRead(t,k){if(SUP.read)setTimeout(()=>say(t,k),350)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({code:ME.code}))}catch(e){}}
 function stars(){return ME?Math.max(0,(ME.stars||0)-(ME.spent||0)):0}
 function header(){$('#who').innerHTML=ME?`<button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span>${streakNow()?`<span class="stars flamechip" title="${streakNow()}-day streak">${flameBadge(streakNow())} ${streakNow()}</span>`:''}<span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;MYTASKS=null;mapView.t=0;V={s:'signin'};render()}}
@@ -407,7 +414,7 @@ async function signIn(code){const {data,error}=await rpc('mq_login',{p_code:code
  if(!data)return 'We could not find that code. Check it with your teacher.';
  if(data.error==='sbcode')return 'That is a Spelling Bee code! Maths Quest has its own code — ask your teacher.';
  if(data.error==='paused')return 'Maths Quest is paused for your school. Please ask your teacher.';
- ME=Object.assign({code:code.toUpperCase().replace(/[^A-Z0-9]/g,'')},data);save();await loadContent();if(hasAvatar()){V={s:'map'}}else{AVS.first=true;AVS.tab='char';V={s:'avatar'}}render();return null}
+ ME=Object.assign({code:code.toUpperCase().replace(/[^A-Z0-9]/g,'')},data);ME.home_grade=data.grade;SUP=data.support||{};if(SUP.play_grade!=null&&SUP.play_grade!==''&&GRADE[+SUP.play_grade])ME.grade=+SUP.play_grade;applySupport();save();await loadContent();if(hasAvatar()){V={s:'map'}}else{AVS.first=true;AVS.tab='char';V={s:'avatar'}}render();return null}
 /* ================= AVATARS & EXPLORER SHOP (from the Spelling Bee) ================= */
 const SKINS={s1:'#FFE3C8',s2:'#F7CBA2',s3:'#E3AB7A',s4:'#C68A5A',s5:'#99623B',s6:'#6B4428'};
 const HAIRC={black:'#2A2230',dbrown:'#4A2E1F',brown:'#7A4A2A',blonde:'#EBC76E',auburn:'#9C4A2A','hc-blue':'#4F8DF5','hc-purple':'#9B6BE0','hc-pink':'#F28DBB','hc-green':'#45BF7E','hc-silver':'#CBD2DC'};
@@ -1469,7 +1476,7 @@ function mixView(){const champ=V.s==='champ',l=champ?landObj():null;
  if(Q.intro)return dailyIntro();
  const title=champ?`⭐ ${esc(l.name)} Champion challenge`:'🔁 Daily mixed challenge';
  if(Q.i>=Q.list.length)return mixEnd();
- const it=Q.list[Q.i],[pic,text]=splitPic(it.q),sec=30;
+ const it=Q.list[Q.i],[pic,text]=splitPic(it.q),sec=Math.round(30*(TM()||1));
  $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← ${champ?esc(l.name):'Map'}</button><span class="f">${title}</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>
   <div class="card center">${champ?`<div class="timer"><i id="tb" style="width:100%"></i></div>`:''}<div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}${champ?' · no hints, one try!':''}</div>${visFor(it.q,findLand(it.id),ME.grade)?`<div class="fpwrap">${visFor(it.q,findLand(it.id),ME.grade)}</div>`:pic?picBox(pic):''}
   <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
@@ -1477,7 +1484,8 @@ function mixView(){const champ=V.s==='champ',l=champ?landObj():null;
  let gone=false;const go=g=>{if(gone)return;gone=true;clearInterval(TIMER);const ok=g!==null&&check(it,g);Q.res.push(ok);rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok});if(ok){ME.facts=ME.facts||{};ME.facts[it.id]=(ME.facts[it.id]||0)+1}else{ME.wrong=ME.wrong||{};ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
   if(ok){celebrate(false,()=>{Q.i++;render()})}else{oops();$('#fb').innerHTML=`<span class="bad">${g===null?'⏰ Time’s up! ':''}The answer is <b>${esc(it.a)}</b>.</span> ${howBtn(it)} <button class="b3" id="nx" style="margin-left:8px">Next →</button>`;bindHow(it);$('#nx').onclick=()=>{Q.i++;render()}}};
  bindAnswer(it,go);
- if(champ){let left=sec*10;TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/(sec*10))+'%';if(left<=0)go(null)},100)}}
+ autoRead(text,it.k);if(champ&&TM()===0){const tb=$('#tb');if(tb)tb.parentNode.style.display='none'}
+ if(champ&&TM()!==0){let left=sec*10;TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/(sec*10))+'%';if(left<=0)go(null)},100)}}
 /* ---------- daily challenge plan: built from the child's own answers ---------- */
 function stopStats(){const f=ME.facts||{},w=ME.wrong||{},out=[];
  C.lands.forEach(L=>L.stops.forEach(st=>{if(!st.practise||!st.practise.length)return;const pre=`${L.code}${ME.grade}-${st.n}-`;let r=0,x=0;
@@ -1897,7 +1905,7 @@ function landObj(){return C.lands.find(l=>l.code===V.land)}
 function landView(){const l=landObj();
  const J=journey(l);
  $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">${J?J.th.head:'Your stops'}</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
- ${landDone(l)?`<div class="card champ" style="margin:14px auto;max-width:760px"><div class="row"><span style="font-size:44px">⭐</span><div style="flex:1"><b class="f" style="font-size:22px;color:#1D4E89">${esc(l.name)} Champion challenge</b><div class="muted">10 mixed questions from every stop · 30 seconds each · no hints. Your best: <span class="cst">${'⭐'.repeat(champStars(l))}${'☆'.repeat(3-champStars(l))}</span></div></div><button class="b1" id="chgo">Take the challenge</button></div></div>`:''}${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
+ ${landDone(l)?`<div class="card champ" style="margin:14px auto;max-width:760px"><div class="row"><span style="font-size:44px">⭐</span><div style="flex:1"><b class="f" style="font-size:22px;color:#1D4E89">${esc(l.name)} Champion challenge</b><div class="muted">10 mixed questions from every stop · ${TM()===0?'no timer':Math.round(30*(TM()||1))+' seconds each'} · no hints. Your best: <span class="cst">${'⭐'.repeat(champStars(l))}${'☆'.repeat(3-champStars(l))}</span></div></div><button class="b1" id="chgo">Take the challenge</button></div></div>`:''}${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
  ${J&&!HERO[l.code]&&sidePanels(l)?(()=>{const SP=sidePanels(l);return `<div class="scene" style="--bg:none;background:linear-gradient(180deg,#E6DDFB,#FFF6E6)"><div class="sgrid">${SP.left}<div><h2 class="f" style="text-align:center;color:#1D4E89;margin:0 0 10px">${J.th.head}</h2><div class="jwrap">${J.svg}</div></div>${SP.right}</div></div>`})():J?`<div class="jwrap">${J.svg}</div>`:`<div class="stops">${(()=>{const curSt=(l.stops.find(x=>!stopDone(x))||{}).n;return l.stops.map(st=>`<div class="stop${st.n===curSt?' here':''}"><h3>${st.n===curSt?`<span class="stopav">${avatarSVG(myAv(),44)}</span>`:''}${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}${st.n===curSt?' <span class="muted" style="font-size:15px">← you are here</span>':''}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')})()}</div>`}`;
  $('#bk').onclick=()=>{V={s:'map'};render()};const chg=$('#chgo');if(chg)chg.onclick=()=>{Q=null;V={s:'champ',land:l.code};render()};
  const m=$('#mtc');if(m)m.onclick=()=>{V={s:'listen',land:'TT',stop:0,mtc:true};render()};
@@ -1943,7 +1951,7 @@ function practiseView(){const st=stopObj();
  const it=Q.list[Q.i];const [pic,text]=splitPic(it.q);
  $('#app').innerHTML=qhead('✏️ Practise it',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`)+
  `<div class="card center"><div class="muted" style="font-weight:800">Question ${Q.i+1} of ${Q.list.length}</div>${fpFor(it.q)||(pic?`${picBox(pic)}`:'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
- ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;
+ ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;autoRead(text,it.k);
  bindBack();$('#hear').onclick=()=>say(text,it.k);
  bindAnswer(it,async g=>{const ok=check(it,g);
   if(ok||Q.tries>=1){if(Q.tries===0){rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
@@ -1968,7 +1976,7 @@ function listenView(){clearInterval(TIMER);
   if(!V.mtc&&n>=Math.ceil(t*.7))complete('listen');
   $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span></div>`:qhead('🎧 Listen and answer'))+`<div class="card center"><div class="big">${n}/${t}</div><h2 style="color:var(--sea)">${n===t?'Perfect score! 🏆':n>=Math.ceil(t*.7)?'Great listening! 🎉':'Keep practising!'}</h2><button class="b2" id="again">Try again</button></div>`;
   bindBack();$('#again').onclick=()=>{Q=null;render()};return}
- const it=Q.list[Q.i],sec=it.sec||8;
+ const it=Q.list[Q.i],sec=(it.sec||8)*(TM()||1);
  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
  `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div>${V.mtc?'':fpFor(it.q)}<div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
  <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
@@ -1977,19 +1985,19 @@ function listenView(){clearInterval(TIMER);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
   if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=splitPic(it.q)[1];
   setTimeout(()=>{Q.i++;render()},ok?800:1800)};
- TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
+ if(TM()===0){const tb=$('#tb');if(tb)tb.parentNode.style.display='none'}else TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
  $('#ans').focus();$('#af').onsubmit=e=>{e.preventDefault();done($('#ans').value)}}
 /* ---------- play it: beat the clock ---------- */
 function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practise.filter(x=>x.t==='number'||x.t==='choice');
  const best=+(localStorage.getItem('mq-best-'+key(st,'play'))||0);
- if(!Q){$('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div style="width:120px;margin:0 auto">${friendSvg()}</div><h2 style="color:var(--sea)">How many can you get right in 60 seconds?</h2><p class="muted">Your best: <b>${best}</b></p><button class="b1" id="go" style="font-size:24px">Start! ⏱️</button></div>`;bindBack();$('#go').onclick=()=>{Q={kind:'play',score:0,left:600,cur:null};render()};return}
+ if(!Q){$('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div style="width:120px;margin:0 auto">${friendSvg()}</div><h2 style="color:var(--sea)">${TM()===0?'Answer 10 questions at your own pace!':`How many can you get right in ${Math.round(60*TM())} seconds?`}</h2><p class="muted">Your best: <b>${best}</b></p><button class="b1" id="go" style="font-size:24px">Start! ⏱️</button></div>`;bindBack();$('#go').onclick=()=>{Q={kind:'play',score:0,left:Math.round(600*(TM()||1)),total:Math.round(600*(TM()||1)),cur:null,n:0};render()};return}
  if(Q.left<=0){const s=Q.score;if(s>best)try{localStorage.setItem('mq-best-'+key(st,'play'),s)}catch(e){}
   if(s>=3)complete('play');
   $('#app').innerHTML=qhead('⏱️ Play it: Beat the clock')+`<div class="card center"><div class="big">${s}</div><h2 style="color:var(--sea)">${s>best?'New best score! 🏆':'Time\'s up!'}</h2><p class="muted">Best: ${Math.max(s,best)}</p><button class="b1" id="again">Play again</button></div>`;bindBack();$('#again').onclick=()=>{Q=null;render()};return}
  Q.cur=pool[Math.floor(Math.random()*pool.length)];const it=Q.cur;const [pic,text]=splitPic(it.q);
- $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center"><div class="timer"><i id="tb" style="width:${Q.left/6}%"></i></div>${fpFor(it.q)||(pic?`${picBox(pic)}`:'')}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
- bindBack();clearInterval(TIMER);TIMER=setInterval(()=>{if(!Q||V.s!=='play'){clearInterval(TIMER);return}Q.left--;const b=$('#tb');if(b)b.style.width=(Q.left/6)+'%';if(Q.left<=0){clearInterval(TIMER);render()}},100);
- bindAnswer(it,g=>{if(check(it,g)){Q.score++;miniParty();cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}setTimeout(()=>{if(Q&&Q.left>0)render()},check(it,g)?250:900)})}
+ $('#app').innerHTML=qhead('⏱️ Play it',`<span class="stars" style="margin-left:auto">Score: ${Q.score}</span>`)+`<div class="card center">${TM()===0?`<div class="muted" style="font-weight:800">Question ${Q.n+1} of 10</div>`:`<div class="timer"><i id="tb" style="width:${100*Q.left/Q.total}%"></i></div>`}${fpFor(it.q)||(pic?`${picBox(pic)}`:'')}<div class="qtext">${esc(text)}</div>${answerUI(it)}<div class="msg" id="fb"></div></div>`;
+ bindBack();clearInterval(TIMER);autoRead(text,it.k);if(TM()!==0)TIMER=setInterval(()=>{if(!Q||V.s!=='play'){clearInterval(TIMER);return}Q.left--;const b=$('#tb');if(b)b.style.width=(100*Q.left/Q.total)+'%';if(Q.left<=0){clearInterval(TIMER);render()}},100);
+ bindAnswer(it,g=>{Q.n++;if(check(it,g)){Q.score++;miniParty();cheer('✔',null)}else{$('#fb').innerHTML=`<span class="bad">${esc(it.a)}</span>`}if(TM()===0&&Q.n>=10)Q.left=0;setTimeout(()=>{if(Q&&(Q.left>0||TM()===0))render()},check(it,g)?250:900)})}
 /* ---------- think it ---------- */
 function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.random()*st.think.length)];Q={kind:'think',p,shown:false}}
  const p=Q.p,ty=String(p.type||'');let ui;
