@@ -37,7 +37,8 @@ while IFS=$'\t' read -r name text; do
   out="audio/$name.m4a"
   if [ ! -s "$out" ]; then
     n=$((n+1))
-    if say -v "$VOICE" -r 165 -o "$TMP" -- "$text" && afconvert -f m4af -d aac -b 48000 "$TMP" "$out"; then made=$((made+1)); fi
+    RATE=165; case "$name" in ls-*) RATE=125;; esac
+    if say -v "$VOICE" -r "$RATE" -o "$TMP" -- "$text" && afconvert -f m4af -d aac -b 48000 "$TMP" "$out"; then made=$((made+1)); fi
     if [ $((n % 50)) -eq 0 ]; then echo "  ... $n recorded"; fi
   fi
 done < "$LIST"

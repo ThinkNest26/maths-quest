@@ -423,12 +423,13 @@ let HAVE=new Set(),KATE=null,PLAYTOK=0;
 fetch('audio/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))HAVE=new Set(a)}).catch(()=>{});
 function unlockAudio(){if(KATE)return;KATE=new Audio();KATE.preload='auto';try{KATE.src='data:audio/mp4;base64,';KATE.play().catch(()=>{})}catch(e){}}
 document.addEventListener('pointerdown',unlockAudio,{once:true});document.addEventListener('keydown',unlockAudio,{once:true});
-function robot(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
+function robot(t,slow){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=slow?.72:.9;speechSynthesis.speak(u)}catch(e){}}
 /* say(text, clipName): plays Kate's recording if we have it, otherwise the device voice */
-function say(t,k){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
+function say(t,k,slow){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
  if(k&&HAVE.has(k)){if(!KATE)unlockAudio();const tok=++PLAYTOK;try{KATE.pause()}catch(e){}
-  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t)});return}
- if(t)robot(t)}
+  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;try{KATE.preservesPitch=true;KATE.webkitPreservesPitch=true;KATE.defaultPlaybackRate=KATE.playbackRate=slow?.8:1}catch(e){}KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t,slow)});return}
+ if(t)robot(t,slow)}
+function talking(){try{return (KATE&&!KATE.paused&&!KATE.ended&&KATE.currentTime>0)||speechSynthesis.speaking}catch(e){return false}}
 function praise(ok){const n=ok?1+Math.floor(Math.random()*10):1+Math.floor(Math.random()*4);say('',(ok?'p-':'e-')+n)}
 /* ---------- answer checking ---------- */
 function norm(s){return String(s??'').toLowerCase().replace(/−/g,'-').replace(/[’']/g,"'").replace(/\s+/g,' ').trim()}
@@ -2338,12 +2339,12 @@ function listenView(){clearInterval(TIMER);
  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
  `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div>${V.mtc?'':fpFor(it.q)}<div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
  <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
- bindBack();const go=()=>{say(it.q,it.k)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
+ bindBack();const go=()=>{if(!V.mtc&&it.k&&HAVE.has('ls-'+it.k))say(it.q,'ls-'+it.k);else say(it.q,it.k,!V.mtc)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
  let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
   if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=splitPic(it.q)[1];
   setTimeout(()=>{Q.i++;render()},ok?800:1800)};
- if(TM()===0){const tb=$('#tb');if(tb)tb.parentNode.style.display='none'}else TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
+ if(TM()===0){const tb=$('#tb');if(tb)tb.parentNode.style.display='none'}else TIMER=setInterval(()=>{if(!V.mtc&&talking())return;left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
  $('#ans').focus();$('#af').onsubmit=e=>{e.preventDefault();done($('#ans').value)}}
 /* ---------- play it: beat the clock ---------- */
 function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practise.filter(x=>x.t==='number'||x.t==='choice');
