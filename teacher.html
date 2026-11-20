@@ -530,7 +530,7 @@ function printParent(kid,A,strong,next){const p=PROG[kid.id]||{},sch=SCHOOL&&SCH
  <div class="pbox" style="border-color:#F2704E"><h3 style="color:#B23A1E">🎯 Next steps to practise</h3>${next.length?`<ul>${next.slice(0,5).map(s=>`<li>${esc(s.topic)}</li>`).join('')}</ul>`:'<p>Wonderful — nothing tricky right now!</p>'}</div></div>
  <table class="ptab"><thead><tr><th>Land</th><th>Topic</th><th>Progress</th></tr></thead><tbody>${A.flatMap(l=>l.stops.map((s,i)=>`<tr><td>${i?'':LANDE[l.code]+' '+esc(l.name)}</td><td>${esc(s.topic)}</td><td>${SCOL[s.s][3]} ${SCOL[s.s][2]}</td></tr>`)).join('')}</tbody></table>
  <p class="ptip">💡 <b>How to help at home:</b> ask ${esc(kid.first_name)} to show you a quest on Maths Quest, and talk about the maths together. Little and often works best — 10 minutes a day is plenty.</p>
- <div class="pfoot">Powered by ThinkNest</div></div>`;setTimeout(()=>window.print(),150)}
+ <div class="pfoot">Parents can see ${esc(kid.first_name)}’s progress any time at <b>${esc(location.host)}/parent</b> using the code ${fmtCode(kid.code)}.<br>Powered by ThinkNest</div></div>`;setTimeout(()=>window.print(),150)}
 /* ----- whole class ----- */
 async function renderClass(){const grades=[...new Set(KIDS.map(k=>k.grade))].sort();if(CG===null||!grades.includes(CG))CG=grades[0];
  if(CG===undefined){$('#app').innerHTML=tabsBar()+'<div class="card">Add children first.</div>';bindTabsT();return}
@@ -685,7 +685,7 @@ let CLASSES=[],TASKS=[],SELCLASS=null;
 const KINDN={learn:'📖 Learn',practise:'✏️ Practise',listen:'🎧 Listen',play:'⏱️ Play',think:'🤔 Think',use:'🌍 Use'};
 function kidsIn(cls){return KIDS.filter(k=>k.class_name===cls.name&&k.grade===cls.grade).sort((a,b)=>a.first_name.localeCompare(b.first_name))}
 function printCardsFor(list){if(!list.length){toast('No children to print');return}
- $('#cards').innerHTML=`<div class="cards">${list.map(c=>`<div class="ccard"><svg viewBox="0 0 64 64" style="width:40px;height:40px"><use href="#logo"/></svg><div class="f" style="color:var(--sea);font-size:18px">Maths Quest</div><div class="n">${esc(c.first_name)}</div><div style="font-size:13px">${GL(c.grade)}${c.class_name?' · '+esc(c.class_name):''}</div><div style="font-size:12px;margin-top:6px">Your secret explorer code</div><div class="cd">${fmtCode(c.code)}</div><div style="font-size:12px">Go to <b>${esc(location.host)}/play.html</b> and type your code. Happy exploring! 🧭</div></div>`).join('')}</div>`;setTimeout(()=>window.print(),150)}
+ $('#cards').innerHTML=`<div class="cards">${list.map(c=>`<div class="ccard"><svg viewBox="0 0 64 64" style="width:40px;height:40px"><use href="#logo"/></svg><div class="f" style="color:var(--sea);font-size:18px">Maths Quest</div><div class="n">${esc(c.first_name)}</div><div style="font-size:13px">${GL(c.grade)}${c.class_name?' · '+esc(c.class_name):''}</div><div style="font-size:12px;margin-top:6px">Your secret explorer code</div><div class="cd">${fmtCode(c.code)}</div><div style="font-size:12px">Go to <b>${esc(location.host)}/play.html</b> and type your code. Happy exploring! 🧭</div><div style="font-size:11px;margin-top:4px;color:#5B7177">Parents: see progress at <b>${esc(location.host)}/parent</b> with this code.</div></div>`).join('')}</div>`;setTimeout(()=>window.print(),150)}
 async function renderClasses(){await Promise.all([...new Set(KIDS.map(k=>k.grade).concat(CLASSES.map(c=>c.grade)))].map(g=>content(g)));if(TV!=='classes')return;
  if(SELCLASS){const cls=CLASSES.find(c=>c.id===SELCLASS);if(cls){renderOneClass(cls);return}SELCLASS=null}
  const unassigned=KIDS.filter(k=>!k.class_name).length;
@@ -770,7 +770,7 @@ async function suggestModal(){const grades=[...new Set(KIDS.map(k=>k.grade))].so
  draw()}
 
 function printCards(){const list=visible();if(!list.length){toast('No children to print');return}
- $('#cards').innerHTML=`<div class="cards">${list.map(c=>`<div class="ccard"><svg viewBox="0 0 64 64" style="width:40px;height:40px"><use href="#logo"/></svg><div class="f" style="color:var(--sea);font-size:18px">Maths Quest</div><div class="n">${esc(c.first_name)}</div><div style="font-size:13px">${GL(c.grade)}${c.class_name?' · '+esc(c.class_name):''}</div><div style="font-size:12px;margin-top:6px">Your secret explorer code</div><div class="cd">${fmtCode(c.code)}</div><div style="font-size:12px">Go to <b>${esc(location.host)}/play.html</b> and type your code. Happy exploring! 🧭</div></div>`).join('')}</div>`;setTimeout(()=>window.print(),150)}
+ $('#cards').innerHTML=`<div class="cards">${list.map(c=>`<div class="ccard"><svg viewBox="0 0 64 64" style="width:40px;height:40px"><use href="#logo"/></svg><div class="f" style="color:var(--sea);font-size:18px">Maths Quest</div><div class="n">${esc(c.first_name)}</div><div style="font-size:13px">${GL(c.grade)}${c.class_name?' · '+esc(c.class_name):''}</div><div style="font-size:12px;margin-top:6px">Your secret explorer code</div><div class="cd">${fmtCode(c.code)}</div><div style="font-size:12px">Go to <b>${esc(location.host)}/play.html</b> and type your code. Happy exploring! 🧭</div><div style="font-size:11px;margin-top:4px;color:#5B7177">Parents: see progress at <b>${esc(location.host)}/parent</b> with this code.</div></div>`).join('')}</div>`;setTimeout(()=>window.print(),150)}
 start();
 </script>
 </body>
