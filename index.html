@@ -97,12 +97,22 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
 .hero .wave{height:64px}
 @media(max-width:900px){.hero{background:linear-gradient(0deg,#52AF79 0 40px,transparent 40px),url(img/hero-wide.webp) right 0 bottom 38px/auto 250px no-repeat,linear-gradient(180deg,#7FCDEF 0%,#B9E2F4 70%,#D6EFF8 100%);min-height:0;padding:28px 0 255px}.hero .wrap{grid-template-columns:1fr}.herospace{display:none}.herocopy:before{inset:-20px -20px -10px -40px}.hero .wave{height:40px}}
 .feat{background:#FAF7E6}.tfeat{padding:10px 0 70px}.feat .card h3,.tfeat .card h3,.ben .card h3{margin:0 0 6px}.feat .card p,.tfeat .card p{margin:0}
+.plans{background:#FAF7E6}
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:36px;text-align:left;align-items:stretch}
+.pcard{position:relative;background:#fff;border:2.5px solid #EFE6D2;border-radius:26px;padding:26px 24px;display:flex;flex-direction:column;box-shadow:0 8px 22px rgba(29,58,95,.07)}
+.pcard.best{border-color:#F7B538;box-shadow:0 12px 30px rgba(247,181,56,.25);transform:translateY(-6px)}
+.ribbon{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:#F7B538;color:#1D3A5F;font:700 14px Fredoka,Arial;padding:4px 14px;border-radius:999px;white-space:nowrap}
+.pname{font:700 22px Fredoka,Arial;color:var(--navy)}.price{font:700 46px Fredoka,Arial;color:#127C8C;line-height:1.1;margin-top:6px}.per{color:var(--muted);font-weight:800;font-size:14px}
+.pblurb{color:var(--muted);font-weight:700;margin:12px 0 4px}.pcard ul{list-style:none;padding:0;margin:8px 0 22px;flex:1}.pcard li{display:flex;gap:10px;margin:8px 0;font-weight:700;color:var(--navy)}
+.pcard li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#2DB89A;color:#fff;display:grid;place-items:center;font-size:13px}
+.pcard .btn{text-align:center;display:flex;justify-content:center}
+@media(max-width:900px){.pgrid{grid-template-columns:1fr}.pcard.best{transform:none}}
 </style>
 </head>
 <body>
 <header class="top"><div class="wrap">
  <a class="logo" href="#">Maths<b>Quest</b> <i>✦</i></a>
- <nav class="nav"><a class="hide" href="#worlds">The worlds</a><a class="hide" href="#how">How it works</a><a class="hide" href="#features">Features</a><a class="hide" href="#schools">For schools</a><a class="sign" href="parent.html">Parents</a><a class="sign" href="teacher.html">Teachers</a><a class="play" href="play.html">🧭 Explorers</a></nav>
+ <nav class="nav"><a class="hide" href="#worlds">The worlds</a><a class="hide" href="#how">How it works</a><a class="hide" href="#features">Features</a><a class="hide" href="#schools">For schools</a><a class="hide" href="#plans">Plans</a><a class="sign" href="parent.html">Parents</a><a class="sign" href="teacher.html">Teachers</a><a class="play" href="play.html">🧭 Explorers</a></nav>
 </div></header>
 
 <section class="hero">
@@ -208,6 +218,18 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
  </div>
 </div></section>
 
+<section class="plans sect" id="plans"><div class="wrap" style="text-align:center">
+ <div class="kick">Simple pricing</div>
+ <h2>Subscription Plans</h2>
+ <p class="lead">One price per school, per year, for every child and teacher. Start with a free 7-day trial.</p>
+ <div class="pgrid">
+  <div class="pcard"><div class="pname">Free trial</div><div class="price">$0</div><div class="per">for 7 days</div><p class="pblurb">Try everything with your classes. No card needed.</p><ul><li>Everything in Premium</li><li>Unlimited children and teachers</li><li>Keep all progress when you choose a plan</li></ul><a class="btn ghost" href="signup.html">Start free trial</a></div>
+  <div class="pcard" data-plan="standard"><div class="pname">Standard</div><div class="price" data-price>$330</div><div class="per">per school, per year</div><p class="pblurb" data-blurb>Everything children need to learn and practise.</p><ul data-feat><li>All 7 maths lands for KG2 to Grade 5</li><li>Kate’s UK voice and Show me how</li><li>Daily challenge, Beat the clock and races</li><li>Avatars, streaks and badges</li><li>Classes, codes and tasks</li><li>Progress reports and parent view</li></ul><a class="btn gold" href="signup.html">Start with a free trial</a></div>
+  <div class="pcard best" data-plan="premium"><div class="ribbon">Most complete</div><div class="pname">Premium</div><div class="price" data-price>$550</div><div class="per">per school, per year</div><p class="pblurb" data-blurb>For schools tracking progress across the year.</p><ul data-feat><li>Everything in Standard</li><li>Start-of-year and end-of-term maths checks</li><li>National Curriculum coverage and Excel export</li><li>School overview dashboard</li><li>Support settings for every child</li></ul><a class="btn gold" href="signup.html">Start with a free trial</a></div>
+ </div>
+ <p class="small" style="color:var(--muted);margin-top:18px">Prices in US dollars. After your trial, choose a plan on your teacher page and we’ll send your school an invoice. Questions? <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a></p>
+</div></section>
+
 <section class="join" id="join" style="background:linear-gradient(180deg,#CDE9F7 0%,#B7DFF2 100%)"><div class="wrap">
  <div>
   <div class="kick" style="color:var(--navy)">Join the adventure</div>
@@ -241,6 +263,9 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
 <script>
 const $=id=>document.getElementById(id);
 let sb=null;try{sb=window.supabase.createClient('https://xpbkdnkfufkahaszfycd.supabase.co','sb_publishable_QIAV_9tLUBbDCu7FHqaTEw_zYQ0teEG')}catch(e){}
+(async()=>{if(!sb)return;try{const {data}=await sb.from('mq_plans').select('*');(data||[]).forEach(p=>{const c=document.querySelector(`.pcard[data-plan="${p.id}"]`);if(!c)return;const e=t=>String(t).replace(/[&<>"]/g,x=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[x]));
+ c.querySelector('[data-price]').textContent=(p.currency==='USD'?'$'+p.price.toLocaleString('en-US'):p.price.toLocaleString('en-GB')+' '+p.currency);if(p.blurb)c.querySelector('[data-blurb]').textContent=p.blurb;
+ if(Array.isArray(p.features)&&p.features.length)c.querySelector('[data-feat]').innerHTML=p.features.map(f=>`<li>${e(f)}</li>`).join('')})}catch(e){}})();
 $('interest').addEventListener('submit',async e=>{e.preventDefault();const m=$('fmsg');m.className='msg';
  const v=k=>$(k).value.trim();
  if(!v('school')||v('school').length<2||!v('name')||v('name').length<2||!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v('email'))){m.className='msg bad';m.textContent='Please add your school name, your name and a valid email.';return}
