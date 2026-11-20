@@ -202,7 +202,14 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .vbox{background:#fff;border-radius:22px;padding:14px;width:min(900px,96vw)}.vframe{position:relative;aspect-ratio:16/9}.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px}
 @media(max-width:1100px){.sgrid{gap:12px;padding:0 10px}.side .sideh{font-size:18px;padding:6px 10px}.fcard{padding:10px;border-radius:18px}.fct{font-size:17px}.fcs{font-size:14px}.fsay{font-size:13px;padding:5px 10px}.vtt{font-size:14px}}
 @media(max-width:700px){.sgrid{grid-template-columns:1fr;max-width:640px}.sgrid .hero{order:0;margin:0 auto}.side.sl{order:1}.side.sr{order:2}.sideh{margin-top:6px}}
-</style>
+.today{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;max-width:1000px;margin:6px auto 14px}
+.tcard{display:flex;align-items:center;gap:14px;background:#fff;border:3px solid #FFD23F;border-radius:22px;padding:12px 16px;box-shadow:0 6px 16px rgba(20,90,140,.1)}
+.tt{flex:1}.flame{font-size:52px;line-height:1;animation:bob 2s ease-in-out infinite}.flame.off{filter:grayscale(1);opacity:.45;animation:none}
+.lbs-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px}.lb{position:relative;width:46px;height:46px;border-radius:50%;background:#EEE9DD;display:grid;place-items:center;filter:grayscale(1);opacity:.55}
+.lb.got{background:#FFE7A0;box-shadow:0 0 0 3px #FFC93C;filter:none;opacity:1}.lbi svg{width:30px;height:30px;display:block}.lbs{position:absolute;right:-4px;bottom:-4px;background:#2DBE6C;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center;font-weight:800}
+.flamechip{background:#FFE3CF!important}.bnp svg{width:100px;height:100px}.bnp{line-height:0;display:flex;justify-content:center}
+@media(max-width:700px){.today{grid-template-columns:1fr}}
+.small{font-size:14px;line-height:1.35}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -323,7 +330,7 @@ const FRIEND={NI:'parrot',TT:'zaza',FF:'turtle',MM:'owl',SF:'fox',DD:'zaza',PP:'
 const QUESTS=[['learn','📖','Learn it'],['practise','✏️','Practise it'],['listen','🎧','Listen'],['play','⏱️','Play it'],['think','🤔','Think it'],['use','🌍','Use it']];
 function save(){try{localStorage.setItem(KEY,JSON.stringify({code:ME.code}))}catch(e){}}
 function stars(){return ME?Math.max(0,(ME.stars||0)-(ME.spent||0)):0}
-function header(){$('#who').innerHTML=ME?`<button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span><span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;V={s:'signin'};render()}}
+function header(){$('#who').innerHTML=ME?`<button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span>${streakNow()?`<span class="stars flamechip" title="${streakNow()}-day streak">${flameBadge(streakNow())} ${streakNow()}</span>`:''}<span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;V={s:'signin'};render()}}
 function cheer(t,col){const d=document.createElement('div');d.className='cheer';d.innerHTML=`<div style="${col?'color:'+col:''}">${t}</div>`;$('#fx').appendChild(d);setTimeout(()=>d.remove(),950)}
 function key(st,kind){return `G${ME.grade}-${V.land}-${st.n}-${kind}`}
 function isDone(st,kind){return ME&&ME.done&&ME.done[key(st,kind)]}
@@ -1288,6 +1295,33 @@ async function loadVideos(land){const el=$('#vids');if(!el)return;const {data}=a
 function openVideo(id,title){const d=document.createElement('div');d.className='vmodal';d.innerHTML=`<div class="vbox"><div class="row" style="justify-content:space-between;margin-bottom:8px"><b class="f" style="font-size:20px;color:#1D4E89">${esc(title)}</b><button class="b2" id="vclose">✕ Close</button></div><div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1&autoplay=1" title="${esc(title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div></div>`;
  const close=()=>d.remove();d.addEventListener('click',e=>{if(e.target===d)close()});document.body.appendChild(d);$('#vclose').onclick=close}
 
+/* ---------- daily goal, streaks and land badges ---------- */
+const GOAL=2;
+function dubaiDay(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dubai'}).format(new Date())}
+function prevSchoolDay(ds){const d=new Date(ds+'T12:00:00Z'),w=d.getUTCDay(),b=w===1?3:w===0?2:1;return new Date(d.getTime()-b*864e5).toISOString().slice(0,10)}
+function streakNow(){if(!ME||!ME.streak_day)return 0;return ME.streak_day>=prevSchoolDay(dubaiDay())?(ME.streak||0):0}
+function todayCount(){return ME&&ME.day_day===dubaiDay()?(ME.day_count||0):0}
+function flameBadge(n){return n>=30?'👑':n>=14?'🏅':n>=7?'🌟':'🔥'}
+const MILES=[[3,5],[7,15],[14,30],[30,60]];
+function landDone(l){const [a,b]=landProgress(l);return b>0&&a===b}
+function todayPanel(){const st=streakNow(),dc=Math.min(GOAL,todayCount()),lit=ME.streak_day===dubaiDay(),next=MILES.find(m=>m[0]>st),r=26,Cc=2*Math.PI*r;
+ const badges=C.lands.map(l=>{const got=landDone(l);return `<div class="lb${got?' got':''}" title="${esc(l.name)}${got?' — badge earned!':' — finish every quest to earn this badge'}"><div class="lbi">${LANDICON[l.code]}</div>${got?'<span class="lbs">✓</span>':''}</div>`}).join('');
+ const nb=C.lands.filter(landDone).length;
+ return `<div class="today"><div class="tcard"><div class="flame ${st||lit?'':'off'}">${st?flameBadge(st):'🔥'}</div>
+  <div class="tt"><div class="f" style="font-size:22px;color:#1D4E89">${st?`${st}-day streak!`:'Light your flame!'}</div><div class="small">${lit?'✅ Today’s flame is lit! Come back tomorrow.':`Finish <b>${GOAL} quests</b> today to ${st?'keep your streak':'start a streak'}.`}${next?` <span class="muted">Next prize: ${flameBadge(next[0])} ${next[0]} days (+${next[1]} ⭐)</span>`:''}</div></div>
+  <svg class="ring" viewBox="0 0 64 64" width="70" height="70" aria-label="${dc} of ${GOAL} quests today"><circle cx="32" cy="32" r="${r}" fill="none" stroke="#F8DDBF" stroke-width="7"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="${lit?'#1E9E5A':'#F59E0B'}" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(Cc*dc/GOAL).toFixed(1)} ${Cc.toFixed(1)}" transform="rotate(-90 32 32)"/><text x="32" y="38" text-anchor="middle" font-family="Fredoka,Arial" font-weight="700" font-size="17" fill="#1D4E89">${dc}/${GOAL}</text></svg></div>
+  <div class="tcard"><div class="tt"><div class="f" style="font-size:20px;color:#1D4E89">🏅 Land badges <span class="small muted">${nb} of ${C.lands.length}</span></div><div class="lbs-row">${badges}</div></div></div></div>`}
+/* after a quest is finished: streak flame and land badges */
+function afterComplete(data,landBefore){if(!data)return;['day_day','day_count','streak','streak_day','best_streak'].forEach(k=>{if(data[k]!==undefined)ME[k]=data[k]});header();
+ const l=C.lands.find(x=>x.code===V.land);const nowDone=l&&landDone(l);
+ if(l&&nowDone&&!landBefore)setTimeout(()=>bigNote(`🏅 You earned the ${l.name} badge!`,LANDICON[l.code],'b-land'),1400);
+ if(data.lit)setTimeout(()=>bigNote(data.bonus?`🔥 ${data.streak}-day streak! +${data.bonus} bonus stars!`:`🔥 Today’s flame is lit! ${data.streak}-day streak!`,`<div style="font-size:90px;line-height:1">${flameBadge(data.streak)}</div>`,'s-lit'),nowDone&&!landBefore?4200:1400)}
+function bigNote(text,pic,clip){happySound(true);setTimeout(()=>clapSound(true),120);const old=document.getElementById('party');if(old)old.remove();
+ const d=document.createElement('div');d.id='party';d.className='party';let conf='';const cols=['#FF6B4A','#FFD23F','#2DBE6C','#2F9BE0','#8E5BD6'];
+ for(let i=0;i<40;i++)conf+=`<i class="cf" style="left:${Math.random()*100}vw;animation-delay:${(Math.random()*.4).toFixed(2)}s;background:${cols[i%5]}"></i>`;
+ d.innerHTML=`${conf}<div class="pcard"><div class="bnp">${pic}</div><div class="pcheer" style="font-size:clamp(26px,5vw,40px)">${esc(text)}</div><div class="ptap">tap to keep going</div></div>`;
+ const close=()=>{d.classList.add('out');setTimeout(()=>d.remove(),350)};d.onclick=close;document.body.appendChild(d);setTimeout(()=>say('',clip),400);setTimeout(close,3800)}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
@@ -1336,7 +1370,7 @@ function mapView(){const L=C.lands;
  const onMap=L.filter(l=>MAPROW[l.code]);let ti=allDone?onMap.length-1:onMap.indexOf(L[cur]);if(ti<0)ti=onMap.length-1;
  const tokAt=i=>{const [cx,cy]=MAPROW[onMap[i].code];return [cx-178,cy+8]};const [tx,ty]=tokAt(ti);
  const tok=`<button class="tok" id="tok" aria-label="My explorer — tap to dress up" style="left:${px(tx)};top:${py(ty)};width:${px(150)};font-size:${fz(22)}"><span class="tokbub">${allDone?'All done! 🎉':'Next stop! ➜'}</span><span class="tokav bob">${avatarSVG(myAv(),120)}</span><span class="tokname">${esc(ME.first_name)}</span></button>`;
- $('#app').innerHTML=`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
+ $('#app').innerHTML=todayPanel()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
  ${extra?`<div class="extras"><div class="f" style="font-size:20px;color:#1D4E89;margin-bottom:8px;background:#fff;display:inline-block;padding:4px 14px;border-radius:99px">⛰️ Keep going, explorer!</div>${extra}</div>`:''}
  ${allDone?`<div class="card center" style="max-width:520px;margin:14px auto"><b class="f" style="font-size:24px">🎉 You finished every land!</b></div>`:''}</div>`;
  document.querySelectorAll('[data-land]').forEach(g=>{const go=()=>{V={s:'land',land:g.dataset.land};render();scrollTo(0,0)};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
@@ -1378,8 +1412,8 @@ function landView(){const l=landObj();
 function stopObj(){return landObj().stops.find(s=>s.n===V.stop)}
 function qhead(title,extra){return `<div class="qhead"><button class="back" id="bk">← ${esc(landObj().name)}</button><span class="f">${title}</span>${extra||''}</div>`}
 function bindBack(){$('#bk').onclick=()=>{Q=null;V={s:'land',land:V.land};render()}}
-async function complete(kind){const st=stopObj();const k=key(st,kind);const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:k,p_kind:kind});
- if(data){ME.stars=data.stars;ME.done=data.done;header();if(data.prize)cheer(`+${data.prize} ⭐ Quest complete!`);else cheer('Quest complete! 🎉');happySound(true);clapSound(true)}
+async function complete(kind){const st=stopObj();const k=key(st,kind);const lb=landObj()&&landDone(landObj());const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:k,p_kind:kind});
+ if(data){ME.stars=data.stars;ME.done=data.done;header();if(data.prize)cheer(`+${data.prize} ⭐ Quest complete!`);else cheer('Quest complete! 🎉');happySound(true);clapSound(true);afterComplete(data,lb)}
  else{ME.done=ME.done||{};ME.done[k]=1}}
 function friendSvg(){const f=FRIEND[V.land]||'zaza';const vb={zaza:'0 0 220 220',parrot:'0 0 50 60',owl:'0 0 50 60',turtle:'0 0 70 44',fox:'0 0 60 60'}[f];return `<svg viewBox="${vb}"><use href="#${f}"/></svg>`}
 function learnView(){const st=stopObj();
