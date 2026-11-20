@@ -87,6 +87,15 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
 @media(max-width:900px){.hero .wrap,.schools .wrap,.join .wrap{grid-template-columns:1fr}.heroart{max-width:520px;margin:0 auto}.wgrid{grid-template-columns:repeat(2,1fr)}.c3,.c4{grid-template-columns:1fr 1fr}.nav .hide{display:none}.trail svg.path{display:none}}
 @media(max-width:560px){.c3,.c4,.fg{grid-template-columns:1fr}.nav a:not(.play){display:none}.hero{padding-top:26px}}
 @media(prefers-reduced-motion:reduce){.spark{animation:none}*{transition:none!important}}
+/* hero picture across the whole width */
+.hero{background:linear-gradient(0deg,#52AF79 0 54px,transparent 54px),url(img/hero-wide.webp) right 0 bottom 52px/auto 70% no-repeat,linear-gradient(180deg,#7FCDEF 0%,#B9E2F4 70%,#D6EFF8 100%);min-height:clamp(640px,54vw,860px);padding:46px 0 0;display:flex;align-items:flex-start}
+.hero>.wrap{width:100%}.hero .wrap{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr)}
+.herocopy{position:relative;padding:18px 26px 26px 0;max-width:620px}
+.herocopy:before{content:'';position:absolute;inset:-30px -60px -20px -200px;background:radial-gradient(ellipse at 40% 50%,rgba(255,255,255,.6),rgba(255,255,255,.32) 45%,rgba(255,255,255,0) 72%);z-index:-1;pointer-events:none}
+.herocopy h1,.herocopy p,.herocopy .kick{text-shadow:0 1px 0 rgba(255,255,255,.75),0 0 18px rgba(255,255,255,.65)}
+.herocopy h1,.herocopy p{color:#16365E}
+.hero .wave{height:64px}
+@media(max-width:900px){.hero{background:linear-gradient(0deg,#52AF79 0 40px,transparent 40px),url(img/hero-wide.webp) right 0 bottom 38px/auto 250px no-repeat,linear-gradient(180deg,#7FCDEF 0%,#B9E2F4 70%,#D6EFF8 100%);min-height:0;padding:28px 0 255px}.hero .wrap{grid-template-columns:1fr}.herospace{display:none}.herocopy:before{inset:-20px -20px -10px -40px}.hero .wave{height:40px}}
 </style>
 </head>
 <body>
@@ -96,15 +105,15 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
 </div></header>
 
 <section class="hero">
- <span class="spark" style="left:4%;top:16%">+</span><span class="spark" style="left:46%;top:22%;color:#CFE6F2">✖</span><span class="spark" style="left:3%;top:52%;color:#E8F3B0">7</span><span class="spark" style="left:40%;top:70%;color:#D5ECF8">½</span>
+ <span class="spark" style="left:3%;top:12%">+</span><span class="spark" style="left:50%;top:14%;color:#E6F3FB">✖</span><span class="spark" style="left:62%;top:30%;color:#FFF6C9">½</span>
  <div class="wrap">
-  <div>
+  <div class="herocopy">
    <div class="kick" style="color:var(--navy)">A magical maths adventure awaits</div>
    <h1>Ready, Set… Quest!</h1>
    <p>Seven magical worlds. Endless discoveries. A colourful journey that makes every maths moment feel like an adventure.</p>
    <div class="ctas"><a class="btn gold" href="#worlds">Explore the worlds →</a><a class="btn ghost" href="#schools">For schools</a></div>
   </div>
-  <div class="heroart"><img src="img/hero-quest.webp" alt="An explorer racing the clock along the golden trail to Maths Quest school" width="590" height="550"></div>
+  <div class="herospace" role="img" aria-label="An explorer racing the clock along the golden trail to Maths Quest school"></div>
  </div>
  <div class="wave"></div>
 </section>
