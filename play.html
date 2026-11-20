@@ -2276,8 +2276,141 @@ function thinkView(){const st=stopObj();if(!Q){const p=st.think[Math.floor(Math.
   $('#gotit').onclick=async()=>{await complete('think');Q=null;V={s:'land',land:V.land};render()};const n=$('#notyet')||$('#another');if(n)n.onclick=()=>{Q=null;render()}};
  if(tf||asn){document.querySelectorAll('[data-t]').forEach(b=>b.onclick=()=>{const ok=norm(p.a).startsWith(b.dataset.t);if(ok)celebrate(false);else oops();$('#fb').innerHTML=ok?'<span class="ok">✔ Yes! Now can you explain why?</span>':'<span class="bad">Not quite — look at Zaza\'s answer.</span>';document.querySelectorAll('[data-t]').forEach(x=>x.disabled=true);reveal(ok)})}
  else $('#rev').onclick=()=>{reveal()}}
+/* ---------- use it: fresh real-life problems ---------- */
+const uR=(a,b)=>a+Math.floor(Math.random()*(b-a+1)),uP=a=>a[Math.floor(Math.random()*a.length)];
+const UNAMES=['Omar','Mia','Sara','Leo','Aisha','Noah','Zain','Lily','Yusuf','Hana','Adam','Maya','Ali','Ella','Rayan','Nora'];
+const UTHINGS=['stickers','marbles','shells','stamps','beads','cards','pencils','buttons'];
+const UFOOD=[['juice',3],['apple',2],['sandwich',8],['muffin',5],['banana',1],['water bottle',2],['yoghurt',4]];
+const uMax=g=>[20,100,1000,10000,100000,1000000][g]||100;
+const uFmt=n=>Number(n).toLocaleString('en-GB');
+const uDec=n=>String(Math.round(n*100)/100),uMon=n=>(Math.round(n*100)/100).toFixed(2);
+function uAdd(g){const m=uMax(g),n=uP(UNAMES),t=uP(UTHINGS);const a=uR(Math.ceil(m*.1),Math.floor(m*.5)),b=uR(Math.ceil(m*.05),Math.floor(m*.45));
+ return uP([{q:`${n} has ${uFmt(a)} ${t} and gets ${uFmt(b)} more. How many ${t} now?`,a:String(a+b)},
+  {q:`A school collected ${uFmt(a)} bottle tops in week 1 and ${uFmt(b)} in week 2. How many altogether?`,a:String(a+b)}])}
+function uSub(g){const m=uMax(g),n=uP(UNAMES),t=uP(UTHINGS);const a=uR(Math.ceil(m*.4),m-1),b=uR(Math.ceil(m*.05),a-1);
+ return uP([{q:`${n} had ${uFmt(a)} ${t} and gave away ${uFmt(b)}. How many are left?`,a:String(a-b)},
+  {q:`A library has ${uFmt(a)} books. ${uFmt(b)} are borrowed. How many are still on the shelves?`,a:String(a-b)},
+  {q:`One team scored ${uFmt(a)} points and the other scored ${uFmt(b)}. What is the difference?`,a:String(a-b)}])}
+function uCompare(g){const m=Math.min(uMax(g),g<2?100:uMax(g));let a=uR(10,m-1),b=uR(10,m-1);if(a===b)b=a+1;
+ return uP([{q:`Class A collected ${uFmt(a)} shells and Class B collected ${uFmt(b)}. How many shells did the class with more collect?`,a:String(Math.max(a,b))},
+  {q:`Two buses carry ${uFmt(a)} and ${uFmt(b)} people. How many people are on the fuller bus?`,a:String(Math.max(a,b))}])}
+function uTens(g){if(g<=1){const t=uR(2,9),o=uR(0,9);return {q:`Stickers come in packs of 10. You have ${t} packs and ${o} loose sticker${o===1?'':'s'}. How many stickers?`,a:String(t*10+o)}}
+ const h=uR(1,9),t=uR(0,9),o=uR(0,9);return {q:`Pencils come in boxes of 100 and packs of 10. A shop has ${h} boxes, ${t} packs and ${o} single pencil${o===1?'':'s'}. How many pencils?`,a:String(h*100+t*10+o)}}
+function uSkip(g){const s=uP([2,5,10]),c=uR(3,10);return {q:`Count in ${s}s to find how many socks/fingers/toes: ${c} groups of ${s}. How many altogether?`.replace('socks/fingers/toes',s===2?'socks':s===5?'fingers':'toes'),a:String(s*c)}}
+function uGroups(g){const tt=g<=1?[2,5,10]:g===2?[3,4,8]:[3,4,6,7,8,9,11,12];const a=uR(2,g<=1?10:12),b=uP(tt);
+ return uP([{q:`There are ${a} tables with ${b} children at each. How many children?`,a:String(a*b)},
+  {q:`Cakes come in boxes of ${b}. ${uP(UNAMES)} buys ${a} boxes. How many cakes?`,a:String(a*b)},
+  {q:`${a*b} children get into teams of ${b}. How many teams?`,a:String(a)},
+  {q:`${a*b} sweets are shared equally between ${b} friends. How many does each friend get?`,a:String(a)}])}
+function uShare(g){const k=uP([2,3,4,5]),e=uR(2,5);return {q:`${uP(UNAMES)} shares ${k*e} grapes equally between ${k} plates. How many grapes on each plate?`,a:String(e)}}
+function uBigMult(g){if(g>=5){const a=uR(12,48),b=uR(12,36);return uP([{q:`A school orders ${a} boxes of paper with ${b} packs in each. How many packs?`,a:String(a*b)},{q:`${a*b} chairs are put in ${b} equal rows. How many chairs in each row?`,a:String(a)}])}
+ const a=uR(12,g>=4?999:99),b=uR(3,9);return uP([{q:`A ticket costs ${a} dirhams. How much do ${b} tickets cost?`,a:`${a*b} dirhams`},{q:`${a*b} stickers are shared equally among ${b} children. How many each?`,a:String(a)}])}
+function uScale(g){const a=uR(2,9),k=uP([2,3,4,5,10]);return uP([{q:`A plant is ${a} cm tall. It grows to ${k} times as tall. How tall is it now in cm?`,a:`${a*k} cm`},
+ {q:`There are ${a} T-shirts and ${k} pairs of shorts. How many different outfits can you make?`,a:String(a*k)}])}
+function uHalf(g){const n=uR(2,10)*2;return {q:`${uP(UNAMES)} has ${n} strawberries and eats half of them. How many strawberries are eaten?`,a:String(n/2)}}
+function uQuarter(g){const n=uR(1,8)*4;return {q:`A pizza has ${n} slices. A quarter of them have olives. How many slices have olives?`,a:String(n/4)}}
+function uFracAmt(g){const d=g<=1?uP([2,3,4]):uP([3,4,5,6,8,10]),nn=g<=1?1:uR(1,d-1),k=uR(2,g<=2?6:12),tot=d*k;
+ return {q:`A class has ${tot} children. ${nn}/${d} of them walk to school. How many children walk?`,a:String(nn*k)}}
+function uFracAdd(g){const d=uP([5,6,8,10,12]),a=uR(1,d-3),b=uR(1,d-a-1);return uP([{q:`A cake is cut into ${d} equal slices. ${uP(UNAMES)} eats ${a} slice${a>1?'s':''} and a friend eats ${b}. What fraction of the cake is left? Give the number of ${d}ths left.`,a:String(d-a-b)},
+ {q:`${uP(UNAMES)} ran ${a}/${d} of a track, then ${b}/${d} more. How many ${d}ths of the track is that altogether?`,a:String(a+b)}])}
+function uDecMoney(g){const a=uR(2,40)+uP([.25,.5,.75,.1,.2]),b=uR(1,20)+uP([.25,.5,.75,.4]),n=uP(UNAMES);
+ return uP([{q:`${n} buys a book for ${uMon(a)} dirhams and a pen for ${uMon(b)} dirhams. How much is that altogether in dirhams?`,a:uMon(a+b)},
+  {q:`${n} has ${uMon(a+b)} dirhams and spends ${uMon(b)} dirhams. How much is left in dirhams?`,a:uMon(a)}])}
+function uDecMeasure(g){const a=uR(1,9)+uR(1,9)/10,b=uR(1,5)+uR(1,9)/10;return {q:`A frog jumps ${uDec(a)} m, then ${uDec(b)} m. How far did it jump altogether in metres?`,a:uDec(a+b)}}
+function uPercent(g){const p=uP([10,20,25,50,75,5,30,40]),base=uP([40,60,80,120,200,240,400,500]);return uP([{q:`A shirt costs ${base} dirhams. There is ${p}% off. How many dirhams do you save?`,a:String(base*p/100)},
+ {q:`${base} children were asked. ${p}% chose football. How many children chose football?`,a:String(base*p/100)}])}
+function uMoney(g){const n=uP(UNAMES);if(g===0){const a=uR(1,5),b=uR(1,5);return {q:`${n} buys a toy car for ${a} dirhams and a ball for ${b} dirhams. How many dirhams altogether?`,a:`${a+b} dirhams`}}
+ const f1=uP(UFOOD),f2=uP(UFOOD.filter(x=>x!==f1)),k=uR(2,g<=1?4:6),tot=f1[1]*k+f2[1],note=[10,20,50,100].find(x=>x>tot)||200;
+ return uP([{q:`${f1[0].replace(/^./,c=>c.toUpperCase())}s cost ${f1[1]} dirhams each. ${n} buys ${k} of them and one ${f2[0]} for ${f2[1]} dirhams. How much is that?`,a:`${tot} dirhams`},
+  {q:`${n} spends ${tot} dirhams and pays with a ${note} dirham note. How much change?`,a:`${note-tot} dirhams`}])}
+function uLength(g){const n=uP(UNAMES);if(g<=1){const a=uR(20,70),b=uR(5,Math.min(25,a-8));return uP([{q:`A ribbon is ${a} cm long. ${n} cuts off ${b} cm. How long is it now?`,a:`${a-b} cm`},{q:`${n} is ${a+60} cm tall. Her brother is ${b} cm shorter. How tall is her brother?`,a:`${a+60-b} cm`}])}
+ const l=uR(3,g>=3?25:12),w=uR(2,l),c=uR(12,40),d=uR(8,c);return uP([{q:`A rectangular garden is ${l} m long and ${w} m wide. How much fence goes all the way round (the perimeter) in metres?`,a:`${2*(l+w)} m`},{q:`A photo frame is ${c} cm by ${d} cm. How much ribbon goes all the way round it in cm?`,a:`${2*(c+d)} cm`},{q:`${uP(UNAMES)} walks all the way round a square field with sides of ${l*10} m. How far is that in metres?`,a:`${l*40} m`}])}
+function uArea(g){if(g>=5&&Math.random()<.5){const b=uR(2,12)*2,h=uR(3,12);return {q:`A triangular flag has a base of ${b} cm and a height of ${h} cm. What is its area in cm²?`,a:`${b*h/2}`}}
+ const l=uR(3,15),w=uR(2,12);return uP([{q:`A rug is ${l} m long and ${w} m wide. What is its area in square metres?`,a:String(l*w)},{q:`A rectangle of tiles is ${l} tiles long and ${w} tiles wide. How many tiles?`,a:String(l*w)}])}
+function uVolume(g){const l=uR(2,10),w=uR(2,8),h=uR(2,6);return {q:`A box is ${l} cm long, ${w} cm wide and ${h} cm high. How many 1 cm cubes fill it?`,a:String(l*w*h)}}
+function uMass(g){if(g===0){const a=uR(2,6),b=uR(1,a-1);return {q:`A bag of apples weighs ${a} kg and a bag of pears weighs ${b} kg. How many kg heavier is the apple bag?`,a:`${a-b} kg`}}
+ const ml=uP([100,200,250,500]),k=uR(2,g<=2?6:9);return uP([{q:`A cup holds ${ml} ml. How many ml in ${k} cups?`,a:`${ml*k} ml`},{q:`A parcel weighs ${k*100+uR(0,9)*10} g. ${uP(UNAMES)} adds a book weighing ${ml} g. How many grams now?`,a:null}].map(p=>p.a?p:(()=>{const w=+p.q.match(/weighs (\d+)/)[1];return {q:p.q,a:`${w+ml} g`}})()))}
+function uConvert(g){const k=uR(2,9);return uP([{q:`A path is ${k}.5 km long. How many metres is that?`,a:`${k*1000+500} m`},{q:`A bag of rice weighs ${k} kg. How many grams is that?`,a:`${k*1000} g`},
+ {q:`A jug holds ${k} litres. How many millilitres is that?`,a:`${k*1000} ml`},{q:`A shelf is ${k*100+uR(1,9)*10} cm long. How many metres is that?`,a:null}].map(p=>p.a?p:(()=>{const c=+p.q.match(/is (\d+) cm/)[1];return {q:p.q,a:`${uDec(c/100)} m`}})()))}
+function uTime(g){const n=uP(UNAMES);if(g===0){const h=uR(1,9),d=uR(1,3);return {q:`A party starts at ${h} o'clock and lasts ${d} hour${d>1?'s':''}. At what o'clock does it end?`,a:String(h+d)}}
+ if(g<=2){const h=uR(1,10),m=uR(0,6)*5,d=uR(2,8)*5;return {q:`A TV show starts at ${h}:${String(m).padStart(2,'0')} and ends at ${h}:${String(m+d).padStart(2,'0')}. How many minutes long is it?`,a:`${d} minutes`}}
+ const h=uR(7,19),m=uR(0,11)*5,d=uR(4,30)*5,e=h*60+m+d,f=x=>String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0');
+ return {q:`A bus leaves at ${f(h*60+m)} and arrives at ${f(e)}. How many minutes is the journey?`,a:`${d} minutes`}}
+function uAngle(g){if(g<=2){const t=uP([['half',2],['three-quarter',3],['full',4]]);return {q:`${uP(UNAMES)} makes a ${t[0]} turn. How many right angles is that?`,a:String(t[1])}}
+ const a=uR(20,160);if(g>=5&&Math.random()<.5){const b=uR(20,140-a>20?140-a:30);const c=180-a-b;if(c>=20)return {q:`A triangle has angles of ${a}° and ${b}°. What is the third angle?`,a:`${c}°`}}
+ return {q:`Two angles sit together on a straight line. One is ${a}°. What is the other?`,a:`${180-a}°`}}
+function uShape(g){const a=uR(g<=1?1:2,g<=1?4:6),b=uR(1,g<=1?3:5);if(g<=1)return uP([{q:`${uP(UNAMES)} draws ${a} triangle${a>1?'s':''} and ${b} square${b>1?'s':''}. How many sides altogether?`,a:String(a*3+b*4)},{q:`How many faces are there on ${a} cube${a>1?'s':''} altogether?`,a:String(a*6)}]);return uP([{q:`${uP(UNAMES)} draws ${a} triangles and ${b} squares. How many sides altogether?`,a:String(a*3+b*4)},
+ {q:`How many faces are there on ${a} cubes altogether?`,a:String(a*6)},{q:`A sticker pack has ${a} pentagons and ${b} hexagons. How many corners altogether?`,a:String(a*5+b*6)}])}
+function uCircle(g){const r=uR(2,25);return uP([{q:`A round table has a radius of ${r} cm. What is its diameter?`,a:`${2*r} cm`},{q:`A hoop has a diameter of ${2*r} cm. What is its radius?`,a:`${r} cm`}])}
+function uCoord(g){const neg=g>=5,x=uR(neg?-6:0,8),y=uR(neg?-6:0,8),dx=uR(2,6)*(neg&&Math.random()<.5?-1:1);
+ return {q:`A treasure is at (${x}, ${y}). The pirate moves it ${Math.abs(dx)} squares ${dx>0?'right':'left'}. What is its new x-coordinate?`,a:String(x+dx)}}
+function uData(g){const k=g<=1?uP([1,2]):uP([2,5,10]),p=uR(2,9);return uP([{q:`In a pictogram, one 🍎 stands for ${k} children. Apples has ${p} 🍎. How many children chose apples?`,a:String(k*p)},
+ (()=>{const a=uR(3,15),b=uR(3,15),c=uR(3,15);return {q:`A tally shows cats ${a}, dogs ${b} and fish ${c}. How many pets altogether?`,a:String(a+b+c)}})()])}
+function uPie(g){const t=uP([40,60,80,120,200]),f=uP([['half',2],['quarter',4]]);return {q:`A pie chart shows ${t} children. A ${f[0]} of the chart is football. How many children chose football?`,a:String(t/f[1])}}
+function uMean(g){const n=uP([3,4,5]),m=uR(4,20);const v=[];let s=0;for(let i=0;i<n-1;i++){const x=m+uR(-3,3);v.push(x);s+=x}const last=m*n-s;if(last<1)return uMean(g);v.push(last);
+ return {q:`${uP(UNAMES)} scored ${v.join(', ')} in ${n} games. What is the mean score?`,a:String(m)}}
+function uFactor(g){const gcd=(a,b)=>b?gcd(b,a%b):a;const a=uP([4,6,8,9,10,12,15]),b=uP([6,8,10,12,14,15,18,20].filter(x=>x!==a));
+ return uP([{q:`Hot dogs come in packs of ${a} and buns in packs of ${b}. What is the smallest number of each you can have so they match exactly?`,a:String(a*b/gcd(a,b))},
+  {q:`There are ${a*2} boys and ${b*2} girls. They make equal teams of only boys or only girls. What is the biggest team size possible?`,a:String(gcd(a*2,b*2))}])}
+function uSquare(g){const s=uR(3,12),c=uR(2,5);return uP([{q:`A square patio has sides of ${s} m. What is its area in square metres?`,a:String(s*s)},{q:`A big cube is built from small cubes, ${c} along each edge. How many small cubes?`,a:String(c*c*c)}])}
+function uTen(g){const p=uP([10,100,1000]),k=uR(2,99);return uP([{q:`One box holds ${p} paper clips. How many clips in ${k} boxes?`,a:String(k*p)},{q:`${uFmt(k*p)} beads are packed into bags of ${p}. How many bags?`,a:String(k)}])}
+function uNeg(g){const a=uR(-9,-1),b=uR(3,15);return uP([{q:`The temperature was ${a}°C. It rose by ${b}°C. What is it now?`,a:`${a+b}°C`},{q:`At night it was ${a}°C and at noon it was ${a+b}°C. By how many degrees did it rise?`,a:`${b}°C`}])}
+function uRound(g){const p=g>=4?uP([100,1000]):uP([10,100]),n=uR(p*2,p*90)+uR(1,p-1);if(n%p===p/2)return uRound(g);return {q:`About ${uFmt(n)} people came to a match. Round this to the nearest ${p}.`,a:String(Math.round(n/p)*p)}}
+function uOrder(g){const a=uR(2,9),b=uR(3,8),c=uR(2,20);return {q:`${uP(UNAMES)} buys ${a} packs of ${b} pens and ${c} single pens. How many pens? (Work out ${a} × ${b} + ${c}.)`,a:String(a*b+c)}}
+function uRatio(g){const a=uR(1,4),b=uR(2,5),k=uR(2,6);return uP([{q:`A drink uses ${a} cup${a>1?'s':''} of juice for every ${b} cups of water. How many cups of water for ${a*k} cups of juice?`,a:String(b*k)},
+ {q:`A recipe for 4 people needs ${b*50} g of flour. How much flour for ${4*k} people?`,a:`${b*50*k} g`}])}
+function uFormula(g){const f=uR(3,9),per=uR(2,6),n=uR(3,12);return uP([{q:`A taxi costs ${f} dirhams plus ${per} dirhams for each km. How much for ${n} km?`,a:`${f+per*n} dirhams`},
+ {q:`A pattern starts at ${f} and adds ${per} each time: ${f}, ${f+per}, ${f+2*per} … What is the ${n}th number?`,a:String(f+per*(n-1))}])}
+function uMissing(g){const x=uR(3,g>=4?60:20),a=uR(2,g>=4?40:15);return uP([{q:`I think of a number and add ${a}. I get ${x+a}. What was my number?`,a:String(x)},{q:`${uP(UNAMES)} had some marbles, won ${a} more and now has ${x+a}. How many marbles were there at the start?`,a:String(x)},
+ ...(g>=2?[{q:`I think of a number and multiply it by ${Math.min(a,9)}. I get ${x*Math.min(a,9)}. What was my number?`,a:String(x)}]:[])])}
+function uOddEven(g){const a=uR(3,20);return {q:`${a*2} socks are put into pairs. How many pairs?`,a:String(a)}}
+const USEGEN=[
+ [/counting to|numbers to 20|place value|comparing/i,[uCompare,uTens,uAdd]],
+ [/counting in 2s/i,[uSkip]],
+ [/number bonds|adding and subtracting|addition and subtraction|mental addition|written methods|mental calculation/i,[uAdd,uSub]],
+ [/missing numbers and checking/i,[uMissing,uAdd,uSub]],
+ [/equal groups|sharing/i,[uShare,uSkip]],
+ [/factor pairs|times tables|multiplying in any order|multiplication and division problems|mental and written multiplication/i,[uGroups]],
+ [/odd and even/i,[uOddEven,uGroups]],
+ [/scaling/i,[uScale,uGroups]],
+ [/written multiplication|long multiplication/i,[uBigMult]],
+ [/halves/i,[uHalf]],[/quarters/i,[uQuarter,uHalf]],
+ [/fractions of (shapes|amounts)|tenths and fractions|fractions of amounts/i,[uFracAmt]],
+ [/equivalent fractions|compare, add|calculating with fractions|adding, subtracting and multiplying fractions|simplify|mixed and improper/i,[uFracAdd,uFracAmt]],
+ [/decimals/i,[uDecMoney,uDecMeasure]],
+ [/percentages/i,[uPercent]],
+ [/length and height|length and perimeter|perimeter/i,[uLength]],
+ [/area/i,[uArea]],[/volume/i,[uVolume]],
+ [/mass|capacity/i,[uMass]],
+ [/converting/i,[uConvert]],
+ [/money/i,[uMoney]],
+ [/\btime\b(?! graphs)|o'clock|timetables/i,[uTime]],
+ [/\bangles?\b|turns/i,[uAngle]],
+ [/2d shapes|3d shapes|properties of|lines and shapes|classifying shapes|symmetry/i,[uShape]],
+ [/circles/i,[uCircle,uShape]],
+ [/coordinates|translation|reflection/i,[uCoord]],
+ [/\btally|pictogram|bar chart|sorting|early data|line graphs and tables|time graphs/i,[uData]],
+ [/pie chart/i,[uPie,uData]],
+ [/mean/i,[uMean]],
+ [/factors|multiples|primes/i,[uFactor]],
+ [/square and cube/i,[uSquare]],
+ [/10, 100 and 1000/i,[uTen]],
+ [/negative/i,[uNeg]],
+ [/rounding|estimat/i,[uRound,uAdd]],
+ [/order of operations/i,[uOrder]],
+ [/\bratio/i,[uRatio]],
+ [/formulae|sequences/i,[uFormula]],
+ [/equations/i,[uMissing]]];
+function useGens(topic){const out=[];USEGEN.forEach(([re,fs])=>{if(re.test(topic))fs.forEach(f=>{if(!out.includes(f))out.push(f)})});return out}
+const USEDECK={},USEN={},USELAST={};
+function usePick(st){const k=ME.grade+'-'+V.land+'-'+st.n,gens=useGens(st.topic||'');USEN[k]=(USEN[k]||0)+1;
+ if(gens.length&&USEN[k]%3!==1){for(let i=0;i<8;i++){let p;try{p=uP(gens)(+ME.grade||0)}catch(e){p=null}if(p&&p.q&&p.a!=null&&p.q!==USELAST[k]){USELAST[k]=p.q;return p}}}
+ let d=USEDECK[k];if(!d||!d.length){d=st.use.map((_,i)=>i);for(let i=d.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[d[i],d[j]]=[d[j],d[i]]}
+  if(d.length>1&&st.use[d[0]].q===USELAST[k])d.push(d.shift());USEDECK[k]=d}
+ const p=st.use[d.shift()];USELAST[k]=p.q;return p}
+
 /* ---------- use it ---------- */
-function useView(){const st=stopObj();if(!Q){const p=st.use[Math.floor(Math.random()*st.use.length)];Q={kind:'use',p}}
+function useView(){const st=stopObj();if(!Q){const p=usePick(st);Q={kind:'use',p}}
  const p=Q.p,num=firstNum(p.a)&&!/answers will vary|e\.g\./i.test(p.a)&&!/,.*\d/.test(p.a.replace(/,(?=\d{3})/g,''));
  $('#app').innerHTML=qhead('🌍 Use it')+`<div class="card center">${fpFor(p.q)||`<div style="width:110px;margin:0 auto">${friendSvg()}</div>`}<div class="qtext">${esc(p.q)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${num?`<form id="af"><input class="ans" id="ans" autocomplete="off"><div style="margin-top:12px"><button class="b1">Check</button></div></form>`:`<textarea id="ex" rows="3" placeholder="Work it out and write your answer…"></textarea><div style="margin-top:10px"><button class="b1" id="rev">Show the answer</button></div>`}<div class="msg" id="fb"></div><div id="ans2"></div></div>`;
