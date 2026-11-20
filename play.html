@@ -185,7 +185,23 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .burst{position:fixed;inset:0;pointer-events:none;z-index:9;overflow:hidden}
 .burst i{position:absolute;top:-40px;font-style:normal;font-size:30px;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.party .cf,.pav,.pstar,.pclap,.burst i{animation:none}.party .cf,.burst{display:none}}
-.fpwrap{margin:10px auto 6px;max-width:560px;background:#FFFDF6;border:3px dashed #FFD23F;border-radius:20px;padding:12px}.fpic{display:block;width:100%;height:auto;max-height:340px}.pict{font-weight:800;margin-bottom:6px}.picl{list-style:none;margin:0;padding:0;display:inline-block;text-align:left}.picl li{font-size:24px;font-family:Fredoka,Arial;padding:4px 14px;margin:4px 0;background:#fff;border-radius:12px}.picl li::before{content:"● ";color:#FF8A3D}</style>
+.fpwrap{margin:10px auto 6px;max-width:560px;background:#FFFDF6;border:3px dashed #FFD23F;border-radius:20px;padding:12px}.fpic{display:block;width:100%;height:auto;max-height:340px}.pict{font-weight:800;margin-bottom:6px}.picl{list-style:none;margin:0;padding:0;display:inline-block;text-align:left}.picl li{font-size:24px;font-family:Fredoka,Arial;padding:4px 14px;margin:4px 0;background:#fff;border-radius:12px}.picl li::before{content:"● ";color:#FF8A3D}.sgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,600px) minmax(0,1fr);gap:24px;max-width:1500px;margin:0 auto;align-items:start;padding:0 16px}
+.sgrid .hero{width:100%;max-width:600px}
+.side{display:flex;flex-direction:column;gap:14px}
+.sideh{font-family:Fredoka,Arial;font-weight:700;font-size:24px;color:#1D4E89;background:#fff;border-radius:999px;padding:8px 18px;text-align:center;box-shadow:0 4px 12px rgba(20,90,140,.15)}
+.fcard{background:rgba(255,255,255,.94);border-radius:22px;padding:14px;text-align:center;box-shadow:0 6px 18px rgba(20,90,140,.15);border:3px solid #FFD23F}
+.fct{font-family:Fredoka,Arial;font-weight:700;font-size:21px;color:#F2483A;margin-bottom:6px}
+.fcard .fpic{max-height:150px;margin:0 auto}
+.fcs{font-size:17px;line-height:1.4;color:#16323A;margin:8px 0}
+.fsay{padding:6px 14px;font-size:15px}
+.vcard{display:block;width:100%;background:#fff;border:3px solid #2F9BE0;border-radius:20px;padding:8px;cursor:pointer;text-align:center;box-shadow:0 6px 18px rgba(20,90,140,.15)}
+.vth{position:relative;display:block;border-radius:14px;overflow:hidden;aspect-ratio:16/9;background:#DCEBFA}.vth img{width:100%;height:100%;object-fit:cover;display:block}
+.vplay{position:absolute;inset:0;display:grid;place-items:center;font-size:44px;color:#fff;text-shadow:0 2px 10px rgba(0,0,0,.5)}
+.vtt{display:block;font-family:Fredoka,Arial;font-weight:700;font-size:17px;color:#1D4E89;margin-top:6px}
+.vmodal{position:fixed;inset:0;z-index:30;background:rgba(10,30,50,.7);display:grid;place-items:center;padding:16px}
+.vbox{background:#fff;border-radius:22px;padding:14px;width:min(900px,96vw)}.vframe{position:relative;aspect-ratio:16/9}.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:12px}
+@media(max-width:1150px){.sgrid{grid-template-columns:1fr;max-width:640px}.sgrid .hero{order:0;margin:0 auto}.side.sl{order:1}.side.sr{order:2}.sideh{margin-top:6px}}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -1040,6 +1056,55 @@ function picBox(pic){/* a description we can't draw: show it as a big, clear lis
   return `<div class="pic"><div class="pict">🖼️ ${esc(cap(m[1].trim()))}</div><ul class="picl">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`}
  return `<div class="pic">🖼️ ${esc(pic)}</div>`}
 function fpFor(q){const s=visFor(q,V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
+/* ---------- learn-first fact cards (left side) ---------- */
+function bigText(lines,col,mono){/* a card picture made of big, clear maths text */const h=lines.length*54+20;return fpWrap(420,h,lines.map((l,i)=>mono?`<text x="210" y="${52+i*54}" text-anchor="middle" xml:space="preserve" font-family="Menlo,Consolas,monospace" font-weight="700" font-size="36" fill="${i===lines.length-1?VC.o:VC.ln}">${esc(l)}</text>`:T(210,52+i*54,l,i===0?40:34,i===0?(col||VC.o):VC.ln)).join('')+(mono?`<path d="M110 ${h-66} H310" stroke="${VC.ln}" stroke-width="3"/>`:''))}
+const FACTS={
+NI:{
+0:[{k:'f-ni0-1',t:'Counting on',s:'Each number is one more than the number before.',v:()=>numLine([5,6,7,8,9],-1)},
+   {k:'f-ni0-2',t:'Ten-frames',s:'A full ten-frame is 10. This shows 5 and 2 more, which makes 7.',v:()=>tenFrames([[5,VC.o],[2,VC.b]])},
+   {k:'f-ni0-3',t:'Number bonds to 10',s:'Two parts make the whole. 6 and 4 make 10.',v:()=>tenFrames([[6,VC.o],[4,VC.b]])},
+   {k:'f-ni0-4',t:'More and less',s:'The taller tower has more. 7 is more than 3.',v:()=>towers([['3',3],['7',7]])},
+   {k:'f-ni0-5',t:'Taking away',s:'Cross out the ones you take away, then count what is left. 8 take away 3 leaves 5.',v:()=>tenFrames([[5,VC.o],[3,VC.o,1]])}],
+1:[{k:'f-ni1-1',t:'Tens and ones',s:'34 is 3 tens and 4 ones.',v:()=>baseTen(0,3,4)},
+   {k:'f-ni1-2',t:'Bigger or smaller',s:'The crocodile mouth eats the bigger number. 8 is greater than 5, and 5 is less than 8.',v:()=>bigText(['8 > 5','5 < 8'])},
+   {k:'f-ni1-3',t:'Adding 10',s:'When you add 10, only the tens digit changes. 24, 34, 44.',v:()=>numLine([24,34,44,54],-1)},
+   {k:'f-ni1-4',t:'Tens first, then ones',s:'34 add 25: add the tens, 30 add 20 is 50. Add the ones, 4 add 5 is 9. So the answer is 59.',v:()=>bigText(['34 + 25','30 + 20 = 50','4 + 5 = 9','50 + 9 = 59'])},
+   {k:'f-ni1-5',t:'Check with the opposite',s:'Adding and taking away are opposites. 5 add 3 is 8, so 8 take away 3 is 5.',v:()=>bigText(['5 + 3 = 8','8 − 3 = 5'],VC.g)}],
+2:[{k:'f-ni2-1',t:'Hundreds, tens and ones',s:'352 is 3 hundreds, 5 tens and 2 ones. 300 add 50 add 2.',v:()=>pvChart('352','x')},
+   {k:'f-ni2-2',t:'Add 10 or 100',s:'245 add 10 is 255: only the tens change. 245 add 100 is 345: only the hundreds change.',v:()=>bigText(['245 + 10 = 255','245 + 100 = 345'])},
+   {k:'f-ni2-3',t:'Line up the columns',s:'In column adding, line up the hundreds, tens and ones. Start with the ones.',v:()=>bigText(['  246','+ 132','  378'],null,true)},
+   {k:'f-ni2-4',t:'Estimate first',s:'Round to the nearest hundred to estimate. 254 add 122 is about 300 add 100, which is 400.',v:()=>bigText(['254 + 122','≈ 300 + 100','≈ 400'])},
+   {k:'f-ni2-5',t:'Exchanging',s:'10 ones make 1 ten. 10 tens make 1 hundred.',v:()=>baseTen(0,1,10)}],
+3:[{k:'f-ni3-1',t:'Thousands',s:'4,725 is 4 thousands, 7 hundreds, 2 tens and 5 ones.',v:()=>pvChart('4725','x')},
+   {k:'f-ni3-2',t:'Rounding',s:'Look at the next digit. 5 or more rounds up, 4 or less rounds down. 3,460 rounds to 3,500 to the nearest hundred.',v:()=>bigText(['3,460','→ 3,500'])},
+   {k:'f-ni3-3',t:'Below zero',s:'Numbers below zero are negative. Minus 3 degrees is colder than 0 degrees.',v:()=>thermo([-3])},
+   {k:'f-ni3-4',t:'Roman numerals',s:'I is 1, V is 5, X is 10, L is 50 and C is 100.',v:()=>bigText(['I=1  V=5  X=10','L=50  C=100'])},
+   {k:'f-ni3-5',t:'Exchange across zeros',s:'For 5,000 take away 1,268, exchange 1 thousand into 10 hundreds, then keep going.',v:()=>bigText(['5,000 − 1,268','= 3,732'])}],
+4:[{k:'f-ni4-1',t:'Up to a million',s:'One million is a thousand thousands. Each place is ten times the place to its right.',v:()=>pvChart('1000000','x')},
+   {k:'f-ni4-2',t:'Use known facts',s:'7 add 5 is 12, so 70 thousand add 50 thousand is 120 thousand.',v:()=>bigText(['7 + 5 = 12','70,000 + 50,000','= 120,000'])},
+   {k:'f-ni4-3',t:'Negative numbers',s:'From minus 13 degrees, rising by 19 degrees takes you to 6 degrees.',v:()=>thermo([-13,6])},
+   {k:'f-ni4-4',t:'Roman numerals',s:'D is 500 and M is 1,000. A smaller numeral before a bigger one is taken away: CD is 400.',v:()=>bigText(['D = 500','M = 1,000','CD = 400'])},
+   {k:'f-ni4-5',t:'Round to check',s:'Round each number to check the answer is sensible.',v:()=>bigText(['75,137 − 26,802','≈ 75,000 − 27,000','≈ 48,000'])}],
+5:[{k:'f-ni5-1',t:'Ten millions',s:'In 5,409,374 the 5 means five million.',v:()=>pvChart('5409374','5')},
+   {k:'f-ni5-2',t:'Order of operations',s:'Multiply and divide before you add and subtract. 12 add 8 times 8 is 12 add 64, which is 76.',v:()=>bigText(['12 + 8 × 8','= 12 + 64','= 76'])},
+   {k:'f-ni5-3',t:'Across zero',s:'From minus 3 degrees to 12 degrees is a difference of 15 degrees.',v:()=>thermo([-3,12])},
+   {k:'f-ni5-4',t:'Near multiples',s:'199 times 4 is the same as 200 times 4, take away 4. That is 796.',v:()=>bigText(['199 × 4','= 200 × 4 − 4','= 796'])},
+   {k:'f-ni5-5',t:'Estimate to check',s:'8,125 divided by 27 is about 8,000 divided by 25, which is 320.',v:()=>bigText(['8,125 ÷ 27','≈ 8,000 ÷ 25','≈ 320'])}]}};
+function factsFor(land,grade){const L=FACTS[land];return L?(L[grade]||[]):[]}
+
+/* side panels: fact cards (left) and the teacher's videos (right) */
+function sidePanels(l){const F=factsFor(l.code,ME.grade);if(!F.length)return null;
+ const left=`<aside class="side sl"><div class="sideh">📌 Learn first</div>${F.map((f,i)=>`<div class="fcard"><div class="fct">${esc(f.t)}</div>${f.v()}<div class="fcs">${esc(f.s)}</div><button class="b2 fsay" data-fs="${i}" aria-label="Hear this fact">🔊 Hear it</button></div>`).join('')}</aside>`;
+ const right=`<aside class="side sr"><div class="sideh">🎬 Watch and learn</div><div id="vids"><div class="fcard muted">Loading videos…</div></div></aside>`;
+ return {left,right,F}}
+async function loadVideos(land){const el=$('#vids');if(!el)return;const {data}=await rpc('mq_land_videos',{p_code:ME.code,p_land:land});const v=Array.isArray(data)?data:[];
+ if(!$('#vids'))return;
+ $('#vids').innerHTML=v.length?v.map((x,i)=>`<button class="vcard" data-vid="${esc(x.id)}" data-vt="${esc(x.title)}"><span class="vth"><img src="https://i.ytimg.com/vi/${esc(x.id)}/mqdefault.jpg" alt="" loading="lazy"><span class="vplay">▶</span></span><span class="vtt">${esc(x.title)}</span></button>`).join('')
+  :`<div class="fcard"><div style="font-size:44px">🎬</div><div class="fcs">Your teacher hasn't added videos for ${esc(landObj()?landObj().name:'this land')} yet.</div></div>`;
+ document.querySelectorAll('[data-vid]').forEach(b=>b.onclick=()=>openVideo(b.dataset.vid,b.dataset.vt))}
+function openVideo(id,title){const d=document.createElement('div');d.className='vmodal';d.innerHTML=`<div class="vbox"><div class="row" style="justify-content:space-between;margin-bottom:8px"><b class="f" style="font-size:20px;color:#1D4E89">${esc(title)}</b><button class="b2" id="vclose">✕ Close</button></div><div class="vframe"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(id)}?rel=0&modestbranding=1&autoplay=1" title="${esc(title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe></div></div>`;
+ const close=()=>d.remove();d.addEventListener('click',e=>{if(e.target===d)close()});document.body.appendChild(d);$('#vclose').onclick=close}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
@@ -1106,11 +1171,12 @@ function mapView(){const L=C.lands;
 function nextQuest(l){for(const st of l.stops)for(const q of QUESTS){if(q[0]==='listen'&&!st.listen.length)continue;if(!isDone(st,q[0]))return [st.n,q[0]]}return null}
 function heroHTML(l){const H=HERO[l.code];if(!H)return '';const [a,b]=landProgress(l);const [x,y,s,c]=H.prog;
  const prog=l.code==='MM'?`<span style="color:#F2502E">${a}</span>/${b}`:`${a}/${b}`;
- return `<div class="scene" style="--bg:url(img/${H.img}.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/${H.img}.webp" alt="${esc(l.name)}" width="${IW}" height="${IH}">
+ const SP=sidePanels(l);
+ return `<div class="scene" style="--bg:url(img/${H.img}.webp)"><div class="${SP?'sgrid':''}">${SP?SP.left:''}<div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/${H.img}.webp" alt="${esc(l.name)}" width="${IW}" height="${IH}">
  <div class="hprog" style="left:${px(x)};top:${py(y)};font-size:${fz(s)};color:${c}">${prog}</div>
  ${hot(...H.cta,`class="mhot" id="cta" tabindex="0" role="button" aria-label="Start the next quest"`)}
  ${H.home?hot(...H.home,`class="mhot" id="hm" tabindex="0" role="button" aria-label="Back to the map"`):''}
- ${(H.pick||[]).map(([cx,cy,n])=>hot(cx-52,cy-52,cx+52,cy+52,`class="mhot pick" data-pick="${n}" role="button" aria-label="${n}"`)).join('')}</div></div>`}
+ ${(H.pick||[]).map(([cx,cy,n])=>hot(cx-52,cy-52,cx+52,cy+52,`class="mhot pick" data-pick="${n}" role="button" aria-label="${n}"`)).join('')}</div>${SP?SP.right:''}</div></div>`}
 function landObj(){return C.lands.find(l=>l.code===V.land)}
 function landView(){const l=landObj();
  const J=l.code==='FF'?journeyFF(l):null;
@@ -1121,6 +1187,7 @@ function landView(){const l=landObj();
  const m=$('#mtc');if(m)m.onclick=()=>{V={s:'listen',land:'TT',stop:0,mtc:true};render()};
  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{V={s:b.dataset.q,land:V.land,stop:+b.dataset.st};Q=null;render()});
  if(J)bindJourney(l,J);
+ const SPF=factsFor(l.code,ME.grade);document.querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{const f=SPF[+b.dataset.fs];say(f.s,f.k)});if(SPF.length)loadVideos(l.code);
  const key2=(el,f)=>{if(!el)return;el.onclick=f;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();f()}}};
  key2($('#cta'),()=>{const nq=nextQuest(l);if(nq){V={s:nq[1],land:l.code,stop:nq[0]};Q=null;render();scrollTo(0,0)}else{$('#stops').scrollIntoView({behavior:'smooth'})}});
  key2($('#hm'),()=>{V={s:'map'};render()});

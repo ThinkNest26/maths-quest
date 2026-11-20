@@ -3654,3 +3654,33 @@ k-3	Three in a row! You're on fire!
 k-5	Five in a row! Amazing!
 k-8	Eight in a row! You're a maths superstar!
 k-10	Ten in a row! You're a champion explorer!
+f-ni0-1	Each number is one more than the number before.
+f-ni0-2	A full ten-frame is 10. This shows 5 and 2 more, which makes 7.
+f-ni0-3	Two parts make the whole. 6 and 4 make 10.
+f-ni0-4	The taller tower has more. 7 is more than 3.
+f-ni0-5	Cross out the ones you take away, then count what is left. 8 take away 3 leaves 5.
+f-ni1-1	34 is 3 tens and 4 ones.
+f-ni1-2	The crocodile mouth eats the bigger number. 8 is greater than 5, and 5 is less than 8.
+f-ni1-3	When you add 10, only the tens digit changes. 24, 34, 44.
+f-ni1-4	34 add 25: add the tens, 30 add 20 is 50. Add the ones, 4 add 5 is 9. So the answer is 59.
+f-ni1-5	Adding and taking away are opposites. 5 add 3 is 8, so 8 take away 3 is 5.
+f-ni2-1	352 is 3 hundreds, 5 tens and 2 ones. 300 add 50 add 2.
+f-ni2-2	245 add 10 is 255: only the tens change. 245 add 100 is 345: only the hundreds change.
+f-ni2-3	In column adding, line up the hundreds, tens and ones. Start with the ones.
+f-ni2-4	Round to the nearest hundred to estimate. 254 add 122 is about 300 add 100, which is 400.
+f-ni2-5	10 ones make 1 ten. 10 tens make 1 hundred.
+f-ni3-1	4,725 is 4 thousands, 7 hundreds, 2 tens and 5 ones.
+f-ni3-2	Look at the next digit. 5 or more rounds up, 4 or less rounds down. 3,460 rounds to 3,500 to the nearest hundred.
+f-ni3-3	Numbers below zero are negative. Minus 3 degrees is colder than 0 degrees.
+f-ni3-4	I is 1, V is 5, X is 10, L is 50 and C is 100.
+f-ni3-5	For 5,000 take away 1,268, exchange 1 thousand into 10 hundreds, then keep going.
+f-ni4-1	One million is a thousand thousands. Each place is ten times the place to its right.
+f-ni4-2	7 add 5 is 12, so 70 thousand add 50 thousand is 120 thousand.
+f-ni4-3	From minus 13 degrees, rising by 19 degrees takes you to 6 degrees.
+f-ni4-4	D is 500 and M is 1,000. A smaller numeral before a bigger one is taken away: CD is 400.
+f-ni4-5	Round each number to check the answer is sensible.
+f-ni5-1	In 5,409,374 the 5 means five million.
+f-ni5-2	Multiply and divide before you add and subtract. 12 add 8 times 8 is 12 add 64, which is 76.
+f-ni5-3	From minus 3 degrees to 12 degrees is a difference of 15 degrees.
+f-ni5-4	199 times 4 is the same as 200 times 4, take away 4. That is 796.
+f-ni5-5	8,125 divided by 27 is about 8,000 divided by 25, which is 320.
