@@ -107,6 +107,13 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
 .pcard li::before{content:"✓";flex:none;width:22px;height:22px;border-radius:50%;background:#2DB89A;color:#fff;display:grid;place-items:center;font-size:13px}
 .pcard .btn{text-align:center;display:flex;justify-content:center}
 @media(max-width:900px){.pgrid{grid-template-columns:1fr}.pcard.best{transform:none}}
+/* moving shape friends */
+.herofx{position:absolute;right:0;bottom:52px;height:92%;aspect-ratio:2600/1100;pointer-events:none}
+.herofx img{position:absolute;height:auto}
+.flo{position:absolute;font-family:Fredoka,sans-serif;font-weight:700;color:#fff;opacity:0;font-size:30px;text-shadow:0 2px 6px rgba(22,54,94,.15);animation:flo 9s linear infinite}
+@keyframes flo{0%{opacity:0;transform:translateY(30px) rotate(-8deg)}15%{opacity:.85}80%{opacity:.7}100%{opacity:0;transform:translateY(-140px) rotate(8deg)}}
+@media(max-width:900px){.herofx{bottom:38px;height:250px}.flo{display:none}}
+@media(prefers-reduced-motion:reduce){.flo{display:none}}
 </style>
 </head>
 <body>
@@ -124,8 +131,14 @@ footer .mid{font-size:15px;opacity:.9;text-align:center}footer .mid a{color:#FFD
    <p>Seven magical worlds. Endless discoveries. A colourful journey that makes every maths moment feel like an adventure.</p>
    <div class="ctas"><a class="btn gold" href="#worlds">Explore the worlds →</a><a class="btn ghost" href="#schools">For schools</a></div>
   </div>
-  <div class="herospace" role="img" aria-label="An explorer racing the clock along the golden trail to Maths Quest school"></div>
+  <div class="herospace" role="img" aria-label="Three shape friends walking along the golden trail to Maths Quest school"></div>
  </div>
+ <div class="herofx" aria-hidden="true">
+  <img src="img/friend-square.svg" alt="" style="left:53.077%;top:69.636%;width:10.577%">
+  <img src="img/friend-circle.svg" alt="" style="left:61.538%;top:66.091%;width:10.923%">
+  <img src="img/friend-triangle.svg" alt="" style="left:69.231%;top:62.636%;width:12.154%">
+ </div>
+ <span class="flo" style="left:44%;top:46%">+</span><span class="flo" style="left:56%;top:40%;animation-delay:3s">3</span><span class="flo" style="left:70%;top:20%;animation-delay:6s;color:#FFF6C9">×</span><span class="flo" style="left:38%;top:58%;animation-delay:4.5s;color:#E6F3FB">7</span>
  <div class="wave"></div>
 </section>
 
