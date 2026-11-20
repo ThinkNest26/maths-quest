@@ -281,6 +281,10 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .cflip .cf2{transform:rotateY(180deg);background:#FFFBEA}.cflip .cbv{width:100%}.cflip .cbv svg{max-width:100%;height:auto}
 .chestc{max-width:420px}.chest{font-size:110px;line-height:1.1}.chest.shake{animation:ghit .35s infinite}.chest.open{animation:pin .6s}.ffact{background:#EEF6FF;border-radius:16px;padding:12px;margin-top:10px;font-size:18px}
 @media(max-width:700px){.funrow{grid-template-columns:1fr 1fr}}
+.sndb{background:rgba(255,255,255,.22);border:2px solid rgba(255,255,255,.6);border-radius:50%;width:40px;height:40px;font-size:18px;padding:0;box-shadow:none;cursor:pointer}
+.sndrow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid #EFE6D2;cursor:pointer}.sndi{font-size:28px;width:36px;text-align:center}
+.tgl{appearance:none;-webkit-appearance:none;width:54px;height:30px;border-radius:999px;background:#D6D0C2;position:relative;cursor:pointer;transition:background .2s;flex:none}.tgl:checked{background:#2DBE6C}
+.tgl::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:left .2s}.tgl:checked::after{left:27px}
 </style>
 </head>
 <body>
@@ -407,7 +411,7 @@ function applySupport(){const b=document.body;b.classList.toggle('sup-big',!!SUP
 function autoRead(t,k){if(SUP.read)setTimeout(()=>say(t,k),350)}
 function save(){try{localStorage.setItem(KEY,JSON.stringify({code:ME.code}))}catch(e){}}
 function stars(){return ME?Math.max(0,(ME.stars||0)-(ME.spent||0)):0}
-function header(){$('#who').innerHTML=ME?`<button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span>${streakNow()?`<span class="stars flamechip" title="${streakNow()}-day streak">${flameBadge(streakNow())} ${streakNow()}</span>`:''}<span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;MYTASKS=null;mapView.t=0;V={s:'signin'};render()}}
+function header(){$('#who').innerHTML=ME?`<button class="sndb" id="sndb" title="Sound and music" aria-label="Sound and music settings">${SND.voice||SND.fx||SND.music?'🔊':'🔇'}</button><button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span>${streakNow()?`<span class="stars flamechip" title="${streakNow()}-day streak">${flameBadge(streakNow())} ${streakNow()}</span>`:''}<span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');{const sb2=$('#sndb');if(sb2)sb2.onclick=sndPanel}if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;MYTASKS=null;mapView.t=0;V={s:'signin'};render()}}
 function cheer(t,col){const d=document.createElement('div');d.className='cheer';d.innerHTML=`<div style="${col?'color:'+col:''}">${t}</div>`;$('#fx').appendChild(d);setTimeout(()=>d.remove(),950)}
 function key(st,kind){return `G${ME.grade}-${V.land}-${st.n}-${kind}`}
 function isDone(st,kind){return ME&&ME.done&&ME.done[key(st,kind)]}
@@ -421,9 +425,9 @@ function unlockAudio(){if(KATE)return;KATE=new Audio();KATE.preload='auto';try{K
 document.addEventListener('pointerdown',unlockAudio,{once:true});document.addEventListener('keydown',unlockAudio,{once:true});
 function robot(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
 /* say(text, clipName): plays Kate's recording if we have it, otherwise the device voice */
-function say(t,k){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}
+function say(t,k){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
  if(k&&HAVE.has(k)){if(!KATE)unlockAudio();const tok=++PLAYTOK;try{KATE.pause()}catch(e){}
-  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t)});return}
+  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t)});return}
  if(t)robot(t)}
 function praise(ok){const n=ok?1+Math.floor(Math.random()*10):1+Math.floor(Math.random()*4);say('',(ok?'p-':'e-')+n)}
 /* ---------- answer checking ---------- */
@@ -802,12 +806,43 @@ function bindJourney(l,J){document.querySelectorAll('.jpad').forEach(g=>{const g
 /* ---------- celebrations: bells, clapping, confetti (same engine as the Spelling Bee) ---------- */
 let AC=null,STREAK=0;const pick=a=>a[Math.floor(Math.random()*a.length)];
 function ac(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
-let ROOM=null;function room(){const a=ac();if(!a)return null;if(ROOM)return ROOM;
+let ROOM=null;function room(){if(typeof SND!=='undefined'&&!SND.fx)return null;const a=ac();if(!a)return null;if(ROOM){ROOM.gain.value=SND.vol;return ROOM}
  const inp=a.createGain(),dry=a.createGain(),wet=a.createGain();dry.gain.value=1;wet.gain.value=0.3;inp.connect(dry);dry.connect(a.destination);
  try{const len=Math.floor(a.sampleRate*1.4),ir=a.createBuffer(2,len,a.sampleRate);for(let c=0;c<2;c++){const d=ir.getChannelData(c);for(let i=0;i<len;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/len,3.2)}
   const conv=a.createConvolver();conv.buffer=ir;inp.connect(conv);conv.connect(wet);wet.connect(a.destination)}catch(e){}
- ROOM=inp;return ROOM}
+ inp.gain.value=SND.vol;ROOM=inp;return ROOM}
 function bell(f,t,d,vol){const a=ac();if(!a)return;const r=room();if(!r)return;const n=a.currentTime+t;[[f,1],[f*2.01,0.22],[f*3.02,0.06]].forEach(([fr,m])=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(Math.max((vol||0.1)*m,0.0002),n+0.008);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(r);o.start(n);o.stop(n+d+0.05)})}
+/* ================= 🔊 Sound and music settings ================= */
+let SND={fx:true,voice:true,music:false,vol:0.8};try{Object.assign(SND,JSON.parse(localStorage.getItem('mq-snd')||'{}'))}catch(e){}
+function saveSnd(){try{localStorage.setItem('mq-snd',JSON.stringify(SND))}catch(e){}if(KATE)KATE.volume=SND.vol;if(ROOM)ROOM.gain.value=SND.vol;if(MUS.g)MUS.g.gain.value=0.22*SND.vol;musicFor(V&&V.s)}
+/* gentle tunes made in the browser: one for the map and one for each land (no music files needed) */
+const TUNES={map:{bpm:96,root:60,mel:[0,4,7,9,7,4,2,4, 0,2,4,7,9,7,4,0],bass:[0,0,5,5,7,7,5,5]},
+ NI:{bpm:100,root:62,mel:[0,2,4,7,9,7,4,2, 4,7,9,12,9,7,4,2],bass:[0,0,7,7,5,5,7,7]},TT:{bpm:112,root:60,mel:[0,4,0,7,0,4,7,12, 0,4,0,7,9,7,4,2],bass:[0,7,0,7,5,9,5,7]},
+ FF:{bpm:84,root:65,mel:[7,4,2,0,2,4,7,9, 12,9,7,4,2,4,2,0],bass:[0,0,5,5,3,3,5,5]},MM:{bpm:108,root:62,mel:[0,2,4,2,0,4,7,4, 9,7,4,2,4,2,0,0],bass:[0,5,7,5,0,5,7,0]},
+ SF:{bpm:80,root:57,mel:[0,3,7,10,7,3,0,3, 5,7,10,12,10,7,5,3],bass:[0,0,5,5,3,3,7,7]},DD:{bpm:92,root:62,mel:[0,1,4,5,7,5,4,1, 0,1,4,7,5,4,1,0],bass:[0,0,5,5,7,7,5,0]},
+ PP:{bpm:104,root:64,mel:[0,2,4,7,9,12,14,12, 9,7,4,2,4,7,4,0],bass:[0,5,7,0,5,9,7,5]}};
+const MUS={id:null,tune:null,g:null,step:0,next:0};
+const mtof=m=>440*Math.pow(2,(m-69)/12);
+function mnote(a,f,t,d,type,vol){const o=a.createOscillator(),g=a.createGain();o.type=type;o.frequency.value=f;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+0.03);g.gain.exponentialRampToValueAtTime(0.0001,t+d);o.connect(g);g.connect(MUS.g);o.start(t);o.stop(t+d+0.05)}
+function musicStop(){if(MUS.id){clearInterval(MUS.id);MUS.id=null}MUS.tune=null}
+function musicFor(view){const on=SND.music&&['map','land','cards','cup','finale','avatar'].includes(view);if(!on){musicStop();return}
+ const key=view==='land'&&V.land&&TUNES[V.land]?V.land:'map';if(MUS.tune===key&&MUS.id)return;musicStop();const a=ac();if(!a)return;
+ if(!MUS.g){MUS.g=a.createGain();MUS.g.connect(a.destination)}MUS.g.gain.value=0.22*SND.vol;const T=TUNES[key];MUS.tune=key;MUS.step=0;MUS.next=a.currentTime+0.1;const beat=60/T.bpm/2;
+ MUS.id=setInterval(()=>{const a2=ac();if(!a2)return;while(MUS.next<a2.currentTime+0.4){const i=MUS.step%T.mel.length;
+   if(!(i%4===3&&Math.random()<.35))mnote(a2,mtof(T.root+12+T.mel[i]),MUS.next,beat*1.6,'triangle',0.12);
+   if(i%2===0)mnote(a2,mtof(T.root-12+T.bass[(i/2|0)%T.bass.length]),MUS.next,beat*2.2,'sine',0.16);
+   MUS.next+=beat;MUS.step++}},120)}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)musicStop();else musicFor(V&&V.s)});
+function sndPanel(){const ov=document.createElement('div');ov.className='howov';
+ const sw=(k,ic,t,d)=>`<label class="sndrow"><span class="sndi">${ic}</span><span style="flex:1"><b>${t}</b><br><span class="small muted">${d}</span></span><input type="checkbox" class="tgl" data-snd="${k}" ${SND[k]?'checked':''}></label>`;
+ ov.innerHTML=`<div class="howcard" style="max-width:460px"><div class="row"><b class="f" style="font-size:24px;color:#1D4E89">🔊 Sound and music</b><div class="spacer"></div><button class="b2 sm" id="sndX">✕</button></div>
+  ${sw('voice','🗣️','Kate’s voice','Reads questions, praise and tips')}${sw('fx','🔔','Sound effects','Bells, cheers and claps')}${sw('music','🎵','Music','A gentle tune for each land')}
+  <label class="sndrow"><span class="sndi">🔉</span><span style="flex:1"><b>Volume</b><input type="range" id="sndV" min="0" max="1" step="0.05" value="${SND.vol}" style="width:100%"></span></label>
+  <p class="small muted" style="margin:6px 0 0">These settings are saved on this device.</p></div>`;
+ document.body.appendChild(ov);ov.querySelector('#sndX').onclick=()=>ov.remove();ov.onclick=e=>{if(e.target===ov)ov.remove()};
+ ov.querySelectorAll('[data-snd]').forEach(c=>c.onchange=()=>{SND[c.dataset.snd]=c.checked;saveSnd();if(c.dataset.snd==='fx'&&c.checked)bell(1046.5,0,.5,.08);if(c.dataset.snd==='voice'&&c.checked)say('Hello!','hello');header()});
+ ov.querySelector('#sndV').oninput=e=>{SND.vol=+e.target.value;saveSnd()};ov.querySelector('#sndV').onchange=()=>bell(1046.5,0,.5,.08)}
+
 function happySound(big){[1046.5,1318.5,1568,2093].forEach((f,i)=>bell(f,i*0.075,1.0,0.085));if(big)[1568,2093,2637,3136].forEach((f,i)=>bell(f,0.45+i*0.08,1.2,0.07))}
 function gentleSound(){bell(523.25,0,0.7,0.06);bell(659.25,0.16,0.9,0.05)}
 let CLAPBUF=null;
@@ -2055,7 +2090,7 @@ async function openChest(){if(chestOpened()){cheer('Come back tomorrow for a new
   ov.querySelector('#chok').onclick=()=>{ov.remove();render()};miniParty();happySound(true);say('Fun maths fact! '+f,null)},1100)}
 
 /* ---------- views ---------- */
-function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
+function render(){clearInterval(TIMER);header();setTimeout(()=>musicFor(V.s),0);const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
  if(!C){a.innerHTML='<p class="center muted">Loading your map…</p>';return}
  if(V.s==='avatar'){a.innerHTML=avatarView();bindAv();if(!V.keep)window.scrollTo(0,0);V.keep=false;return}
