@@ -68,6 +68,9 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;fo
 .pbar{position:relative;background:#F1ECDD;border-radius:999px;height:20px;min-width:90px}.pbar i{position:absolute;left:0;top:0;bottom:0;border-radius:999px}.pbar span{position:relative;font-size:12px;font-weight:800;padding-left:8px;line-height:20px}
 .idle{display:flex;flex-wrap:wrap;gap:6px}.idlek{border:2px solid #EFE6D2;border-radius:999px;padding:3px 10px;text-decoration:none;color:var(--ink,#1D2B36)}
 .cklink{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:#EEF6FF;border:2px solid #CFE3F7;border-radius:14px;padding:8px 12px;margin:0 0 12px}.cklink span{flex:1}
+.plg{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:12px 0}.plc{border:2px solid #EFE6D2;border-radius:18px;padding:14px;cursor:pointer;display:block}.plc:has(input:checked){border-color:#F2704E;background:#FFF6F2}.plc input{float:right}.plc ul{padding-left:18px;margin:8px 0 0}
+.tfoot{text-align:center;color:#5B7177;font-size:13px;padding:24px}.tfoot a{color:#127C8C}
+@media print{.tfoot{display:none}}
 </style>
 </head>
 <body>
@@ -166,6 +169,7 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;fo
 <header><div class="w"><a class="logo" href="./"><svg aria-hidden="true"><use href="#logo"/></svg>Maths Quest — Teachers</a><div id="who"></div></div></header>
 <main id="app"><p>Loading…</p></main>
 <div id="cards"></div><div id="modal"></div>
+<footer class="tfoot noprint"><a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · Powered by ThinkNest</footer>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://xpbkdnkfufkahaszfycd.supabase.co';
@@ -189,16 +193,20 @@ function parseLine(line){const toks=line.split(/[,\t;]+|\s+/).map(t=>t.trim()).f
 /* ---------- sign in ---------- */
 function renderLogin(msg){$('#who').innerHTML='';$('#app').innerHTML=`<div class="card login"><h2 style="color:var(--sea)">Teacher sign in</h2><p style="color:var(--muted)">Use the same email and password as your Spelling Bee teacher account.</p>
  <form id="lf"><label>Email</label><input id="em" type="email" autocomplete="username"><label>Password</label><input id="pw" type="password" autocomplete="current-password"><div style="margin-top:14px"><button class="b1" style="width:100%">Sign in</button></div></form>
- <div class="msg bad ${msg?'show':''}" id="lm">${esc(msg||'')}</div><p style="font-size:14px;margin-top:14px">Forgot your password? Reset it on the <a href="https://school-spellingbee.com/teacher.html">Spelling Bee teacher page</a> — it is the same account.</p></div>`;
+ <div class="msg bad ${msg?'show':''}" id="lm">${esc(msg||'')}</div><p style="font-size:14px;margin-top:14px">Forgot your password? Reset it on the <a href="https://school-spellingbee.com/teacher.html">Spelling Bee teacher page</a> — it is the same account.</p><p style="font-size:14px">New school? <a href="signup.html"><b>Start a free 7-day trial →</b></a></p></div>`;
  $('#lf').onsubmit=async e=>{e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:$('#em').value.trim(),password:$('#pw').value});if(error){$('#lm').textContent='That email or password is not right.';$('#lm').classList.add('show');return}start()}}
 async function start(){if(!sb){renderLogin('Could not connect.');return}
  const {data:{session}}=await sb.auth.getSession();if(!session){renderLogin();return}USER=session.user;
  $('#who').innerHTML=`<span>${esc(USER.email)}</span><button class="sm" id="so">Sign out</button>`;$('#so').onclick=async()=>{await sb.auth.signOut();renderLogin()};
  const {data:s}=await sb.rpc('mq_school_info');SCHOOL=s;
- if(!SCHOOL){$('#app').innerHTML=`<div class="card login"><h2 style="color:var(--sea)">This email isn't on a school's teacher list yet</h2><p>Ask a teacher at your school to add you in the Spelling Bee School settings → Teachers.</p></div>`;return}
+ if(!SCHOOL){const m=USER.user_metadata&&USER.user_metadata.new_school;if(m&&m.name&&!start.made){start.made=1;$('#app').innerHTML='<div class="card">Setting up your school…</div>';
+  let {data:r}=await sb.rpc('mq_create_school',{p_name:m.name,p_slug:m.slug,p_contact_name:m.contact||'',p_phone:m.phone||'',p_city:m.city||''});
+  if(r&&r.error==='taken')await sb.rpc('mq_create_school',{p_name:m.name,p_slug:(m.slug||'school')+'-'+Math.floor(Math.random()*900+100),p_contact_name:m.contact||'',p_phone:m.phone||'',p_city:m.city||''});
+  start();return}
+  $('#app').innerHTML=`<div class="card login"><h2 style="color:var(--sea)">This email isn't on a school's teacher list yet</h2><p>Ask a teacher at your school to add you in the Spelling Bee School settings → Teachers.</p></div>`;return}
  if(!SCHOOL.plan){$('#app').innerHTML=`<div class="card" style="max-width:640px;margin:30px auto;text-align:center"><svg viewBox="0 0 220 220" style="width:140px"><use href="#zaza"/></svg><h1 style="color:var(--sea)">Start Maths Quest at ${esc(SCHOOL.name)}</h1><p>Try everything free for 7 days: the quest map, 7 maths lands, over 3,000 questions, stars and teacher reports.</p><button class="b1" id="trial" style="font-size:20px">Start the free trial 🚀</button></div>`;
   $('#trial').onclick=async()=>{const {data}=await sb.rpc('mq_start_trial');if(data&&data.ok){toast('Your 7-day trial has started!');start()}else toast('Could not start the trial')};return}
- if(!SCHOOL.active){$('#app').innerHTML=`<div class="card" style="max-width:640px;margin:30px auto;text-align:center"><h1 style="color:var(--sea)">Your Maths Quest plan has ended</h1><p>Children can't play until it is renewed. Email <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a> and we'll send an invoice.</p></div>`;return}
+ if(!SCHOOL.active){$('#app').innerHTML=`<div class="card" style="max-width:640px;margin:30px auto;text-align:center"><h1 style="color:var(--sea)">Your Maths Quest plan has ended</h1><p>Children can't play until it is renewed. Choose a plan and we'll send your school an invoice.</p><button class="b1" id="planb">Choose a plan</button><p class="small muted" style="margin-top:12px">Questions? <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a></p></div>`;$('#planb').onclick=planModal;return}
  await load()}
 async function load(){const [{data:k},{data:p},{data:v},cl,tk,spd,cks,ckr]=await Promise.all([sb.from('mq_students').select('*').order('grade').order('class_name').order('first_name'),sb.from('mq_progress').select('*'),sb.from('mq_videos').select('*').order('created_at'),sb.from('mq_classes').select('*').order('grade').order('name'),sb.from('mq_tasks').select('*').order('created_at',{ascending:false}),sb.from('mq_speed').select('*'),sb.from('mq_checks').select('*').order('created_at',{ascending:false}),sb.from('mq_check_results').select('*')]);
  KIDS=k||[];PROG={};(p||[]).forEach(x=>PROG[x.student_id]=x);VIDS=v||[];CLASSES=(cl&&cl.data)||[];TASKS=(tk&&tk.data)||[];CHECKS=(cks&&cks.data)||[];CRES=(ckr&&ckr.data)||[];loadNC();SPEED={};((spd&&spd.data)||[]).forEach(x=>{(SPEED[x.student_id]=SPEED[x.student_id]||[]).push(x)});Promise.all([...new Set(KIDS.map(c=>PG(c)))].map(g=>content(g))).then(()=>{if(TV!=='child'&&TV!=='class')render()});render()}
@@ -221,6 +229,14 @@ function supModal(kid){const u=Object.assign({},kid.support||{});const pg=PG(kid
   if(g!==pg&&Object.keys((PROG[kid.id]||{}).done||{}).length&&!confirm(`${kid.first_name} will start at ${GL(g)} content. Progress at ${GL(pg)} is kept and comes back if you change it back. Continue?`))return;
   const {error}=await sb.from('mq_students').update({support:n}).eq('id',kid.id);if(error){const m=$('#supMsg');m.textContent='Could not save. Please try again.';m.classList.add('show');return}
   kid.support=n;$('#modal').innerHTML='';await content(PG(kid));toast('Support settings saved. They apply next time '+kid.first_name+' signs in.');render()}}
+async function planModal(){const {data}=await sb.from('mq_plans').select('*').order('sort');const P=data||[];
+ $('#modal').innerHTML=`<div class="modal"><div class="card" style="max-width:760px"><h2 style="color:var(--sea)">Choose a Maths Quest plan</h2><p class="muted small">Per school, per year. We’ll email an invoice to your school. Your children, classes and progress are kept.</p>
+  <div class="plg">${P.map(p=>`<label class="plc"><input type="radio" name="pl" value="${p.id}" ${p.id==='premium'?'checked':''}><b class="f" style="font-size:22px;color:var(--sea)">${esc(p.name)}</b><div class="f" style="font-size:26px">${p.price.toLocaleString('en-GB')} ${esc(p.currency)}<span class="small muted"> / year</span></div><div class="small muted">${esc(p.blurb)}</div><ul class="small">${(p.features||[]).map(f=>`<li>${esc(f)}</li>`).join('')}</ul></label>`).join('')||'<p>Plans are not available right now.</p>'}</div>
+  <label class="supl"><b>Anything we should know? (optional)</b><textarea id="pln" rows="2" maxlength="500" placeholder="e.g. number of children, invoice details"></textarea></label>
+  <div class="row" style="margin-top:12px"><div class="spacer"></div><button class="b2" id="plc">Cancel</button><button class="b1" id="pls">Send request</button></div></div></div>`;
+ $('#plc').onclick=()=>$('#modal').innerHTML='';$('#pls').onclick=async()=>{const v=(document.querySelector('[name=pl]:checked')||{}).value;if(!v)return;const {data:r}=await sb.rpc('mq_request_plan',{p_plan:v,p_note:$('#pln').value});
+  $('#modal').innerHTML='';toast(r&&r.ok?'Thank you! We’ll email your invoice soon.':'Could not send. Please email hello@school-mathquest.com')}}
+document.addEventListener('click',e=>{const b=e.target.closest&&e.target.closest('[data-plan]');if(b)planModal()});
 function isFinisher(kid){const c=CONT[PG(kid)];if(!c||!c.lands||!c.lands.length)return false;return analyse(kid,c).every(l=>l.stops.length&&l.stops.every(s=>s.qd===s.qt))}
 function trophy(kid){return isFinisher(kid)?' <span title="Finished every land" class="trophy">🏆</span>':''}
 function speedOf(kid){const L=SPEED[kid.id]||[];if(!L.length)return null;const td=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Dubai'}).format(new Date());const t=L.find(x=>x.day===td);const B=L.slice().sort((a,b)=>b.best-a.best||a.avg_ms-b.avg_ms)[0];return {pb:B.best,pb_s:B.avg_ms?(B.avg_ms/1000).toFixed(1):null,today_s:t&&t.avg_ms?(t.avg_ms/1000).toFixed(1):null,today:t?t.best:null,days:L.length,last:L.map(x=>x.day).sort().pop(),list:L.slice().sort((a,b)=>a.day<b.day?-1:1)}}
@@ -241,7 +257,7 @@ function ago(t){if(!t)return '—';const d=Math.floor((Date.now()-Date.parse(t))
 function render(){if(TV==='school'){renderSchool();return}if(TV==='checks'){renderChecks();return}if(TV==='classes'){renderClasses();return}if(TV==='tasks'){renderTasks();return}if(TV==='child'){renderChild();return}if(TV==='class'){renderClass();return}renderList()}
 function renderList(){const vis=visible();const week=KIDS.filter(c=>PROG[c.id]&&PROG[c.id].last_seen&&Date.now()-Date.parse(PROG[c.id].last_seen)<7*864e5).length;
  const totalStars=Object.values(PROG).reduce((n,p)=>n+p.stars,0);const ans=Object.values(PROG).reduce((n,p)=>n+p.answered,0),cor=Object.values(PROG).reduce((n,p)=>n+p.correct,0);
- $('#app').innerHTML=tabsBar()+`${SCHOOL.plan==='trial'?`<div class="card" style="background:#E8F0FF;border-color:#B9CDF5"><b>🎉 Free trial:</b> ${SCHOOL.days_left} day${SCHOOL.days_left===1?'':'s'} left. Email <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a> to choose a plan.</div>`:''}
+ $('#app').innerHTML=tabsBar()+`${SCHOOL.plan==='trial'?`<div class="card" style="background:#E8F0FF;border-color:#B9CDF5"><b>🎉 Free trial:</b> ${SCHOOL.days_left} day${SCHOOL.days_left===1?'':'s'} left. <button class="b2 sm" data-plan="1" style="margin-left:6px">Choose a plan</button></div>`:''}
  <div class="stats"><div class="stat"><b>${KIDS.length}</b>explorers with codes</div><div class="stat"><b>${week}</b>played this week</div><div class="stat"><b>${totalStars}</b>stars earned</div><div class="stat"><b>${ans?Math.round(100*cor/ans):0}%</b>answers correct</div></div>
  ${finCard(vis)}<div class="card"><div class="row"><h2 style="color:var(--sea);font-size:22px">Explorers</h2><div class="spacer"></div>
   <button class="b1" id="add">+ Add children</button><button class="b2" id="copy">Copy from Spelling Bee</button><button class="b2" id="print">🖨 Print code cards</button></div>
