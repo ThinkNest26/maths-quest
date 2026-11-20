@@ -1232,14 +1232,107 @@ function visPP(t,g){let m;
  const sq=seqVis(t);if(sq)return sq;
  m=t.match(/^(\d+)% of (\d+) = \?$/)||t.match(/What is (\d+)% of (\d+)\?/);if(m){const p=+m[1],N=+m[2];if(p%10===0)return fpBarModel(N,10,p/10);if(p%25===0)return fpBarModel(N,4,p/25);if(p%5===0)return fpBarModel(N,20,p/5)}
  return ''}
+/* ===== extra pictures (used by checks and anywhere a land has no picture) ===== */
+const XN=s=>+String(s).replace(/,/g,'');
+function heightBars(list,unit){const mx=Math.max(...list.map(x=>x[1])),H=260,W=list.length*120+40;let o=`<path d="M20 ${H-40} H${W-20}" stroke="${VC.ln}" stroke-width="3"/>`;
+ list.forEach(([n,v],i)=>{const h=(v/mx)*(H-90),x=50+i*120;o+=`<rect x="${x}" y="${H-40-h}" width="60" height="${h}" rx="10" fill="${PAL[i]}"/>`+T(x+30,H-48-h,`${v} ${unit}`,17)+T(x+30,H-12,n,18)});return fpWrap(W,H,o)}
+function jugsVis(list,unit){const W=list.length*170+20;let o='';list.forEach(([n,v],i)=>{const x=30+i*170,mx=Math.max(...list.map(z=>z[1])),cap=Math.max(mx,1),lv=v/cap*150;
+ o+=`<path d="M${x} 30 H${x+110} V190 Q${x+110} 205 ${x+95} 205 H${x+15} Q${x} 205 ${x} 190 Z" fill="#fff" stroke="${VC.ln}" stroke-width="4"/><path d="M${x+110} 60 q30 10 0 60" fill="none" stroke="${VC.ln}" stroke-width="4"/>`;
+ o+=`<rect x="${x+4}" y="${203-lv}" width="102" height="${lv}" fill="#9ED3F5"/>`;for(let k=1;k<=v&&k<=12;k++)o+=`<path d="M${x+4} ${203-k*150/cap} h18" stroke="${VC.ln}" stroke-width="2"/>`;
+ o+=T(x+55,232,`${n}: ${v} ${unit}`,18)});return fpWrap(W,245,o)}
+function mlJug(start,add){const cap=Math.max(1000,Math.ceil((start+add)/1000)*1000),sy=v=>210-v/cap*180;let o=`<path d="M110 30 H230 V210 H110 Z" fill="#fff" stroke="${VC.ln}" stroke-width="4"/>`;
+ o+=`<rect x="112" y="${sy(start)}" width="116" height="${210-sy(start)}" fill="#9ED3F5"/>`;for(let v=0;v<=cap;v+=cap/10){o+=`<path d="M230 ${sy(v)} h${v%(cap/2)?10:18}" stroke="${VC.ln}" stroke-width="2"/>`;if(v%(cap/5)===0)o+=T(255,sy(v)+6,v+' ml',16,VC.ln,'start')}
+ o+=`<path d="M40 70 q40 -40 80 -10" fill="none" stroke="${VC.o}" stroke-width="4"/><path d="M108 50 l12 10 l-14 6" fill="none" stroke="${VC.o}" stroke-width="4"/>`+T(55,95,'+'+add+' ml',20,VC.o);return fpWrap(340,230,o)}
+function noteVis(x,y,v){return `<rect x="${x}" y="${y}" width="120" height="62" rx="8" fill="#BFE6C8" stroke="#3E8E58" stroke-width="3"/><circle cx="${x+95}" cy="${y+31}" r="16" fill="none" stroke="#3E8E58" stroke-width="2"/>`+T(x+50,y+40,v+' Dh',22,'#2D6B42')}
+function moneyThing(x,y,s){const m=String(s).match(/(\d+)[- ]dirham note/);if(m)return [noteVis(x,y,m[1]),130];const f=String(s).match(/(\d+) fils/);if(f)return [coin(x+30,y+31,f[1]+'f',false,'#E8D18A'),70];
+ const d=String(s).match(/(\d+) dirhams?/);if(d)return [coin(x+30,y+31,d[1]+' Dh',false,'#D7DCE2'),70];return ['',0]}
+function moneyPair(a,b){let o='',x=10;[a,b].forEach((s,i)=>{const [svg,w]=moneyThing(x,20,s);o+=svg;x+=w+(i?0:60);if(!i)o+=T(x-30,58,'or',22,VC.mut)});return fpWrap(x+10,100,o)}
+function tagVis(x,y,lab,price){return `<path d="M${x} ${y+10} L${x+20} ${y} H${x+140} V${y+60} H${x+20} L${x} ${y+50} Z" fill="#FFF0D9" stroke="${VC.o}" stroke-width="3"/><circle cx="${x+18}" cy="${y+30}" r="5" fill="${VC.o}"/>`+T(x+82,y+26,lab,16)+T(x+82,y+50,price,18,VC.o)}
+function shopVis(items,note){let o='',x=10;items.forEach(([l,p])=>{o+=tagVis(x,20,l,p);x+=160});if(note){o+=T(x+10,58,'pay',18,VC.mut);o+=noteVis(x+40,19,note);x+=170}return fpWrap(x+10,100,o)}
+function coinsAmt(d,f){const g=[];if(d>0)g.push([Math.min(d,10),'1 Dh','#D7DCE2',d+(d===1?' dirham':' dirhams')]);const fils=[];let r=f;[50,25].forEach(c=>{while(r>=c){fils.push(c);r-=c}});
+ if(fils.length)fils.forEach((c,i)=>{const last=g[g.length-1];if(last&&last[1]===c+'f'){last[0]++;}else g.push([1,c+'f','#E8D18A',''])});if(f)g[g.length-1][3]=(g[g.length-1][3]||'')+f+' fils';return coinsVis(g)}
+function compareBase(a,b){return baseTen(Math.floor(a/100),Math.floor(a%100/10),a%10).replace('<svg','<svg data-n="'+a+'"')+`<div class="f" style="font-size:22px;margin:4px 0">${a} ⟷ ${b}</div>`+baseTen(Math.floor(b/100),Math.floor(b%100/10),b%10)}
+function markLine(lo,hi,marks,step,fmt){fmt=fmt||(v=>Number(v).toLocaleString('en-GB'));const W=640,x=v=>60+(v-lo)/(hi-lo)*(W-120);let o=`<path d="M20 70 H${W-20}" stroke="${VC.ln}" stroke-width="4"/>`;
+ const n=Math.round((hi-lo)/step),labs=[...Array(n+1)].map((_,i)=>fmt(Math.round((lo+i*step)*1000)/1000)),every=n<=10&&Math.max(...labs.map(l=>l.length))*9*(n+1)<W-40;for(let i=0;i<=n;i++){const v=lo+i*step,X=x(v),big=i===0||i===n;o+=`<path d="M${X} ${big?56:62} V${big?84:78}" stroke="${VC.ln}" stroke-width="${big?3:2}"/>`;if(big||every)o+=T(X,110,labs[i],every&&!big?15:18)}
+ marks.forEach(([v,lab,col],i)=>{const X=x(v),c=col||PAL[i];o+=`<path d="M${X} 66 L${X-9} 38 H${X+9} Z" fill="${c}"/>`+T(X,30,lab,17,c)});return fpWrap(W,124,o)}
+function roundVis(n,p){const lo=Math.floor(n/p)*p,hi=lo+p,f=v=>p<1?String(Math.round(v*100)/100):Number(v).toLocaleString('en-GB');return markLine(lo,hi,[[n,f(n),VC.o]],p/10,f)}
+function jumpVis(n,step,up){const f=v=>Number(v).toLocaleString('en-GB');let o=`<path d="M20 80 H500" stroke="${VC.ln}" stroke-width="4"/>`;const a=up?110:410,b=up?410:110;
+ o+=`<path d="M${a} 68 V92 M${b} 68 V92" stroke="${VC.ln}" stroke-width="3"/>`+T(a,120,f(n),20)+`<rect x="${b-34}" y="98" width="68" height="32" rx="8" fill="${VC.y}"/>`+T(b,122,'?',22);
+ o+=`<path d="M${a} 66 Q260 10 ${b} 66" fill="none" stroke="${VC.o}" stroke-width="4"/><path d="M${b-(up?14:-14)} 54 L${b} 66 L${b-(up?2:-2)} 50" fill="none" stroke="${VC.o}" stroke-width="4"/>`+T(260,26,(up?'+ ':'− ')+f(step),22,VC.o);return fpWrap(520,140,o).replace('viewBox="0 0','viewBox="0 -6')}
+function turnVis(q){const r=90,cx=130,cy=120;let o=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${VC.mut}" stroke-width="3" stroke-dasharray="6 6"/><path d="M${cx} ${cy-r} V${cy+r} M${cx-r} ${cy} H${cx+r}" stroke="${VC.mut}" stroke-width="2"/>`;
+ const end=q*90,a=e=>(e-90)*Math.PI/180,R=r-14;let d=`M${cx} ${cy-R}`;if(q>=4)d+=` A${R} ${R} 0 1 1 ${cx-.1} ${cy-R}`;else d+=` A${R} ${R} 0 ${q>2?1:0} 1 ${cx+R*Math.cos(a(end))} ${cy+R*Math.sin(a(end))}`;
+ o+=`<path d="${d}" fill="none" stroke="${VC.o}" stroke-width="6"/>`;const ex=cx+R*Math.cos(a(q>=4?359:end)),ey=cy+R*Math.sin(a(q>=4?359:end)),ang=a(q>=4?359:end)+Math.PI/2;
+ o+=`<path d="M${ex} ${ey} l${-14*Math.cos(ang)+8*Math.sin(ang)} ${-14*Math.sin(ang)-8*Math.cos(ang)} M${ex} ${ey} l${-14*Math.cos(ang)-8*Math.sin(ang)} ${-14*Math.sin(ang)+8*Math.cos(ang)}" stroke="${VC.o}" stroke-width="5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="7" fill="${VC.ln}"/>`;return fpWrap(260,240,o)}
+function angleOne(d){const cx=150,cy=130,r=110,a=d*Math.PI/180;let o=`<path d="M${cx} ${cy} H${cx+r}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/><path d="M${cx} ${cy} L${cx+Math.cos(a)*r} ${cy-Math.sin(a)*r}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/>`;
+ o+=`<path d="M${cx+36} ${cy} A36 36 0 ${d>180?1:0} 0 ${cx+36*Math.cos(a)} ${cy-36*Math.sin(a)}" fill="none" stroke="${VC.o}" stroke-width="4"/>`;const m=a/2;o+=T(cx+66*Math.cos(m),cy-66*Math.sin(m)+7,d+'°',20,VC.o);return fpWrap(300,260,o)}
+function cuboidVis(a,b,c,unit,qa,qb,qc){const s=Math.min(200/(a+b*.5),130/(c+b*.5),22),w=a*s,h=c*s,dx=b*s*.5,dy=b*s*.5,x=90,y=30+dy,F='#DCEBFA',st=`stroke="${VC.ln}" stroke-width="3" stroke-linejoin="round"`;
+ let o=`<polygon points="${x},${y} ${x+w},${y} ${x+w},${y+h} ${x},${y+h}" fill="${F}" ${st}/><polygon points="${x},${y} ${x+dx},${y-dy} ${x+w+dx},${y-dy} ${x+w},${y}" fill="#B5D4F4" ${st}/><polygon points="${x+w},${y} ${x+w+dx},${y-dy} ${x+w+dx},${y+h-dy} ${x+w},${y+h}" fill="#85B7EB" ${st}/>`;
+ o+=T(x+w/2,y+h+26,qa||`${a} ${unit}`,18)+T(x+w+dx/2+10,y+h-dy/2+16,qb||`${b} ${unit}`,18,VC.ln,'start')+T(x-8,y+h/2+6,qc||`${c} ${unit}`,18,VC.ln,'end');
+ return fpWrap(x+w+dx+110,y+h+44,o)}
+function circleVis(r,unit,which,qlab){let o=`<circle cx="130" cy="120" r="95" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/><circle cx="130" cy="120" r="5" fill="${VC.ln}"/>`;
+ o+=which==='d'?`<path d="M35 120 H225" stroke="${VC.o}" stroke-width="5"/>`+T(130,108,qlab,20,VC.o):`<path d="M130 120 H225" stroke="${VC.o}" stroke-width="5"/>`+T(178,108,qlab,20,VC.o);return fpWrap(260,240,o)}
+function paraVis(b,h,unit){const s=Math.min(260/b,170/h,28),w=b*s,H=h*s,off=Math.min(60,w*.35),x=80,y=20;let o=`<polygon points="${x+off},${y} ${x+off+w},${y} ${x+w},${y+H} ${x},${y+H}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/>`;
+ o+=`<path d="M${x+off} ${y} V${y+H}" stroke="${VC.o}" stroke-width="3" stroke-dasharray="7 5"/><rect x="${x+off}" y="${y+H-14}" width="14" height="14" fill="none" stroke="${VC.o}" stroke-width="2"/>`+T(x+off+10,y+H/2+6,`${h} ${unit}`,18,VC.o,'start')+T(x+w/2,y+H+28,`${b} ${unit}`,18);
+ return fpWrap(x+off+w+30,y+H+44,o)}
+function partWhole(total,tl,parts,unit){/* parts: [[value or '?',label]] */const W=520;let o=`<rect x="10" y="10" width="${W-20}" height="46" rx="6" fill="#E6F1FB" stroke="${VC.ln}" stroke-width="3"/>`+T(W/2,41,tl,20);
+ let x=10;const known=parts.filter(p=>p[0]!=='?').reduce((s,p)=>s+p[0],0),rest=Math.max(total-known,total*.15);
+ parts.forEach(([v,l],i)=>{const w=(v==='?'?rest:v)/total*(W-20);o+=`<rect x="${x}" y="64" width="${w}" height="46" rx="6" fill="${v==='?'?VC.y:PAL[i]}" opacity="${v==='?'?1:.85}" stroke="#fff" stroke-width="3"/>`+T(x+w/2,94,l,w<80?14:19,v==='?'?VC.ln:'#fff');x+=w});return fpWrap(W,120,o)}
+function scaleBars(base,k,unit){const s=Math.min(60,440/(base*k)),W=base*k*s+150;let o=T(10,40,'1×',20,VC.mut,'start')+`<rect x="60" y="20" width="${base*s}" height="30" rx="5" fill="${VC.b}"/>`+T(60+base*s+8,42,base+' '+unit,17,VC.ln,'start');
+ o+=T(10,100,k+'×',20,VC.mut,'start');for(let i=0;i<k;i++)o+=`<rect x="${60+i*base*s}" y="80" width="${base*s}" height="30" rx="5" fill="${VC.o}" stroke="#fff" stroke-width="3"/>`;o+=T(60+k*base*s+8,102,'?',22,VC.o,'start');return fpWrap(W,130,o)}
+function tenthsStrip(n){const W=520,s=50;let o='';for(let i=0;i<10;i++)o+=`<rect x="${10+i*s}" y="10" width="${s}" height="60" fill="${i<n?VC.b:'#fff'}" stroke="${VC.ln}" stroke-width="2"/>`;return fpWrap(W,80,o)}
+function visExtra(t,g){let m;
+ m=t.match(/(\w+) is (\d+) cm, (\w+) is (\d+) cm, (\w+) is (\d+) cm/);if(m)return heightBars([[m[1],+m[2]],[m[3],+m[4]],[m[5],+m[6]]],'cm');
+ m=t.match(/Jug A holds (\d+) cups\. Jug B holds (\d+) cups/);if(m)return jugsVis([['A',+m[1]],['B',+m[2]]],'cups');
+ m=t.match(/A jug has (\d+) ml\. You pour in (\d+) ml/);if(m)return mlJug(+m[1],+m[2]);
+ m=t.match(/Which is worth more: (.+?) or (.+?)\?/);if(m)return moneyPair(m[1],m[2]);
+ m=t.match(/Which is hotter, (-?\d+) ?°C or (-?\d+) ?°C/);if(m)return thermo([+m[1],+m[2]]);
+ m=t.match(/A (\w+) costs (\d+) dirhams?\. You pay with a (\d+)-dirham note/);if(m)return shopVis([[m[1],m[2]+' Dh']],m[3]);
+ m=t.match(/You buy something for (\d+) dirhams? (\d+) fils and pay with a (\d+)-dirham note/);if(m)return shopVis([['price',`${m[1]} Dh ${m[2]}f`]],m[3]);
+ m=t.match(/A (\w+) costs (\d+) dirhams? and a (\w+) costs (\d+) dirhams?/);if(m)return shopVis([[m[1],m[2]+' Dh'],[m[3],m[4]+' Dh']]);
+ m=t.match(/^(\d+) dirhams?(?: (\d+) fils)? \+ (\d+) dirhams?(?: (\d+) fils)? = \?/);if(m)return coinsAmt(+m[1],+(m[2]||0))+'<div class="f" style="font-size:24px">+</div>'+coinsAmt(+m[3],+(m[4]||0));
+ m=t.match(/^(\d{1,2}) \? (\d{1,2})\s+Which sign/);if(m)return compareBase(+m[1],+m[2]);
+ m=t.match(/Which is (?:greater|bigger), ([\d,.]+) or ([\d,.]+)\?/);if(m){const a=XN(m[1]),b=XN(m[2]),dec=/\./.test(m[1]+m[2]);if(dec&&Math.max(a,b)<=1)return markLine(0,1,[[a,m[1]],[b,m[2]]],.1,v=>String(v));
+  const top=[10,100,1000,10000,100000,1000000,10000000].find(x=>x>=Math.max(a,b));if(top)return markLine(0,top,[[a,m[1]],[b,m[2]]],top/10)}
+ m=t.match(/Which is the greatest: ([\d,]+), ([\d,]+) or ([\d,]+)\?/);if(m){const v=[m[1],m[2],m[3]].map(XN),top=[1000,10000,100000,1000000,10000000].find(x=>x>=Math.max(...v));if(top)return markLine(0,top,v.map((x,i)=>[x,['A','B','C'][i]]),top/10)}
+ m=t.match(/What is ([\d,]+) (more|less) than ([\d,]+)\?/);if(m)return jumpVis(XN(m[3]),XN(m[1]),m[2]==='more');
+ m=t.match(/Round ([\d,]+(?:\.\d+)?) to the nearest ([\d,]+|whole number)\./);if(m){const n=XN(m[1]),p=m[2]==='whole number'?1:XN(m[2]);if(p>0&&n>0)return roundVis(n,p)}
+ m=t.match(/Round (\d+\.\d+) to one decimal place/);if(m)return roundVis(+m[1],.1);
+ m=t.match(/^(\d+) × (\d+) = (\d+) × \?$/);if(m&&+m[1]*+m[2]<=100)return dotArray(+m[1],+m[2]);
+ m=t.match(/^(\d+) × (\d+) = \?$/);if(m&&+m[1]<=12&&+m[2]<=12&&+m[1]*+m[2]<=72)return dotArray(+m[1],+m[2]);
+ m=t.match(/^(\d+) ÷ (\d+) = \?$/);if(m&&+m[1]<=60&&+m[2]<=10&&+m[1]%+m[2]===0)return shareVis(+m[1],+m[2]);
+ m=t.match(/^\? × (\d+) = (\d+)$/);if(m&&+m[2]<=60&&+m[2]%+m[1]===0)return dotArray(+m[2]/+m[1],+m[1]);
+ m=t.match(/^Is (\d+) odd or even\?/);if(m&&+m[1]<=30)return pairsVis(+m[1]);
+ m=t.match(/How many right angles (?:are in|make) (?:a |an )?(\d+ |one |two |three |four )?(quarter|half|three-quarter|full) turns?/);
+ if(m){const k={quarter:1,half:2,'three-quarter':3,full:4}[m[2]],w=m[1]?(WORDNUM[m[1].trim()]||+m[1]):1;const q=k*w;if(q>=1&&q<=4)return turnVis(q)}
+ m=t.match(/Perimeter of a square with (?:sides of )?(\d+) (cm|m)(?: sides)?/);if(m)return rectVis(+m[1],+m[1],m[2]);
+ m=t.match(/Area of a parallelogram with base (\d+) (cm|m) and height (\d+)/);if(m)return paraVis(+m[1],+m[3],m[2]);
+ m=t.match(/(?:Volume of a cuboid|cubes make a cuboid) (\d+) cm × (\d+) cm × (\d+) cm/);if(m)return cuboidVis(+m[1],+m[3],+m[2],'cm');
+ m=t.match(/A cuboid has a volume of (\d+) cm³\. Its base is (\d+) cm by (\d+) cm/);if(m)return cuboidVis(+m[2],+m[3],+m[1]/(+m[2]*+m[3])||4,'cm',null,null,'?');
+ m=t.match(/A cube has a volume of (\d+) cm³/);if(m)return cuboidVis(4,4,4,'cm','?','?','?');
+ m=t.match(/A circle has a (radius|diameter) of (\d+) (cm|m)/);if(m)return circleVis(+m[2],m[3],m[1]==='radius'?'r':'d',`${m[2]} ${m[3]}`);
+ m=t.match(/Is (\d+)° acute, obtuse or reflex/);if(m)return angleOne(+m[1]);
+ m=t.match(/^(1|2|3) (m|kg|l) [−-] (\d+) (cm|g|ml) = \? (cm|g|ml)/);if(m){const tot=+m[1]*(m[2]==='m'?100:1000);return partWhole(tot,`${m[1]} ${m[2]} = ${tot} ${m[4]}`,[[+m[3],`${m[3]} ${m[4]}`],['?','?']],m[4])}
+ m=t.match(/^(\d) (l|kg|m) \+ (\d+) (ml|g|cm) = \? (ml|g|cm)/);if(m){const a=+m[1]*(m[2]==='m'?100:1000);return partWhole(a+ +m[3],'?',[[a,`${m[1]} ${m[2]}`],[+m[3],`${m[3]} ${m[4]}`]],m[4])}
+ m=t.match(/Which is longer, 1 m or (\d+) cm\?/);if(m)return heightBars([['1 m',100],[m[1]+' cm',+m[1]]],'cm').replace(/100 cm<\/text>/,'</text>');
+ m=t.match(/A tower is (\d+) times as tall as (\d+) cm/);if(m&&+m[1]<=6)return scaleBars(+m[2],+m[1],'cm');
+ m=t.match(/enlarged by scale factor (\d+)\. A side of (\d+) cm/);if(m&&+m[1]<=6)return scaleBars(+m[2],+m[1],'cm');
+ m=t.match(/A (\d+)-dirham item (?:falls|rises) in price by (\d+)%/);if(m){const p=+m[2],parts={50:2,25:4,20:5,10:10,5:20}[p];if(parts)return fpBarModel(+m[1],parts,1)}
+ m=t.match(/^Write 0\.(\d) as a fraction/);if(m)return tenthsStrip(+m[1]);
+ m=t.match(/^Can (?:a|an|you stack a) (cube|cuboid|sphere|cylinder|cone|pyramid)/);if(m)return shape3D(m[1]);
+ m=t.match(/(?:Does|Is) a (?:regular )?(square|rectangle|pentagon|hexagon|octagon|triangle)\b/);if(m)return shape2D(m[1]);
+ m=t.match(/lines of symmetry does (?:a|an) (?:regular )?(square|rectangle|pentagon|hexagon|octagon|equilateral triangle|rhombus)/);if(m)return shape2D(m[1]);
+ return ''}
 function visFor(q,land,grade){try{const t=String(q);
- const f={FF:fracPic,NI:visNI,TT:visTT,MM:visMM,SF:visSF,DD:visDD,PP:visPP}[land];return f?f(t,grade)||'':''}catch(e){return ''}}
+ const f={FF:fracPic,NI:visNI,TT:visTT,MM:visMM,SF:visSF,DD:visDD,PP:visPP}[land];let s=f?f(t,grade)||'':'';
+ if(!s)s=visExtra(t,grade)||'';
+ if(!s)for(const k of ['MM','SF']){if(k===land)continue;s={MM:visMM,SF:visSF}[k](t,grade)||'';if(s)break}
+ return s}catch(e){return ''}}
 
 function picBox(pic){/* a description we can't draw: show it as a big, clear list */
  const m=String(pic).match(/^([^:—]+)[:—]\s*(.+)$/);if(m&&/[;,]/.test(m[2])){const items=m[2].split(/\s*[;]\s*|,\s+(?=[A-Za-z])/).map(x=>x.replace(/\.$/,'').trim()).filter(Boolean);
   return `<div class="pic"><div class="pict">🖼️ ${esc(cap(m[1].trim()))}</div><ul class="picl">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`}
  return `<div class="pic">🖼️ ${esc(pic)}</div>`}
-function fpFor(q){const s=visFor(q,V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
+function fpFor(q,land){const s=visFor(q,land||V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
 /* ---------- learn-first fact cards (left side) ---------- */
 function bigText(lines,col,mono){/* a card picture made of big, clear maths text */const h=lines.length*54+20;return fpWrap(420,h,lines.map((l,i)=>mono?`<text x="210" y="${52+i*54}" text-anchor="middle" xml:space="preserve" font-family="Menlo,Consolas,monospace" font-weight="700" font-size="36" fill="${i===lines.length-1?VC.o:VC.ln}">${esc(l)}</text>`:T(210,52+i*54,l,i===0?40:34,i===0?(col||VC.o):VC.ln)).join('')+(mono?`<path d="M110 ${h-66} H310" stroke="${VC.ln}" stroke-width="3"/>`:''))}
 const FACTS={
@@ -1954,7 +2047,7 @@ function checkView(){if(!CK){V={s:'map'};render();return}const {c,qs}=CK;
   <button class="b1" id="ckgo" style="font-size:24px;padding:14px 36px">I’m ready! 🚀</button></div>`;$('#bk').onclick=()=>{CK=null;V={s:'map'};render()};$('#ckgo').onclick=()=>{CK.intro=false;render()};say("Let's see what you know! Take your time and try your best.",'ck-intro');return}
  if(CK.i>=qs.length)return checkEnd();
  const it=qs[CK.i],[pic,text]=splitPic(it.q),pct=Math.round(100*CK.i/qs.length);
- $('#app').innerHTML=head+`<div class="card center"><div class="ckbar"><i style="width:${pct}%"></i></div><div class="muted" style="font-weight:800">Question ${CK.i+1} of ${qs.length}</div>${fpFor(it.q)||(pic?picBox(pic):'')}
+ $('#app').innerHTML=head+`<div class="card center"><div class="ckbar"><i style="width:${pct}%"></i></div><div class="muted" style="font-weight:800">Question ${CK.i+1} of ${qs.length}</div>${fpFor(it.q,String(it.stop||'').split('-')[0])||(pic?picBox(pic):'')}
   <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div>
   <div style="margin-top:10px"><button class="b2 sm" id="ckskip">I don’t know yet → skip</button></div></div>`;
  $('#bk').onclick=()=>{CK=null;V={s:'map'};render();loadChecks()};$('#hear').onclick=()=>say(text,it.k);autoRead(text,it.k);
