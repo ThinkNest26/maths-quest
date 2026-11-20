@@ -186,7 +186,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .burst i{position:absolute;top:-40px;font-style:normal;font-size:30px;animation:fall 1.8s linear forwards}@keyframes fall{to{transform:translateY(110vh) rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){.party .cf,.pav,.pstar,.pclap,.burst i{animation:none}.party .cf,.burst{display:none}}
 .fpwrap{margin:10px auto 6px;max-width:560px;background:#FFFDF6;border:3px dashed #FFD23F;border-radius:20px;padding:12px}.fpic{display:block;width:100%;height:auto;max-height:340px}.pict{font-weight:800;margin-bottom:6px}.picl{list-style:none;margin:0;padding:0;display:inline-block;text-align:left}.picl li{font-size:24px;font-family:Fredoka,Arial;padding:4px 14px;margin:4px 0;background:#fff;border-radius:12px}.picl li::before{content:"● ";color:#FF8A3D}.sgrid{display:grid;grid-template-columns:minmax(170px,1fr) minmax(300px,600px) minmax(170px,1fr);gap:18px;max-width:1500px;margin:0 auto;align-items:start;padding:0 14px}
-.sgrid .hero{width:100%;max-width:600px}
+.sgrid .hero{width:100%;max-width:600px}.sgrid .jwrap{margin:0}
 .side{display:flex;flex-direction:column;gap:14px}
 .sideh{font-family:Fredoka,Arial;font-weight:700;font-size:24px;color:#1D4E89;background:#fff;border-radius:999px;padding:8px 18px;text-align:center;box-shadow:0 4px 12px rgba(20,90,140,.15)}
 .fcard{background:rgba(255,255,255,.94);border-radius:22px;padding:14px;text-align:center;box-shadow:0 6px 18px rgba(20,90,140,.15);border:3px solid #FFD23F}
@@ -598,58 +598,106 @@ document.addEventListener('click',e=>{const b=e.target.closest('[data-avk],[data
 /* ---------- the explorer on the map ---------- */
 function avToken(){return avatarSVG(myAv(),120,true)}
 
-/* ---------- land journeys: Fraction Falls river ---------- */
+/* ---------- land journeys: a different adventure for every land ---------- */
 const QICON={learn:'📖',practise:'✏️',listen:'🎧',play:'⏱️',think:'🤔',use:'🌍'};
 const QSHORT={learn:'Learn',practise:'Practise',listen:'Listen',play:'Play',think:'Think',use:'Use'};
 function wrapTxt(t,max){const w=String(t).split(' ');const L=[];let c='';w.forEach(x=>{if((c+' '+x).trim().length>max&&c){L.push(c);c=x}else c=(c+' '+x).trim()});if(c)L.push(c);return L.slice(0,3)}
 function smoothPath(P){if(P.length<2)return '';let d=`M${P[0][0]} ${P[0][1]}`;for(let i=0;i<P.length-1;i++){const p0=P[i-1]||P[i],p1=P[i],p2=P[i+1],p3=P[i+2]||p2;
  const c1=[p1[0]+(p2[0]-p0[0])/6,p1[1]+(p2[1]-p0[1])/6],c2=[p2[0]-(p3[0]-p1[0])/6,p2[1]-(p3[1]-p1[1])/6];d+=` C${c1[0].toFixed(1)} ${c1[1].toFixed(1)} ${c2[0].toFixed(1)} ${c2[1].toFixed(1)} ${p2[0]} ${p2[1]}`}return d}
-function journeyNodes(l){/* docks + quest pads laid out as a winding path */
- const SM=window.innerWidth<600,W=SM?440:720,XS=SM?[95,220,345,220]:[170,360,550,360];const nodes=[];let y=70,k=0;
+function journeyNodes(l,up){const SM=window.innerWidth<600,W=SM?440:720,XS=SM?[95,220,345,220]:[170,360,550,360];const nodes=[];let y=70,k=0;
  l.stops.forEach((st,i)=>{y+=i?150:90;nodes.push({kind:'dock',st,x:Math.min(Math.max(XS[k%4],132),W-132),y});k++;y+=40;
   QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).forEach(q=>{y+=88;nodes.push({kind:'quest',st,q:q[0],x:XS[k%4],y});k++})});
- y+=150;nodes.push({kind:'end',x:W/2,y});
- return {nodes,W,H:y+140}}
-function journeyFF(l){const {nodes,W,H}=journeyNodes(l);
+ y+=150;nodes.push({kind:'end',x:W/2,y});const H=y+140;
+ if(up)nodes.forEach(n=>{n.y=H-n.y});
+ return {nodes,W,H}}
+/* little drawing helpers */
+const tuft=(x,y,c)=>`<path d="M${x} ${y} l-6 -14 M${x} ${y} l0 -18 M${x} ${y} l6 -14" stroke="${c||'#4CAF50'}" stroke-width="3" stroke-linecap="round"/>`;
+const flower=(x,y)=>`<g transform="translate(${x} ${y})"><circle r="9" fill="#FF8FB1"/><circle r="4" fill="#FFD84D"/></g>`;
+const pine=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s||1})"><rect x="-4" y="-8" width="8" height="14" fill="#7A4F26"/><path d="M-22 -6 L0 -46 L22 -6Z M-18 -26 L0 -62 L18 -26Z" fill="#2E8556"/></g>`;
+const cactusD=(x,y)=>`<g transform="translate(${x} ${y})" fill="#3FB35A"><rect x="-6" y="-40" width="12" height="40" rx="6"/><rect x="-18" y="-28" width="9" height="16" rx="4.5"/><rect x="9" y="-32" width="9" height="18" rx="4.5"/></g>`;
+const rockD=(x,y,c)=>`<ellipse cx="${x}" cy="${y}" rx="16" ry="10" fill="${c||'#B9B3A6'}"/>`;
+function decoFor(code,W,H){const n=Math.round(H/90);return Array.from({length:n},(_,i)=>{const x=i%2?30+((i*53)%60):W-30-((i*37)%60),y=60+i*90,k=i%3;
+ if(code==='NI')return k===0?`<path d="M${x-16} ${y} q8 -7 16 0 q8 7 16 0" fill="none" stroke="#fff" stroke-width="3" opacity=".7"/>`:k===1?`<g transform="translate(${x} ${y})"><path d="M0 0 q14 -12 28 0 q-14 12 -28 0Z" fill="#FF8A3D"/><path d="M28 0 l10 -8 v16Z" fill="#FF8A3D"/></g>`:rockD(x,y,'#8FD3EA');
+ if(code==='TT')return k===0?`<g transform="translate(${x} ${y})"><circle r="14" fill="#3FA06B"/><rect x="-3" y="10" width="6" height="12" fill="#7A4F26"/></g>`:k===1?flower(x,y):`<rect x="${x-14}" y="${y-8}" width="28" height="16" rx="3" fill="#FFD23F" stroke="#C99A1E" stroke-width="2"/>`;
+ if(code==='MM')return k===0?`<g transform="translate(${x} ${y})"><circle r="10" fill="#FFC93C" stroke="#C99A1E" stroke-width="2"/><text y="5" text-anchor="middle" font-size="12" font-weight="700" fill="#8A5A00">1</text></g>`:k===1?`<g transform="translate(${x} ${y})"><circle r="9" fill="#F2483A"/><path d="M0 -9 l3 -6" stroke="#3FA06B" stroke-width="3"/></g>`:`<g transform="translate(${x} ${y})"><circle r="9" fill="#FFB020"/></g>`;
+ if(code==='SF')return k===0?pine(x,y,.9):k===1?flower(x,y):`<g transform="translate(${x} ${y})"><circle r="10" fill="#E35BB5" opacity=".8"/></g>`;
+ if(code==='DD')return k===0?cactusD(x,y):k===1?rockD(x,y,'#D9B26A'):`<path d="M${x-20} ${y} q10 -8 20 0 q10 8 20 0" fill="none" stroke="#E0B460" stroke-width="3"/>`;
+ if(code==='PP')return k===0?`<g transform="translate(${x} ${y})"><path d="M-24 10 L0 -24 L24 10Z" fill="#8E7CC3"/><path d="M0 -24 L8 -12 L-8 -12Z" fill="#fff"/></g>`:k===1?`<g transform="translate(${x} ${y})"><circle r="4" fill="#fff"/><circle cx="10" cy="6" r="3" fill="#fff"/></g>`:rockD(x,y,'#A9A1C7');
+ return k===0?flower(x,y):k===1?tuft(x,y):rockD(x,y)}).join('')}
+function sign(n,done,lines,h,c,ic){return `<rect x="-125" y="${-h/2-6}" width="250" height="${h+6}" rx="14" fill="${done?'#2DBE6C':c}"/><rect x="-118" y="${-h/2+1}" width="236" height="${h-8}" rx="10" fill="#F6DDB0"/>
+ <text x="0" y="${-h/2+31}" text-anchor="middle" class="jt" font-size="26" fill="#1D4E89">${done?'✓ ':ic+' '}Stop ${n.st.n}</text>${lines.map((t,k)=>`<text x="0" y="${-h/2+57+k*24}" text-anchor="middle" class="jt" font-size="19" fill="#5A4630">${esc(t)}</text>`).join('')}
+ ${done?`<g transform="translate(108 ${-h/2-4})"><path d="M0 0 V-44" stroke="#5A4630" stroke-width="4"/><g class="flag"><path d="M0 -44 L30 -36 L0 -28Z" fill="#2DBE6C"/></g></g>`:''}`}
+const TH={
+ FF:{name:'river journey',head:'🚣 Your river journey',bg:'#9BDC72',cheer:'Paddle on! 🚣',
+  path:d=>`<path d="${d}" fill="none" stroke="#3DA7D6" stroke-width="92" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#6FD0F2" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/><path class="flow" d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 26" opacity=".7"/>`,
+  stop:(n,done,lines,h)=>`<rect x="-120" y="${h/2-6}" width="240" height="26" rx="5" fill="#B07A45" stroke="#7A4F26" stroke-width="3"/>${[-90,-45,0,45,90].map(x=>`<path d="M${x} ${h/2-6} V${h/2+20}" stroke="#7A4F26" stroke-width="2"/>`).join('')}`+sign(n,done,lines,h,'#2F9BE0','⚓'),
+  pad:(done)=>`<path d="M0 0 L34 -8 A35 35 0 1 0 34 8 Z" fill="${done?'#3FB35A':'#5CC46A'}" stroke="${done?'#FFD23F':'#2E8A3E'}" stroke-width="${done?5:3}"/>`,
+  mover:av=>`<path d="M-56 -8 H56 Q50 22 0 24 Q-50 22 -56 -8Z" fill="#E8693A" stroke="#8A3A1A" stroke-width="3"/><path d="M-50 0 H50" stroke="#FFD23F" stroke-width="5"/>${av}<path d="M30 -20 L64 14" stroke="#8A5A2B" stroke-width="5" stroke-linecap="round"/><ellipse cx="66" cy="18" rx="8" ry="5" fill="#8A5A2B"/>`,
+  end:(a)=>`<ellipse cy="30" rx="120" ry="38" fill="#F3D9A4" stroke="#fff" stroke-width="6"/><g class="${a?'bob':''}"><use href="#chest" x="-40" y="-26" width="80" height="64"/></g>`,endText:a=>a?'You found the treasure!':'Treasure!'},
+ NI:{name:'stepping-stone journey',head:'🏝️ Your stepping-stone journey',bg:'#5CC6E8',cheer:'Hop, hop, hooray! 🐸',
+  path:d=>`<path d="${d}" fill="none" stroke="#9BE3F5" stroke-width="70" stroke-linecap="round" stroke-linejoin="round" opacity=".55"/><path class="flow" d="${d}" fill="none" stroke="#fff" stroke-width="4" stroke-dasharray="3 22" stroke-linecap="round" opacity=".9"/>`,
+  stop:(n,done,lines,h)=>`<ellipse cx="0" cy="${h/2+8}" rx="150" ry="34" fill="#F3D9A4" stroke="#fff" stroke-width="5"/><ellipse cx="0" cy="${h/2+2}" rx="120" ry="20" fill="#7CC95A"/>${palmJ(-112,h/2+10)}`+sign(n,done,lines,h,'#FF8A3D','🏝️'),
+  pad:(done,i)=>`<ellipse cx="0" cy="8" rx="40" ry="12" fill="#2D8FB3" opacity=".5"/><ellipse cx="0" cy="0" rx="38" ry="30" fill="${done?'#C9B79C':'#D8CBB5'}" stroke="${done?'#FFD23F':'#9C8A6E'}" stroke-width="${done?5:3}"/><ellipse cx="-12" cy="-10" rx="10" ry="5" fill="#fff" opacity=".4"/>`,
+  mover:av=>`<ellipse cx="0" cy="18" rx="34" ry="8" fill="#000" opacity=".15"/>${av}`,
+  end:(a)=>`<ellipse cy="30" rx="140" ry="44" fill="#F3D9A4" stroke="#fff" stroke-width="6"/>${palmJ(-110,40)}${palmJ(110,40)}<g class="${a?'bob':''}"><use href="#chest" x="-40" y="-26" width="80" height="64"/></g>`,endText:a=>a?'You found the island treasure!':'Treasure Island!'},
+ TT:{name:'bus route',head:'🚌 Your bus route through town',bg:'#9BD77E',cheer:'Beep beep! Next stop! 🚌',
+  path:d=>`<path d="${d}" fill="none" stroke="#5B6470" stroke-width="80" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#6E7884" stroke-width="66" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#FFD23F" stroke-width="5" stroke-dasharray="22 18"/>`,
+  stop:(n,done,lines,h)=>`<g transform="translate(-140 ${h/2-10})"><path d="M0 0 V-80" stroke="#5B6470" stroke-width="6"/><circle cy="-92" r="18" fill="#F2483A" stroke="#fff" stroke-width="4"/><text y="-86" text-anchor="middle" class="jt" font-size="18" fill="#fff">B</text></g>`+sign(n,done,lines,h,'#8E5BD6','🚏'),
+  pad:(done,i)=>{const C=['#FF8A3D','#2F9BE0','#8E5BD6','#2DBE6C','#F2483A','#14A9D6'][i%6];return `<rect x="-32" y="-22" width="64" height="48" rx="6" fill="${done?C:'#F6EEDC'}" stroke="${done?'#FFD23F':'#8A6A3F'}" stroke-width="${done?5:3}"/><path d="M-40 -18 L0 -48 L40 -18Z" fill="${C}" stroke="#8A6A3F" stroke-width="3" stroke-linejoin="round"/>`},
+  mover:av=>`<rect x="-62" y="-40" width="124" height="62" rx="16" fill="#FFC93C" stroke="#C98A0E" stroke-width="3"/><rect x="-54" y="-32" width="40" height="26" rx="6" fill="#BDEBFF"/><rect x="18" y="-32" width="36" height="26" rx="6" fill="#BDEBFF"/>${av.replace('x="-38" y="-86"','x="-30" y="-74"').replace('width="76" height="76"','width="56" height="56"')}<text x="36" y="12" text-anchor="middle" class="jt" font-size="18" fill="#C98A0E">×</text><circle cx="-34" cy="24" r="12" fill="#2B2B2B"/><circle cx="34" cy="24" r="12" fill="#2B2B2B"/><circle cx="-34" cy="24" r="5" fill="#ccc"/><circle cx="34" cy="24" r="5" fill="#ccc"/>`,
+  end:(a)=>`<rect x="-130" y="-10" width="260" height="70" rx="18" fill="#F3D9A4" stroke="#fff" stroke-width="6"/><g transform="translate(0 0)"><rect x="-26" y="-70" width="52" height="80" fill="#FFE7B8" stroke="#8A6A3F" stroke-width="3"/><path d="M-34 -70 L0 -104 L34 -70Z" fill="#0E5E6F"/><circle cy="-46" r="14" fill="#fff" stroke="#8A6A3F" stroke-width="3"/><path d="M0 -46 V-56 M0 -46 H8" stroke="#8A6A3F" stroke-width="3"/></g>${a?`<g class="twinkle"><text x="-80" y="-30" font-size="34">🎆</text><text x="60" y="-40" font-size="34">🎉</text></g>`:''}`,endText:a=>a?'Party in the town square! 🎉':'Town square'},
+ MM:{name:'market lane',head:'🛒 Your shopping trip down the market lane',bg:'#F3D9A4',cheer:'Into the trolley! 🛒',
+  path:d=>`<path d="${d}" fill="none" stroke="#C47A4A" stroke-width="84" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#E2A06D" stroke-width="70" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#F6D3B0" stroke-width="3" stroke-dasharray="2 16" stroke-linecap="round"/>`,
+  stop:(n,done,lines,h)=>`<g transform="translate(0 ${-h/2-12})"><path d="M-130 0 H130 L118 -26 H-118Z" fill="#fff" stroke="#8A6A3F" stroke-width="2"/>${[0,1,2,3,4,5].map(k=>`<path d="M${-118+k*42} -26 h21 l3 26 h-21Z" fill="#F2483A"/>`).join('')}</g>`+sign(n,done,lines,h,'#3FB35A','🧺'),
+  pad:(done)=>`<rect x="-34" y="-28" width="68" height="56" rx="6" fill="${done?'#E0A55E':'#E8C08A'}" stroke="${done?'#FFD23F':'#8A5A2B'}" stroke-width="${done?5:3}"/><path d="M-34 -10 H34 M-34 10 H34" stroke="#8A5A2B" stroke-width="2" opacity=".6"/>`,
+  mover:av=>`${av.replace('y="-86"','y="-96"')}<path d="M-50 -30 H44 L36 8 H-42Z" fill="#DCEBFA" stroke="#2F9BE0" stroke-width="4"/><path d="M-50 -30 H-64" stroke="#2F9BE0" stroke-width="5" stroke-linecap="round"/><circle cx="-30" cy="18" r="9" fill="#2B2B2B"/><circle cx="26" cy="18" r="9" fill="#2B2B2B"/>`,
+  end:(a)=>`<rect x="-130" y="-60" width="260" height="110" rx="12" fill="#C98E52" stroke="#8A5A2B" stroke-width="3"/><path d="M-140 -60 H140 L126 -96 H-126Z" fill="#2F9BE0"/>${[0,1,2,3,4].map(k=>`<path d="M${-126+k*52} -96 h26 l4 36 h-26Z" fill="#fff"/>`).join('')}<g class="${a?'bob':''}"><use href="#chest" x="-36" y="-40" width="72" height="58"/></g>`,endText:a=>a?'You found the market prize!':'Market prize'},
+ SF:{name:'forest trail',head:'🌲 Your forest trail',bg:'#7CC95A',cheer:'Onwards, explorer! 🔦',
+  path:d=>`<path d="${d}" fill="none" stroke="#8A5A2B" stroke-width="74" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#B9824A" stroke-width="60" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#D9A86A" stroke-width="4" stroke-dasharray="4 20" stroke-linecap="round"/>`,
+  stop:(n,done,lines,h)=>`${pine(-150,h/2+30,1.3)}${pine(150,h/2+30,1.2)}<rect x="-130" y="${h/2-4}" width="260" height="16" rx="4" fill="#8A5A2B"/>`+sign(n,done,lines,h,'#2E8556','🌳'),
+  pad:(done,i)=>{const f=done?'#FFD23F':'#E8F6E0',s=done?'#E8A90E':'#2E8556',k=i%3;return k===0?`<circle r="32" fill="${f}" stroke="${s}" stroke-width="4"/>`:k===1?`<path d="M0 -38 L36 26 H-36Z" fill="${f}" stroke="${s}" stroke-width="4" stroke-linejoin="round"/>`:`<rect x="-30" y="-30" width="60" height="60" rx="6" fill="${f}" stroke="${s}" stroke-width="4"/>`},
+  mover:av=>`<ellipse cx="0" cy="18" rx="34" ry="8" fill="#000" opacity=".15"/>${av}<g transform="translate(40 -10)"><path d="M0 -14 V-24" stroke="#5A4630" stroke-width="3"/><rect x="-9" y="-14" width="18" height="24" rx="4" fill="#FFD23F" stroke="#8A5A2B" stroke-width="2"/><circle cy="-2" r="16" fill="#FFE27A" opacity=".35" class="twinkle"/></g>`,
+  end:(a)=>`<ellipse cy="30" rx="130" ry="40" fill="#B6E39A" stroke="#fff" stroke-width="6"/>${pine(-110,40,1.2)}${pine(110,40,1.2)}<g class="${a?'bob':''}"><use href="#chest" x="-40" y="-26" width="80" height="64"/></g>`,endText:a=>a?'You found the forest treasure!':'Forest clearing'},
+ DD:{name:'camel trail',head:'🐪 Your camel trail across the desert',bg:'#F4D58D',cheer:'Onwards across the dunes! 🐪',
+  path:d=>`<path d="${d}" fill="none" stroke="#FBE7B5" stroke-width="64" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#C99A4E" stroke-width="7" stroke-dasharray="1 26" stroke-linecap="round"/>`,
+  stop:(n,done,lines,h)=>`<g transform="translate(0 ${-h/2-8})"><path d="M-110 0 L0 -40 L110 0Z" fill="#F2704E" stroke="#B9472A" stroke-width="3" stroke-linejoin="round"/><path d="M0 -40 V-60" stroke="#5A4630" stroke-width="3"/><path d="M0 -60 L18 -54 L0 -48Z" fill="#FFD23F"/></g>`+sign(n,done,lines,h,'#F2704E','⛺'),
+  pad:(done)=>`<ellipse cx="0" cy="6" rx="40" ry="26" fill="${done?'#7FD3E8':'#E8C27A'}" stroke="${done?'#FFD23F':'#B98A3E'}" stroke-width="${done?5:3}"/>${done?`<path d="M-20 -20 V-34 M20 -20 V-34" stroke="#3FB35A" stroke-width="5"/>`:''}`,
+  mover:av=>`<use href="#zaza" x="-80" y="-90" width="150" height="150"/>${av.replace('x="-38" y="-86"','x="-30" y="-122"').replace('width="76" height="76"','width="62" height="62"')}`,
+  end:(a)=>`<ellipse cy="30" rx="130" ry="44" fill="#9BDC72" stroke="#fff" stroke-width="6"/><ellipse cy="34" rx="70" ry="20" fill="#5CC6E8"/>${palmJ(-100,40)}${palmJ(100,40)}<g class="${a?'bob':''}"><use href="#chest" x="-34" y="-34" width="68" height="54"/></g>`,endText:a=>a?'You reached the oasis!':'The oasis'},
+ PP:{name:'mountain climb',head:'⛰️ Your climb to the summit',bg:'#C7B8E6',up:true,cheer:'Climb higher! ⛰️',
+  path:d=>`<path d="${d}" fill="none" stroke="#9D8FCB" stroke-width="70" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#B9AEDD" stroke-width="56" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#8A5A2B" stroke-width="4" stroke-dasharray="10 6"/>`,
+  stop:(n,done,lines,h)=>`<g transform="translate(-142 ${h/2-6})"><path d="M-30 20 L0 -30 L30 20Z" fill="#F2704E" stroke="#B9472A" stroke-width="3" stroke-linejoin="round"/></g>`+sign(n,done,lines,h,'#8E5BD6','🏕️'),
+  pad:(done)=>`<path d="M-40 18 L-30 -14 L-6 -26 L22 -20 L40 0 L34 20Z" fill="${done?'#D7CFF0':'#A9A1C7'}" stroke="${done?'#FFD23F':'#6B5FA0'}" stroke-width="${done?5:3}" stroke-linejoin="round"/><path d="M-26 -14 L-6 -26 L22 -20 L10 -12 L-14 -10Z" fill="#fff" opacity=".7"/>`,
+  mover:av=>`<ellipse cx="0" cy="18" rx="34" ry="8" fill="#000" opacity=".15"/>${av}<path d="M30 -60 V10" stroke="#8A5A2B" stroke-width="4"/><path d="M30 -60 L56 -52 L30 -44Z" fill="#F2483A"/>`,
+  end:(a)=>`<path d="M-150 60 L0 -70 L150 60Z" fill="#8E7CC3" stroke="#fff" stroke-width="6" stroke-linejoin="round"/><path d="M0 -70 L30 -40 L10 -46 L0 -36 L-12 -46 L-30 -40Z" fill="#fff"/><path d="M0 -70 V-120" stroke="#5A4630" stroke-width="5"/><g class="flag"><path d="M0 -120 L46 -108 L0 -96Z" fill="${a?'#2DBE6C':'#F2483A'}"/></g>${a?`<g class="twinkle"><text x="-90" y="-60" font-size="34">🎆</text><text x="60" y="-70" font-size="34">🎆</text></g>`:''}`,endText:a=>a?'You reached the summit! 🏔️':'The summit'}};
+function palmJ(x,y){return `<g transform="translate(${x} ${y})"><path d="M0 0 Q4 -26 -3 -50" stroke="#8A5A2B" stroke-width="6" fill="none" stroke-linecap="round"/><g fill="#3FA06B"><path d="M-3 -50 Q-22 -62 -36 -46 Q-20 -54 -3 -50Z"/><path d="M-3 -50 Q14 -66 32 -52 Q14 -56 -3 -50Z"/><path d="M-3 -50 Q-12 -36 -26 -30 Q-12 -42 -3 -50Z"/><path d="M-3 -50 Q10 -38 20 -28 Q4 -42 -3 -50Z"/></g></g>`}
+function journey(l){const th=TH[l.code];if(!th)return null;const {nodes,W,H}=journeyNodes(l,th.up);
  const qn=nodes.filter(n=>n.kind==='quest');let ci=qn.findIndex(n=>!isDone(n.st,n.q));const allDone=ci<0;if(ci<0)ci=qn.length-1;
- const P=nodes.map(n=>[n.x,n.y]);const d=smoothPath([[nodes[0].x,-20],...P]);
- const tuft=(x,y)=>`<path d="M${x} ${y} l-6 -14 M${x} ${y} l0 -18 M${x} ${y} l6 -14" stroke="#4CAF50" stroke-width="3" stroke-linecap="round"/>`;
- const deco=Array.from({length:Math.round(H/90)},(_,i)=>{const x=i%2?30+((i*53)%60):W-30-((i*37)%60),y=60+i*90;return i%3===0?`<g transform="translate(${x} ${y})"><circle r="9" fill="#FF8FB1"/><circle r="4" fill="#FFD84D"/></g>`:i%3===1?tuft(x,y):`<ellipse cx="${x}" cy="${y}" rx="16" ry="10" fill="#B9B3A6"/>`}).join('');
- const docks=nodes.filter(n=>n.kind==='dock').map(n=>{const done=stopDone(n.st),lines=wrapTxt(n.st.topic,22),h=46+lines.length*24;
-  return `<g transform="translate(${n.x} ${n.y})"><rect x="-120" y="${h/2-6}" width="240" height="26" rx="5" fill="#B07A45" stroke="#7A4F26" stroke-width="3"/>${[-90,-45,0,45,90].map(x=>`<path d="M${x} ${h/2-6} V${h/2+20}" stroke="#7A4F26" stroke-width="2"/>`).join('')}
-  <rect x="-125" y="${-h/2-6}" width="250" height="${h+6}" rx="14" fill="${done?'#2DBE6C':'#2F9BE0'}"/><rect x="-118" y="${-h/2+1}" width="236" height="${h-8}" rx="10" fill="#F6DDB0"/>
-  <text x="0" y="${-h/2+31}" text-anchor="middle" class="jt" font-size="26" fill="#1D4E89">${done?'✓ ':'⚓ '}Stop ${n.st.n}</text>${lines.map((t,k)=>`<text x="0" y="${-h/2+57+k*24}" text-anchor="middle" class="jt" font-size="19" fill="#5A4630">${esc(t)}</text>`).join('')}
-  ${done?`<g transform="translate(108 ${-h/2-4})"><path d="M0 0 V-44" stroke="#5A4630" stroke-width="4"/><g class="flag"><path d="M0 -44 L30 -36 L0 -28Z" fill="#2DBE6C"/></g></g>`:''}</g>`}).join('');
+ const P=nodes.map(n=>[n.x,n.y]);const d=smoothPath([[nodes[0].x,th.up?H+20:-20],...P]);
+ const docks=nodes.filter(n=>n.kind==='dock').map(n=>{const done=stopDone(n.st),lines=wrapTxt(n.st.topic,22),h=46+lines.length*24;return `<g transform="translate(${n.x} ${n.y})">${th.stop(n,done,lines,h)}</g>`}).join('');
  const pads=qn.map((n,i)=>{const done=isDone(n.st,n.q),cur=i===ci&&!allDone;
   return `<g class="jpad${done?' done':cur?' cur':' later'}" data-st="${n.st.n}" data-q="${n.q}" tabindex="0" role="button" aria-label="Stop ${n.st.n} ${QSHORT[n.q]}${done?', done':''}" transform="translate(${n.x} ${n.y})"><g class="jin">
-  ${cur?'<circle r="50" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="8 8" class="spin"/>':''}
-  <path d="M0 0 L34 -8 A35 35 0 1 0 34 8 Z" fill="${done?'#3FB35A':'#5CC46A'}" stroke="${done?'#FFD23F':'#2E8A3E'}" stroke-width="${done?5:3}"/>
-  <path d="M-18 -6 Q-4 -2 6 10 M-14 10 Q0 4 10 -12" stroke="#2E8A3E" stroke-width="2" fill="none" opacity=".6"/>
+  ${cur?'<circle r="52" fill="none" stroke="#fff" stroke-width="5" stroke-dasharray="8 8" class="spin"/>':''}${th.pad(done,i)}
   <text y="9" text-anchor="middle" font-size="26">${QICON[n.q]}</text>
-  <g transform="translate(0 52)"><rect x="-46" y="-15" width="92" height="28" rx="14" fill="${done?'#FFD23F':'#fff'}" opacity=".95"/><text y="6" text-anchor="middle" class="jt" font-size="18" fill="#1D4E89">${done?'✓ ':''}${QSHORT[n.q]}</text></g></g></g>`}).join('');
+  <g transform="translate(0 54)"><rect x="-46" y="-15" width="92" height="28" rx="14" fill="${done?'#FFD23F':'#fff'}" opacity=".95"/><text y="6" text-anchor="middle" class="jt" font-size="18" fill="#1D4E89">${done?'✓ ':''}${QSHORT[n.q]}</text></g></g></g>`}).join('');
  const end=nodes[nodes.length-1];
- const boatAt=allDone?[end.x-(W<600?110:150),end.y-20]:[qn[ci].x+(qn[ci].x>W*.6?-96:qn[ci].x<W*.4?96:96),qn[ci].y-6];
+ const off=n=>[n.x+(n.x>W*.6?-96:96),n.y-6];const at=allDone?[end.x-(W<600?110:150),end.y-20]:off(qn[ci]);
  const av=avatarSVG(myAv(),76).replace('<svg ','<svg x="-38" y="-86" ');
- const boat=`<g id="jboat" style="transform:translate(${boatAt[0]}px,${boatAt[1]}px)"><g class="bob"><path d="M-56 -8 H56 Q50 22 0 24 Q-50 22 -56 -8Z" fill="#E8693A" stroke="#8A3A1A" stroke-width="3"/><path d="M-50 0 H50" stroke="#FFD23F" stroke-width="5"/>${av}<path d="M30 -20 L64 14" stroke="#8A5A2B" stroke-width="5" stroke-linecap="round"/><ellipse cx="66" cy="18" rx="8" ry="5" fill="#8A5A2B"/></g></g>`;
- const svg=`<svg class="journey" viewBox="0 0 ${W} ${H}" role="img" aria-label="Your river journey through ${esc(l.name)}">
- <rect width="${W}" height="${H}" fill="#9BDC72"/>${deco}
- <path d="${d}" fill="none" stroke="#3DA7D6" stroke-width="92" stroke-linecap="round" stroke-linejoin="round"/>
- <path d="${d}" fill="none" stroke="#6FD0F2" stroke-width="72" stroke-linecap="round" stroke-linejoin="round"/>
- <path class="flow" d="${d}" fill="none" stroke="#fff" stroke-width="3" stroke-dasharray="14 26" opacity=".7"/>
- 
- ${docks}${pads}
- <g transform="translate(${end.x} ${end.y})"><ellipse cy="30" rx="120" ry="38" fill="#F3D9A4" stroke="#fff" stroke-width="6"/><g class="${allDone?'bob':''}"><use href="#chest" x="-40" y="-26" width="80" height="64"/></g><g class="twinkle"><use href="#star" x="40" y="-40" width="22" height="22"/><use href="#star" x="-62" y="-30" width="16" height="16"/></g><text y="102" text-anchor="middle" class="jt" font-size="24" fill="#1D4E89">${allDone?'You found the treasure!':'Treasure!'}</text></g>
- ${boat}</svg>`;
- return {svg,ci,allDone,qn,W}}
+ const mover=`<g id="jboat" style="transform:translate(${at[0]}px,${at[1]}px)"><g class="bob">${th.mover(av)}</g></g>`;
+ const svg=`<svg class="journey" viewBox="0 0 ${W} ${H}" role="img" aria-label="Your ${th.name} through ${esc(l.name)}">
+ <rect width="${W}" height="${H}" fill="${th.bg}"/>${decoFor(l.code,W,H)}${th.path(d)}${docks}${pads}
+ <g transform="translate(${end.x} ${end.y})">${th.end(allDone)}<g class="twinkle"><use href="#star" x="44" y="-44" width="22" height="22"/><use href="#star" x="-66" y="-34" width="16" height="16"/></g><text y="${th.up?-150:102}" text-anchor="middle" class="jt" font-size="24" fill="#1D4E89">${th.endText(allDone)}</text></g>
+ ${mover}</svg>`;
+ return {svg,ci,allDone,qn,W,off,th}}
 function bindJourney(l,J){document.querySelectorAll('.jpad').forEach(g=>{const go=()=>{V={s:g.dataset.q,land:l.code,stop:+g.dataset.st};Q=null;render()};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
  const SK=`mq-j-${ME.code}-g${ME.grade}-${l.code}`;let prev=null;try{prev=localStorage.getItem(SK)}catch(e){}
  const now=J.allDone?J.qn.length:J.ci;try{localStorage.setItem(SK,String(now))}catch(e){}
  prev=prev===null?null:+prev;const b=$('#jboat');if(!b||prev===null||prev>=now||matchMedia('(prefers-reduced-motion: reduce)').matches)return;
- const pts=[];for(let i=prev;i<=Math.min(now,J.qn.length-1);i++){const W=J.W;pts.push([J.qn[i].x+(J.qn[i].x>W*.6?-96:96),J.qn[i].y-6])};if(J.allDone){const t=b.style.transform.match(/-?[\d.]+/g);pts.push([+t[0],+t[1]])}
+ const pts=[];for(let i=prev;i<=Math.min(now,J.qn.length-1);i++)pts.push(J.off(J.qn[i]));if(J.allDone){const t=b.style.transform.match(/-?[\d.]+/g);pts.push([+t[0],+t[1]])}
  if(pts.length<2)return;b.classList.add('rowing');
  setTimeout(()=>b.scrollIntoView({behavior:'smooth',block:'center'}),100);
  const an=b.animate(pts.map(([x,y])=>({transform:`translate(${x}px,${y}px)`})),{duration:900*(pts.length-1)+300,easing:'ease-in-out'});
- an.onfinish=()=>{b.classList.remove('rowing');cheer(J.allDone?'You reached the treasure! 🏆':'Paddle on! 🚣');praise(true)}}
+ an.onfinish=()=>{b.classList.remove('rowing');cheer(J.allDone?'You did it! 🏆':J.th.cheer);praise(true)}}
 
 /* ---------- celebrations: bells, clapping, confetti (same engine as the Spelling Bee) ---------- */
 let AC=null,STREAK=0;const pick=a=>a[Math.floor(Math.random()*a.length)];
@@ -1091,6 +1139,140 @@ NI:{
    {k:'f-ni5-3',t:'Across zero',s:'From minus 3 degrees to 12 degrees is a difference of 15 degrees.',v:()=>thermo([-3,12])},
    {k:'f-ni5-4',t:'Near multiples',s:'199 times 4 is the same as 200 times 4, take away 4. That is 796.',v:()=>bigText(['199 × 4','= 200 × 4 − 4','= 796'])},
    {k:'f-ni5-5',t:'Estimate to check',s:'8,125 divided by 27 is about 8,000 divided by 25, which is 320.',v:()=>bigText(['8,125 ÷ 27','≈ 8,000 ÷ 25','≈ 320'])}]}};
+Object.assign(FACTS,{
+TT:{
+0:[{t:'Counting in 2s',s:'Count in 2s: 2, 4, 6, 8, 10. Each jump is 2.',v:()=>numLine([2,4,6,8,10],-1)},
+   {t:'Counting in 10s',s:'Count in 10s: 10, 20, 30, 40, 50.',v:()=>numLine([10,20,30,40,50],-1)},
+   {t:'Equal groups',s:'3 groups of 2 make 6. Every group has the same number.',v:()=>groupsVis(3,2)},
+   {t:'Sharing fairly',s:'Share 6 between 2 friends. Each friend gets 3.',v:()=>groupsVis(2,3)}],
+1:[{t:'The 2 times table',s:'2, 4, 6, 8, 10, 12. Every answer is even.',v:()=>numLine([2,4,6,8,10,12],-1)},
+   {t:'The 5 times table',s:'5, 10, 15, 20, 25. Every answer ends in 5 or 0.',v:()=>numLine([5,10,15,20,25],-1)},
+   {t:'The 10 times table',s:'10, 20, 30, 40, 50. Every answer ends in 0.',v:()=>numLine([10,20,30,40,50],-1)},
+   {t:'Any order',s:'2 times 5 is the same as 5 times 2. Both make 10.',v:()=>dotArray(2,5)},
+   {t:'Odd and even',s:'Even numbers make pairs. Odd numbers have one left over.',v:()=>pairsVis(7)}],
+2:[{t:'The 3 times table',s:'3, 6, 9, 12, 15, 18, 21, 24, 27, 30.',v:()=>numLine([3,6,9,12,15,18],-1)},
+   {t:'The 4 times table',s:'Double the 2 times table. 2 times 6 is 12, so 4 times 6 is 24.',v:()=>bigText(['2 × 6 = 12','4 × 6 = 24'])},
+   {t:'The 8 times table',s:'Double the 4 times table. 4 times 7 is 28, so 8 times 7 is 56.',v:()=>bigText(['4 × 7 = 28','8 × 7 = 56'])},
+   {t:'Arrays',s:'3 rows of 4 is 12. You can say 3 times 4 or 4 times 3.',v:()=>dotArray(3,4)},
+   {t:'Division is the opposite',s:'3 times 4 is 12, so 12 divided by 3 is 4.',v:()=>bigText(['3 × 4 = 12','12 ÷ 3 = 4'],VC.g)}],
+3:[{t:'The 9s trick',s:'In the 9 times table, the digits add up to 9. 9 times 6 is 54, and 5 add 4 is 9.',v:()=>bigText(['9 × 6 = 54','5 + 4 = 9'])},
+   {t:'The 6, 7 and 12 times tables',s:'6 times 7 is 42, 7 times 8 is 56 and 12 times 12 is 144.',v:()=>bigText(['6 × 7 = 42','7 × 8 = 56','12 × 12 = 144'])},
+   {t:'Factor pairs',s:'Factor pairs of 12: 1 and 12, 2 and 6, 3 and 4.',v:()=>bigText(['1 × 12','2 × 6','3 × 4'])},
+   {t:'Split to multiply',s:'16 times 4 is 10 times 4 add 6 times 4. That is 40 add 24, which is 64.',v:()=>areaModel(10,6,4)},
+   {t:'Multiply by 0 and 1',s:'Any number times 1 stays the same. Any number times 0 is 0.',v:()=>bigText(['8 × 1 = 8','8 × 0 = 0'])}],
+4:[{t:'Factors and multiples',s:'Factors of 12 are 1, 2, 3, 4, 6 and 12. Multiples of 4 are 4, 8, 12, 16 and so on.',v:()=>bigText(['Factors of 12:','1, 2, 3, 4, 6, 12'])},
+   {t:'Prime numbers',s:'A prime number has exactly two factors: 1 and itself. 2, 3, 5, 7, 11 and 13 are prime.',v:()=>bigText(['2  3  5  7','11  13  17  19'])},
+   {t:'Square numbers',s:'A square number is a number times itself. 4 squared is 16.',v:()=>dotArray(4,4)},
+   {t:'Cube numbers',s:'A cube number is a number times itself, three times. 2 cubed is 8.',v:()=>bigText(['2³ = 2 × 2 × 2','= 8'])},
+   {t:'Times 10, 100, 1000',s:'Multiply by 10 and the digits move one place to the left. 3.3 times 100 is 330.',v:()=>bigText(['3.3 × 10 = 33','3.3 × 100 = 330'])}],
+5:[{t:'Long multiplication',s:'226 times 31: multiply by 30, multiply by 1, then add the two answers.',v:()=>bigText(['226 × 30 = 6,780','226 × 1 = 226','= 7,006'])},
+   {t:'Order of operations',s:'Brackets first, then multiply and divide, then add and subtract.',v:()=>bigText(['(3 + 7) × 6','= 10 × 6 = 60'])},
+   {t:'Highest common factor',s:'The highest common factor of 28 and 42 is 14.',v:()=>bigText(['28 = 14 × 2','42 = 14 × 3','HCF = 14'])},
+   {t:'Lowest common multiple',s:'Multiples of 6: 6, 12, 18. Multiples of 9: 9, 18. The lowest common multiple is 18.',v:()=>bigText(['6, 12, 18','9, 18','LCM = 18'])},
+   {t:'Checking for primes',s:'To check a number is prime, try dividing by 2, 3, 5 and 7. 67 is prime.',v:()=>bigText(['67 ÷ 2, 3, 5, 7?','No! 67 is prime'])}]},
+FF:{
+0:[{t:'Halves',s:'A half is one of 2 equal parts.',v:()=>fpWrap(380,190,fpPie(95,95,85,2,1)+`<g transform="translate(200 0)">${fpRect(10,40,160,110,2,1)}</g>`)},
+   {t:'Equal or not?',s:'Halves must be the same size. These parts are not equal, so they are not halves.',v:()=>fpWrap(190,190,fpPie(95,95,85,2,0,true))},
+   {t:'Quarters',s:'A quarter is one of 4 equal parts.',v:()=>fpWrap(190,190,fpPie(95,95,85,4,1))},
+   {t:'Half of a number',s:'Half of 8 is 4. Share 8 into 2 equal groups.',v:()=>fpDots(8,2,1)}],
+1:[{t:'Thirds',s:'A third is one of 3 equal parts.',v:()=>fpBars([[0,1,3,[1,3]]])},
+   {t:'Fractions of shapes',s:'3 out of 4 parts are shaded. That is three quarters.',v:()=>fpWrap(190,190,fpRect(10,10,170,170,4,3,false,true))},
+   {t:'Fractions of amounts',s:'To find a quarter of 12, share 12 into 4 equal groups. Each group has 3.',v:()=>fpDots(12,4,1)},
+   {t:'The same amount',s:'Two quarters are the same as one half.',v:()=>fpBars([[0,1,2,[1,2]],[0,2,4,[2,4]]])}],
+2:[{t:'Tenths',s:'Cut a whole into 10 equal parts. Each part is one tenth.',v:()=>fpBars([[0,3,10,[3,10]]])},
+   {t:'Equivalent fractions',s:'One half is the same as two quarters and four eighths.',v:()=>fpBars([[0,1,2,[1,2]],[0,2,4,[2,4]],[0,4,8,[4,8]]])},
+   {t:'Same denominator',s:'To add fractions with the same bottom number, add the top numbers. 1 seventh add 2 sevenths is 3 sevenths.',v:()=>fpBars([[0,1,7,[1,7]],[0,2,7,[2,7]],[0,3,7,[3,7]]])},
+   {t:'Comparing unit fractions',s:'The bigger the bottom number, the smaller the piece. One third is bigger than one fifth.',v:()=>fpBars([[0,1,3,[1,3]],[0,1,5,[1,5]]])}],
+3:[{t:'Equivalent fractions',s:'Multiply the top and bottom by the same number. 3 quarters is 6 eighths.',v:()=>fpBars([[0,3,4,[3,4]],[0,6,8,[6,8]]])},
+   {t:'Tenths and hundredths',s:'0.1 is one tenth. 0.01 is one hundredth. 0.47 is 47 hundredths.',v:()=>fpPercent(47)},
+   {t:'Fractions of amounts',s:'To find 3 fifths of 55, find one fifth (11), then times by 3. That is 33.',v:()=>fpBarModel(55,5,3)},
+   {t:'Fractions and decimals',s:'One half is 0.5. One quarter is 0.25. Three quarters is 0.75.',v:()=>bigText(['½ = 0.5','¼ = 0.25','¾ = 0.75'])}],
+4:[{t:'Mixed and improper',s:'9 halves is 4 and a half. 4 wholes make 8 halves, with 1 half left over.',v:()=>fpBars([[0,9,2,[9,2]]])},
+   {t:'Adding fractions',s:'Make the bottom numbers the same first. 1 quarter add 7 twelfths is 3 twelfths add 7 twelfths, which is 10 twelfths.',v:()=>bigText(['¼ + 7/12','= 3/12 + 7/12','= 10/12'])},
+   {t:'Three decimal places',s:'0.375 is 3 tenths, 7 hundredths and 5 thousandths.',v:()=>bigText(['0.375','3 tenths, 7 hundredths','5 thousandths'])},
+   {t:'Percentages',s:'Per cent means out of 100. 25 per cent is 25 out of 100, which is one quarter.',v:()=>fpPercent(25)}],
+5:[{t:'Simplifying',s:'Divide the top and bottom by the same number. 18 twenty-fourths is 3 quarters.',v:()=>bigText(['18/24','÷ 6','= 3/4'])},
+   {t:'Multiplying fractions',s:'Multiply the tops, then multiply the bottoms. 4 fifths times 1 half is 4 tenths.',v:()=>bigText(['4/5 × 1/2','= 4/10','= 2/5'])},
+   {t:'Fractions, decimals, percentages',s:'One eighth is 0.125, which is 12.5 per cent.',v:()=>bigText(['1/8 = 0.125','= 12.5%'])},
+   {t:'Ordering fractions',s:'Make the bottom numbers the same to compare. 3 quarters is 9 twelfths, 2 thirds is 8 twelfths.',v:()=>fpBars([[0,3,4,[3,4]],[0,2,3,[2,3]],[0,7,12,[7,12]]])}]},
+MM:{
+0:[{t:'Longer and shorter',s:'Count the cubes to compare. The camel is 12 cubes long, which is longer than the goat.',v:()=>cubesRows([['camel',12],['goat',3]])},
+   {t:'Heavier and lighter',s:'The heavier side of a balance goes down.',v:()=>balanceVis('box',10,'toy',6)},
+   {t:'Coins',s:'Coins have different values. A 1-dirham coin is worth more than a 50-fils coin.',v:()=>coinsVis([[1,'1',null,'1 dirham'],[1,'50f','#E8C27A','50 fils']])},
+   {t:'O\'clock and half past',s:'At o\'clock the long hand points to 12. At half past, it points to 6.',v:()=>clocksVis([[3,0],[3,30]])}],
+1:[{t:'Measuring with a ruler',s:'Start at 0. This pencil is 8 centimetres long.',v:()=>rulerVis(8)},
+   {t:'Reading a scale',s:'Read where the arrow points. This shows 8 grams.',v:()=>dialVis(8,'g')},
+   {t:'Quarter past and quarter to',s:'Quarter past: the long hand points to 3. Quarter to: it points to 9.',v:()=>clocksVis([[4,15],[4,45]])},
+   {t:'Money and change',s:'You pay 10 dirhams for a 7-dirham toy. Your change is 3 dirhams.',v:()=>bigText(['10 − 7 = 3','3 dirhams change'])}],
+2:[{t:'Perimeter',s:'Perimeter is the distance all the way around. 9 add 7 add 9 add 7 is 32 centimetres.',v:()=>rectVis(9,7,'cm')},
+   {t:'Units of length',s:'100 centimetres make 1 metre. 1,000 metres make 1 kilometre.',v:()=>bigText(['100 cm = 1 m','1000 m = 1 km'])},
+   {t:'Money',s:'100 fils make 1 dirham. Four 25-fils coins make 1 dirham.',v:()=>coinsVis([[4,'25f','#E8C27A','= 1 dirham']])},
+   {t:'Time to the minute',s:'Count in 5s around the clock for the minutes. This shows 7 minutes past 4.',v:()=>clocksVis([[4,7]])}],
+3:[{t:'Area',s:'Area is the space inside. Count the squares: 8 times 4 is 32 squares.',v:()=>rectVis(8,4,'cm',true)},
+   {t:'Converting units',s:'1 kilogram is 1,000 grams. 1 litre is 1,000 millilitres.',v:()=>bigText(['1 kg = 1000 g','1 l = 1000 ml'])},
+   {t:'24-hour clock',s:'After 12 noon, add 12. 3 pm is 15:00. 9:45 pm is 21:45.',v:()=>clocksVis([[15,0,'15:00']])},
+   {t:'Money problems',s:'5 juices at 3 dirhams each cost 5 times 3, which is 15 dirhams.',v:()=>bigText(['5 × 3 = 15','15 dirhams'])}],
+4:[{t:'Area of a rectangle',s:'Area is length times width. 11 times 9 is 99 square metres.',v:()=>rectVis(11,9,'m')},
+   {t:'L-shapes',s:'Split an L-shape into rectangles, or take away the missing piece.',v:()=>lShape(10,8,2,3,'m')},
+   {t:'Volume',s:'Volume is the space a 3D shape takes up. Count the cubes: length times width times height.',v:()=>shape3D('cuboid')},
+   {t:'Timetables',s:'Read across the row. Add the journey time to find when you arrive.',v:()=>timetableVis(['07:30','07:55','08:15'],40)}],
+5:[{t:'Area of a triangle',s:'Half of base times height. Base 12 and height 11: 12 times 11 is 132, half of that is 66.',v:()=>triVis(12,11,'cm')},
+   {t:'Parallelograms',s:'Area of a parallelogram is base times height.',v:()=>shape2D('parallelogram')},
+   {t:'Volume of a cuboid',s:'Length times width times height. 5 by 4 by 3 is 60 cubic centimetres.',v:()=>bigText(['5 × 4 × 3','= 60 cm³'])},
+   {t:'Miles and kilometres',s:'5 miles is about 8 kilometres.',v:()=>bigText(['5 miles ≈ 8 km','10 miles ≈ 16 km'])}]},
+SF:{
+0:[{t:'2D shapes',s:'A triangle has 3 sides. A square has 4 equal sides. A circle has no corners.',v:()=>fpWrap(600,200,['triangle','square','circle'].map((n,i)=>`<g transform="translate(${i*200} 0) scale(.9)">${shape2D(n).replace(/^<svg[^>]*>|<\/svg>$/g,'')}</g>`).join(''))},
+   {t:'3D shapes',s:'A ball is a sphere. A box is a cuboid. An ice-cream cone is a cone.',v:()=>shape3D('cube')},
+   {t:'Position words',s:'The ball is above the box. Other words: on, under, in front of, behind.',v:()=>positionVis('above')},
+   {t:'Turns',s:'A quarter turn clockwise from north takes you to east.',v:()=>compassVis('north','quarter',true)}],
+1:[{t:'Sides and vertices',s:'A vertex is a corner. A pentagon has 5 sides and 5 vertices.',v:()=>shape2D('pentagon')},
+   {t:'Faces, edges, vertices',s:'A cube has 6 faces, 12 edges and 8 vertices.',v:()=>shape3D('cube')},
+   {t:'Lines of symmetry',s:'A line of symmetry splits a shape into two matching halves.',v:()=>fpWrap(220,200,shape2D('isosceles triangle').replace(/^<svg[^>]*>|<\/svg>$/g,'')+`<path d="M110 5 V195" stroke="${VC.p}" stroke-width="4" stroke-dasharray="10 6"/>`)},
+   {t:'Clockwise',s:'Clockwise turns the same way as a clock\'s hands. Anticlockwise is the other way.',v:()=>compassVis('north','quarter',true)}],
+2:[{t:'Right angles',s:'A right angle is a quarter turn. It looks like the corner of a book.',v:()=>angleVis([90])},
+   {t:'Bigger or smaller',s:'An angle less than a right angle is acute. Greater than a right angle is obtuse.',v:()=>angleVis([45,120])},
+   {t:'Parallel lines',s:'Parallel lines never meet. They stay the same distance apart.',v:()=>fpWrap(300,120,`<path d="M20 30 H280 M20 90 H280" stroke="${VC.ln}" stroke-width="6" stroke-linecap="round"/>`)},
+   {t:'Perpendicular lines',s:'Perpendicular lines meet at a right angle.',v:()=>fpWrap(220,200,`<path d="M30 170 H200 M30 170 V20" stroke="${VC.ln}" stroke-width="6" stroke-linecap="round"/><rect x="30" y="146" width="24" height="24" fill="none" stroke="${VC.o}" stroke-width="3"/>`)}],
+3:[{t:'Types of angle',s:'Acute is less than 90 degrees. Right is 90 degrees. Obtuse is between 90 and 180 degrees.',v:()=>angleVis([40,90,135])},
+   {t:'Lines of symmetry',s:'A rectangle has 2 lines of symmetry. A square has 4.',v:()=>fpWrap(240,170,`<rect x="20" y="20" width="200" height="130" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="5"/><path d="M120 10 V160 M10 85 H230" stroke="${VC.p}" stroke-width="4" stroke-dasharray="10 6"/>`)},
+   {t:'Coordinates',s:'Go across first, then up. The point (5, 4) is 5 across and 4 up.',v:()=>grid([[5,4,'(5, 4)']])},
+   {t:'Translation',s:'Translating slides a shape or point without turning it.',v:()=>grid([[2,2,'(2, 2)'],[5,4,'(5, 4)',VC.g]],{arrows:[[2,2,5,4]]})}],
+4:[{t:'Angles on a line',s:'Angles on a straight line add up to 180 degrees.',v:()=>lineAngles(113)},
+   {t:'Angles around a point',s:'Angles around a point add up to 360 degrees.',v:()=>pointAngles([72,43])},
+   {t:'Regular polygons',s:'A regular polygon has all sides equal and all angles equal.',v:()=>shape2D('hexagon')},
+   {t:'Reflection',s:'A reflection is the same distance from the mirror line on the other side.',v:()=>grid([[3,1,'(3, 1)'],[13,1,'(13, 1)',VC.g]],{mirrorX:8})}],
+5:[{t:'Angles in a triangle',s:'The angles in a triangle add up to 180 degrees.',v:()=>polyAngles([62,30])},
+   {t:'Angles in a quadrilateral',s:'The angles in a four-sided shape add up to 360 degrees.',v:()=>polyAngles([85,76,62])},
+   {t:'Vertically opposite',s:'When two lines cross, opposite angles are equal.',v:()=>crossAngles(133)},
+   {t:'Four quadrants',s:'Coordinates can be negative. (5, −5) is 5 across and 5 down.',v:()=>grid([[5,-5,'(5, −5)']],{four:true})}]},
+DD:{
+0:[{t:'Sorting',s:'Sort things into groups, then count each group.',v:()=>hoopsVis([['cats',3],['dogs',5],['fish',2]])},
+   {t:'The most and the least',s:'The group with the most is the most popular.',v:()=>hoopsVis([['apple',2],['dates',4],['banana',6]])},
+   {t:'Counting all',s:'To find how many altogether, add every group.',v:()=>bigText(['3 + 5 + 2','= 10'])}],
+1:[{t:'Tally marks',s:'Four lines and a line across makes 5. Count in 5s, then add the rest.',v:()=>fpWrap(160,50,tallyMarks(7,14,10))},
+   {t:'Tally charts',s:'Each row shows one choice. Count the tally marks to find the number.',v:()=>tallyChart([['bus',7],['walk',12],['car',4]])},
+   {t:'Pictograms',s:'Check the key. If each picture means 2 children, 4 pictures mean 8 children.',v:()=>pictoVis([['football',4],['tennis',2]],2)}],
+2:[{t:'Bar charts',s:'Read the top of the bar across to the scale.',v:()=>barChart([['dog',8],['cat',12],['fish',6]],2)},
+   {t:'Scales',s:'Check what the scale goes up in. This one goes up in 5s.',v:()=>barChart([['mango',10],['apple',25],['dates',35]],5)},
+   {t:'How many more?',s:'To find how many more, take the smaller number away from the bigger number.',v:()=>bigText(['12 − 8 = 4','4 more'])}],
+3:[{t:'Time graphs',s:'A time graph shows how something changes during the day.',v:()=>lineChart([['8 am',24],['10 am',27],['12 pm',33],['2 pm',31],['4 pm',29]],'°C')},
+   {t:'Bigger scales',s:'Some bar charts go up in 25s or 50s. Read halfway between the lines carefully.',v:()=>barChart([['Mon',275],['Tue',150],['Wed',250]],25)},
+   {t:'Finding the difference',s:'Read both values, then subtract to find the change.',v:()=>bigText(['33 − 24 = 9','9 degrees warmer'])}],
+4:[{t:'Line graphs',s:'The steeper the line, the faster the change. A flat line means no change.',v:()=>lineChart([['Sun',490],['Mon',390],['Tue',440],['Wed',530]])},
+   {t:'Timetables',s:'Find your row and column, then read where they meet.',v:()=>timetableVis(['09:15','09:35','09:50'],40)},
+   {t:'Adding from a graph',s:'To find the total, read each point and add them all together.',v:()=>bigText(['490 + 390 + 440','= 1,320'])}],
+5:[{t:'Pie charts',s:'The whole circle is everyone. Half the circle is half the people.',v:()=>pieVis([['Bus',.5],['Walk',.25],['Car',.25]],'40 children')},
+   {t:'Angles in a pie chart',s:'The whole circle is 360 degrees. A quarter is 90 degrees.',v:()=>bigText(['whole = 360°','½ = 180°','¼ = 90°'])},
+   {t:'The mean',s:'Add all the numbers, then divide by how many there are. The mean of 8, 12 and 10 is 10.',v:()=>valBars([8,12,10],null,10)}]},
+PP:{
+5:[{t:'Ratio',s:'For every 3 cats there are 2 dogs. If there are 6 cats, there are 4 dogs.',v:()=>ratioVis(3,'cats',2,'dogs')},
+   {t:'Percentages of amounts',s:'10 per cent is one tenth. To find 30 per cent, find 10 per cent and times by 3.',v:()=>fpBarModel(120,10,3)},
+   {t:'Sequences',s:'Find the jump between numbers. 17, 25, 33, 41: the jump is 8, so next is 49.',v:()=>numLine([17,25,33,41,'?'],4)},
+   {t:'Formulae',s:'The rule term equals 3n minus 1 means times the term number by 3, then take away 1.',v:()=>bigText(['3n − 1','n = 9','27 − 1 = 26'])},
+   {t:'Solving equations',s:'Undo each step. 9a add 12 is 102. Take away 12: 9a is 90. Divide by 9: a is 10.',v:()=>bigText(['9a + 12 = 102','9a = 90','a = 10'])}]}});
+/* give every card a clip name */
+for(const l in FACTS)for(const g in FACTS[l])FACTS[l][g].forEach((f,i)=>{if(!f.k)f.k=`f-${l.toLowerCase()}${g}-${i+1}`});
+
 function factsFor(land,grade){const L=FACTS[land];return L?(L[grade]||[]):[]}
 
 /* side panels: fact cards (left) and the teacher's videos (right) */
@@ -1180,10 +1362,10 @@ function heroHTML(l){const H=HERO[l.code];if(!H)return '';const [a,b]=landProgre
  ${(H.pick||[]).map(([cx,cy,n])=>hot(cx-52,cy-52,cx+52,cy+52,`class="mhot pick" data-pick="${n}" role="button" aria-label="${n}"`)).join('')}</div>${SP?SP.right:''}</div></div>`}
 function landObj(){return C.lands.find(l=>l.code===V.land)}
 function landView(){const l=landObj();
- const J=l.code==='FF'?journeyFF(l):null;
- $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">${J?'🚣 Your river journey':'Your stops'}</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
+ const J=journey(l);
+ $('#app').innerHTML=`<button class="back" id="bk">← Quest map</button>${HERO[l.code]?heroHTML(l)+`<h2 class="f" id="stops" style="text-align:center;color:#1D4E89;margin:18px 0 8px">${J?J.th.head:'Your stops'}</h2>`:`<div class="landhead">${LANDICON[l.code]}<div><h1 style="font-size:32px;color:var(--sea)">${esc(l.name)}</h1><div class="muted">${l.stops.length} stops · finish every quest to earn the land badge</div></div></div>`}
  ${C.mtc&&l.code==='TT'?`<div class="card" style="margin-bottom:14px;background:#FFF3C4;border-color:#F3D98A"><b class="f" style="font-size:20px">⏱️ Multiplication check practice</b><div class="muted">25 questions, 6 seconds each — just like the real check.</div><button class="b1" id="mtc" style="margin-top:10px">Start a practice check</button></div>`:''}
- ${J?`<div class="jwrap">${J.svg}</div>`:`<div class="stops">${(()=>{const curSt=(l.stops.find(x=>!stopDone(x))||{}).n;return l.stops.map(st=>`<div class="stop${st.n===curSt?' here':''}"><h3>${st.n===curSt?`<span class="stopav">${avatarSVG(myAv(),44)}</span>`:''}${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}${st.n===curSt?' <span class="muted" style="font-size:15px">← you are here</span>':''}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')})()}</div>`}`;
+ ${J&&!HERO[l.code]&&sidePanels(l)?(()=>{const SP=sidePanels(l);return `<div class="scene" style="--bg:none;background:linear-gradient(180deg,#E6DDFB,#FFF6E6)"><div class="sgrid">${SP.left}<div><h2 class="f" style="text-align:center;color:#1D4E89;margin:0 0 10px">${J.th.head}</h2><div class="jwrap">${J.svg}</div></div>${SP.right}</div></div>`})():J?`<div class="jwrap">${J.svg}</div>`:`<div class="stops">${(()=>{const curSt=(l.stops.find(x=>!stopDone(x))||{}).n;return l.stops.map(st=>`<div class="stop${st.n===curSt?' here':''}"><h3>${st.n===curSt?`<span class="stopav">${avatarSVG(myAv(),44)}</span>`:''}${stopDone(st)?'✅ ':''}Stop ${st.n}: ${esc(st.topic)}${st.n===curSt?' <span class="muted" style="font-size:15px">← you are here</span>':''}</h3><div class="qs">${QUESTS.filter(q=>q[0]!=='listen'||st.listen.length).map(q=>`<button class="qb ${isDone(st,q[0])?'done':''}" data-st="${st.n}" data-q="${q[0]}">${isDone(st,q[0])?'✓':q[1]} ${q[2]}</button>`).join('')}</div></div>`).join('')})()}</div>`}`;
  $('#bk').onclick=()=>{V={s:'map'};render()};
  const m=$('#mtc');if(m)m.onclick=()=>{V={s:'listen',land:'TT',stop:0,mtc:true};render()};
  document.querySelectorAll('[data-q]').forEach(b=>b.onclick=()=>{V={s:b.dataset.q,land:V.land,stop:+b.dataset.st};Q=null;render()});
