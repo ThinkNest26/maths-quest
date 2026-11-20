@@ -209,7 +209,11 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .lb.got{background:#FFE7A0;box-shadow:0 0 0 3px #FFC93C;filter:none;opacity:1}.lbi svg{width:30px;height:30px;display:block}.lbs{position:absolute;right:-4px;bottom:-4px;background:#2DBE6C;color:#fff;border-radius:50%;width:18px;height:18px;font-size:11px;display:grid;place-items:center;font-weight:800}
 .flamechip{background:#FFE3CF!important}.bnp svg{width:100px;height:100px}.bnp{line-height:0;display:flex;justify-content:center}
 @media(max-width:700px){.today{grid-template-columns:1fr}}
-.small{font-size:14px;line-height:1.35}</style>
+.small{font-size:14px;line-height:1.35}.tasks{max-width:1000px;margin:6px auto 12px;background:#fff;border:3px solid #2F9BE0;border-radius:22px;padding:12px 14px;box-shadow:0 6px 16px rgba(20,90,140,.1)}
+.tasksh{font-size:21px;color:#1D4E89;margin-bottom:8px}.task{display:flex;gap:12px;align-items:center;padding:10px;border-radius:16px;background:#F2F9FE;margin-bottom:8px}.task.tdone{background:#E6F7EE}
+.tland svg{width:46px;height:46px;display:block}.tks{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.tks span{background:#fff;border:2px solid #D6E6F2;border-radius:999px;padding:2px 10px;font-size:14px;font-weight:700}.tks span.ok{background:#DDF5E7;border-color:#9ED9B6;color:#1E7B4E}
+.tgo{font-size:18px;padding:10px 18px;white-space:nowrap}.tbad{font-family:Fredoka;font-weight:700;color:#1E7B4E;font-size:18px;white-space:nowrap}
+</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
@@ -330,7 +334,7 @@ const FRIEND={NI:'parrot',TT:'zaza',FF:'turtle',MM:'owl',SF:'fox',DD:'zaza',PP:'
 const QUESTS=[['learn','📖','Learn it'],['practise','✏️','Practise it'],['listen','🎧','Listen'],['play','⏱️','Play it'],['think','🤔','Think it'],['use','🌍','Use it']];
 function save(){try{localStorage.setItem(KEY,JSON.stringify({code:ME.code}))}catch(e){}}
 function stars(){return ME?Math.max(0,(ME.stars||0)-(ME.spent||0)):0}
-function header(){$('#who').innerHTML=ME?`<button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span>${streakNow()?`<span class="stars flamechip" title="${streakNow()}-day streak">${flameBadge(streakNow())} ${streakNow()}</span>`:''}<span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;V={s:'signin'};render()}}
+function header(){$('#who').innerHTML=ME?`<button class="avbtn" id="avb" aria-label="My explorer and the Explorer Shop">${avatarSVG(myAv(),40)}</button><span class="nm">Hi ${esc(ME.first_name)}!</span>${streakNow()?`<span class="stars flamechip" title="${streakNow()}-day streak">${flameBadge(streakNow())} ${streakNow()}</span>`:''}<span class="stars">⭐ ${stars()}</span><button class="out" id="so">Sign out</button>`:'';const avb=$('#avb');if(avb)avb.onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};const so=$('#so');if(so)so.onclick=()=>{try{localStorage.removeItem(KEY)}catch(e){}ME=null;C=null;MYTASKS=null;mapView.t=0;V={s:'signin'};render()}}
 function cheer(t,col){const d=document.createElement('div');d.className='cheer';d.innerHTML=`<div style="${col?'color:'+col:''}">${t}</div>`;$('#fx').appendChild(d);setTimeout(()=>d.remove(),950)}
 function key(st,kind){return `G${ME.grade}-${V.land}-${st.n}-${kind}`}
 function isDone(st,kind){return ME&&ME.done&&ME.done[key(st,kind)]}
@@ -1322,6 +1326,21 @@ function bigNote(text,pic,clip){happySound(true);setTimeout(()=>clapSound(true),
  d.innerHTML=`${conf}<div class="pcard"><div class="bnp">${pic}</div><div class="pcheer" style="font-size:clamp(26px,5vw,40px)">${esc(text)}</div><div class="ptap">tap to keep going</div></div>`;
  const close=()=>{d.classList.add('out');setTimeout(()=>d.remove(),350)};d.onclick=close;document.body.appendChild(d);setTimeout(()=>say('',clip),400);setTimeout(close,3800)}
 
+/* ---------- tasks from the teacher ---------- */
+let MYTASKS=null;
+const KIND_E={learn:'📖',practise:'✏️',listen:'🎧',play:'⏱️',think:'🤔',use:'🌍'};
+function taskStop(t){const l=C.lands.find(x=>x.code===t.land);return l?[l,l.stops.find(s=>s.n===t.stop)]:[null,null]}
+function taskKinds(t,st){return (t.kinds||[]).filter(k=>k!=='listen'||(st&&st.listen.length))}
+function taskDone(t){const [l,st]=taskStop(t);if(!st)return true;return taskKinds(t,st).every(k=>ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`])}
+function tasksPanel(){if(!MYTASKS)return '';const td=dubaiDay();const list=MYTASKS.filter(t=>{const [l,st]=taskStop(t);return l&&st}).filter(t=>!taskDone(t)||(t.created||'').slice(0,10)>=new Date(Date.now()-5*864e5).toISOString().slice(0,10)).slice(0,6);
+ if(!list.length)return '';
+ return `<div class="tasks"><div class="f tasksh">📝 Tasks from your teacher</div>${list.map(t=>{const [l,st]=taskStop(t),ks=taskKinds(t,st),done=taskDone(t),late=t.due&&t.due<td&&!done;
+  return `<div class="task${done?' tdone':''}"><div class="tland">${LANDICON[l.code]}</div><div style="flex:1;min-width:0"><div class="f" style="font-size:18px;color:#1D4E89">${esc(st.topic)}</div><div class="small muted">${esc(l.name)} · Stop ${st.n}${t.due?` · <span style="${late?'color:#B23A1E;font-weight:800':''}">by ${new Date(t.due+'T12:00:00Z').toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})}</span>`:''}</div>
+  ${t.note?`<div class="small" style="margin-top:2px">💬 ${esc(t.note)}</div>`:''}<div class="tks">${ks.map(k=>{const d=ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`];return `<span class="${d?'ok':''}">${d?'✓':KIND_E[k]} ${QSHORT[k]}</span>`}).join('')}</div></div>
+  ${done?'<div class="tbad">✓ Done!</div>':`<button class="b1 tgo" data-tgo="${t.id}">Go ➜</button>`}</div>`}).join('')}</div>`}
+async function loadTasks(){const {data}=await rpc('mq_my_tasks',{p_code:ME.code});MYTASKS=Array.isArray(data)?data:[];const b=$('#tasksBox');if(b){b.innerHTML=tasksPanel();bindTasks()}}
+function bindTasks(){document.querySelectorAll('[data-tgo]').forEach(b=>b.onclick=()=>{const t=MYTASKS.find(x=>x.id===b.dataset.tgo);const [l,st]=taskStop(t);const k=taskKinds(t,st).find(k=>!(ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`]))||'practise';V={s:k,land:t.land,stop:t.stop};Q=null;render()})}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
@@ -1370,11 +1389,12 @@ function mapView(){const L=C.lands;
  const onMap=L.filter(l=>MAPROW[l.code]);let ti=allDone?onMap.length-1:onMap.indexOf(L[cur]);if(ti<0)ti=onMap.length-1;
  const tokAt=i=>{const [cx,cy]=MAPROW[onMap[i].code];return [cx-178,cy+8]};const [tx,ty]=tokAt(ti);
  const tok=`<button class="tok" id="tok" aria-label="My explorer — tap to dress up" style="left:${px(tx)};top:${py(ty)};width:${px(150)};font-size:${fz(22)}"><span class="tokbub">${allDone?'All done! 🎉':'Next stop! ➜'}</span><span class="tokav bob">${avatarSVG(myAv(),120)}</span><span class="tokname">${esc(ME.first_name)}</span></button>`;
- $('#app').innerHTML=todayPanel()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
+ $('#app').innerHTML=`<div id="tasksBox">${tasksPanel()}</div>`+todayPanel()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
  ${extra?`<div class="extras"><div class="f" style="font-size:20px;color:#1D4E89;margin-bottom:8px;background:#fff;display:inline-block;padding:4px 14px;border-radius:99px">⛰️ Keep going, explorer!</div>${extra}</div>`:''}
  ${allDone?`<div class="card center" style="max-width:520px;margin:14px auto"><b class="f" style="font-size:24px">🎉 You finished every land!</b></div>`:''}</div>`;
  document.querySelectorAll('[data-land]').forEach(g=>{const go=()=>{V={s:'land',land:g.dataset.land};render();scrollTo(0,0)};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
  $('#tok').onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};
+ bindTasks();if(!MYTASKS||!mapView.t||Date.now()-mapView.t>60000){mapView.t=Date.now();loadTasks()}
  /* walk the explorer along the road from the last land they were at */
  const SK='mq-at-'+ME.code+'-g'+ME.grade;let prev=null;try{prev=localStorage.getItem(SK)}catch(e){}
  try{localStorage.setItem(SK,String(ti))}catch(e){}
