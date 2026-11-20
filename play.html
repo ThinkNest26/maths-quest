@@ -242,6 +242,10 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .howl{font-size:20px;line-height:1.45;padding-left:28px;margin:8px 0 16px}.howl li{margin:8px 0;padding:6px 10px;border-radius:12px}.howl li.new{background:#FFF6D6;animation:pin .35s}.howl b{color:#F2483A}
 .sup-big .qtext{font-size:clamp(32px,5vw,46px)!important}.sup-big .ans{font-size:34px!important}.sup-big .choices .b2{font-size:26px!important;padding:14px 22px!important}.sup-big .fact,.sup-big .howl,.sup-big p{font-size:1.15em}
 .sup-easy,.sup-easy button,.sup-easy input,.sup-easy .qtext,.sup-easy .f,.sup-easy h1,.sup-easy h2,.sup-easy .howq{font-family:Lexend,Verdana,Arial,sans-serif!important;letter-spacing:.03em;word-spacing:.12em}.sup-easy .qtext,.sup-easy .howl,.sup-easy p{line-height:1.6}.sup-easy .card{background:#FFFDF5}
+.ckcard{display:flex;align-items:center;gap:14px;max-width:1000px;margin:0 auto 14px;background:linear-gradient(180deg,#EEF6FF,#fff);border:3px solid #2F9BE0;border-radius:22px;padding:12px 16px;box-shadow:0 6px 16px rgba(20,90,140,.1)}.cke{font-size:42px}
+.cklist{list-style:none;padding:0;max-width:460px;margin:12px auto;text-align:left;font-size:18px}.cklist li{padding:6px 0}
+.ckbar{height:12px;background:#EAF4FB;border-radius:999px;overflow:hidden;margin-bottom:10px}.ckbar i{display:block;height:100%;background:#2F9BE0;border-radius:999px;transition:width .4s}
+@media(max-width:700px){.ckcard{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -1827,13 +1831,44 @@ function showHow(it){const H=HOW.steps(it),S=H.steps;let n=1;const ov=document.c
   ov.querySelector('#howX').onclick=()=>ov.remove();const nx=ov.querySelector('#howN');if(nx)nx.onclick=()=>{n++;draw();say(plain(S[n-1]))};const d=ov.querySelector('#howD');if(d)d.onclick=()=>ov.remove();ov.querySelector('#howS').onclick=()=>say(plain(S[n-1]))};
  draw();document.body.appendChild(ov);say(S[0].replace(/<[^>]+>/g,'').replace(/💡/g,''))}
 
+/* ================= 📋 Maths checks (start of year / end of term) ================= */
+let MYCHECKS=null,CK=null;
+async function loadChecks(){const {data}=await rpc('mq_my_checks',{p_code:ME.code});MYCHECKS=Array.isArray(data)?data:[];const b=$('#checkBox');if(b&&V.s==='map'){b.innerHTML=checkPanel();bindCheckPanel()}}
+function checkQs(c){const R=rng(c.id*7919+ME.grade*31+7),per=ME.grade<=1?1:Math.max(1,Math.min(3,c.per_stop||2)),out=[];
+ C.lands.forEach(L=>L.stops.forEach(st=>{const pool=(st.practise||[]).filter(q=>['number','choice','fraction','text'].includes(q.t));const sh=pool.map(q=>[q,R()]).sort((a,b)=>(a[0].d-b[0].d)||(a[1]-b[1])).map(x=>x[0]);
+  /* pick from the middle of the difficulty range so the check is fair */
+  const mid=sh.filter(q=>q.d===2),use=(mid.length>=per?mid:sh).map(q=>[q,R()]).sort((a,b)=>a[1]-b[1]).slice(0,per).map(x=>x[0]);use.forEach(q=>out.push(Object.assign({stop:L.code+'-'+st.n},q)))}));return out}
+function checkPanel(){const L=(MYCHECKS||[]).filter(c=>!c.done);if(!L.length)return '';return L.map(c=>{const n=checkQs(c).length,a=c.answered;
+ return `<div class="ckcard"><span class="cke">📋</span><div style="flex:1"><b class="f" style="font-size:22px;color:#1D4E89">${esc(c.name)}</b><div class="muted">A maths check from your teacher · ${n} questions${a?` · ${a} done so far`:''} · +10 ⭐</div></div><button class="b1" data-ck="${c.id}">${a?'Carry on →':'Start →'}</button></div>`}).join('')}
+function bindCheckPanel(){document.querySelectorAll('[data-ck]').forEach(b=>b.onclick=()=>{const c=MYCHECKS.find(x=>String(x.id)===b.dataset.ck);if(!c)return;const qs=checkQs(c);CK={c,qs,i:qs.findIndex(q=>!(c.answers||{})[q.id]),intro:!c.answered};if(CK.i<0)CK.i=qs.length;V={s:'check'};render()})}
+function checkView(){if(!CK){V={s:'map'};render();return}const {c,qs}=CK;
+ const head=`<div class="qhead"><button class="back" id="bk">← Take a break</button><span class="f">📋 ${esc(c.name)}</span></div>`;
+ if(CK.intro){$('#app').innerHTML=head+`<div class="card center" style="max-width:700px;margin:0 auto"><div style="font-size:64px;line-height:1">📋</div><h2 style="color:var(--sea);font-size:28px">Let’s see what you know!</h2>
+  <p style="font-size:19px">This check helps your teacher see what you have learned and what to practise next.</p><ul class="cklist"><li>✏️ ${qs.length} questions from all the lands</li><li>🐢 Take your time. There is no timer.</li><li>🤫 No hints, and no right or wrong until the end. Just try your best!</li><li>☕ You can take a break and carry on later.</li></ul>
+  <button class="b1" id="ckgo" style="font-size:24px;padding:14px 36px">I’m ready! 🚀</button></div>`;$('#bk').onclick=()=>{CK=null;V={s:'map'};render()};$('#ckgo').onclick=()=>{CK.intro=false;render()};say("Let's see what you know! Take your time and try your best.",'ck-intro');return}
+ if(CK.i>=qs.length)return checkEnd();
+ const it=qs[CK.i],[pic,text]=splitPic(it.q),pct=Math.round(100*CK.i/qs.length);
+ $('#app').innerHTML=head+`<div class="card center"><div class="ckbar"><i style="width:${pct}%"></i></div><div class="muted" style="font-weight:800">Question ${CK.i+1} of ${qs.length}</div>${fpFor(it.q)||(pic?picBox(pic):'')}
+  <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div>
+  <div style="margin-top:10px"><button class="b2 sm" id="ckskip">I don’t know yet → skip</button></div></div>`;
+ $('#bk').onclick=()=>{CK=null;V={s:'map'};render();loadChecks()};$('#hear').onclick=()=>say(text,it.k);autoRead(text,it.k);
+ let gone=false;const go=async g=>{if(gone)return;gone=true;const ok=g!==null&&check(it,g);c.answers=c.answers||{};c.answers[it.id]={s:it.stop,ok};c.answered=(c.answered||0)+1;
+  $('#fb').innerHTML='<span class="muted" style="font-weight:800">Saved ✔</span>';bell(880,0,.2,.04);
+  rpc('mq_check_save',{p_code:ME.code,p_check:c.id,p_qid:it.id,p_stop:it.stop,p_ok:ok,p_grade:ME.grade});setTimeout(()=>{CK.i++;render()},450)};
+ bindAnswer(it,go);$('#ckskip').onclick=()=>go(null)}
+async function checkEnd(){const {c,qs}=CK;const n=qs.filter(q=>(c.answers||{})[q.id]&&c.answers[q.id].ok).length;
+ $('#app').innerHTML=`<div class="card center" style="max-width:700px;margin:0 auto"><div style="font-size:80px;line-height:1">🎉</div><h2 style="color:var(--sea);font-size:30px">All done! Well done, ${esc(ME.first_name)}!</h2>
+  <p style="font-size:19px">You answered all ${qs.length} questions. Your teacher will use this to help you learn even more.</p><p class="stars" style="font-size:20px;display:inline-block">+10 ⭐</p><div style="margin-top:12px"><button class="b1" id="ckmap">Back to the map</button></div></div>`;
+ $('#ckmap').onclick=()=>{CK=null;V={s:'map'};render()};happySound(true);clapSound(true);say('All done! Well done!','ck-done');
+ const {data}=await rpc('mq_check_done',{p_code:ME.code,p_check:c.id});if(data&&typeof data.stars==='number'){ME.stars=data.stars;header()}c.done=true}
+
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
  if(!C){a.innerHTML='<p class="center muted">Loading your map…</p>';return}
  if(V.s==='avatar'){a.innerHTML=avatarView();bindAv();if(!V.keep)window.scrollTo(0,0);V.keep=false;return}
  if(V.s!=='speed')raceStop();
- ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,champ:mixView,daily:mixView,finale:finaleView}[V.s]||mapView)();window.scrollTo(0,0)}
+ ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,champ:mixView,daily:mixView,finale:finaleView,check:checkView}[V.s]||mapView)();window.scrollTo(0,0)}
 function bindAv(){const b=$('#bk');if(b)b.onclick=()=>{V={s:'map'};render()};const d=$('#avdone');if(d)d.onclick=()=>{if(!hasAvatar()){ME.avatar=myAv();avSave()}AVS.first=false;V={s:'map'};render()}}
 function signinView(){return `<div class="signin card center"><svg class="z bob" viewBox="0 0 220 220"><use href="#zaza"/></svg>
  <h1 style="font-size:34px;color:var(--sea)">Ready for your quest?</h1><p class="muted">Type your secret Maths Quest code.</p>
@@ -1876,12 +1911,12 @@ function mapView(){const L=C.lands;
  const onMap=L.filter(l=>MAPROW[l.code]);let ti=allDone?onMap.length-1:onMap.indexOf(L[cur]);if(ti<0)ti=onMap.length-1;
  const tokAt=i=>{const [cx,cy]=MAPROW[onMap[i].code];return [cx-178,cy+8]};const [tx,ty]=tokAt(ti);
  const tok=`<button class="tok" id="tok" aria-label="My explorer — tap to dress up" style="left:${px(tx)};top:${py(ty)};width:${px(150)};font-size:${fz(22)}"><span class="tokbub">${allDone?'All done! 🎉':'Next stop! ➜'}</span><span class="tokav bob">${avatarSVG(myAv(),120)}</span><span class="tokname">${esc(ME.first_name)}</span></button>`;
- $('#app').innerHTML=`<div id="tasksBox">${tasksPanel()}</div>`+todayPanel()+funRow()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
+ $('#app').innerHTML=`<div id="checkBox">${checkPanel()}</div><div id="tasksBox">${tasksPanel()}</div>`+todayPanel()+funRow()+`<div class="scene" style="--bg:url(img/map.webp)"><div class="hero" style="aspect-ratio:${IW}/${IH}"><img src="img/map.webp" alt="Maths adventure road map" width="${IW}" height="${IH}">${ov}${tok}</div>
  ${extra?`<div class="extras"><div class="f" style="font-size:20px;color:#1D4E89;margin-bottom:8px;background:#fff;display:inline-block;padding:4px 14px;border-radius:99px">⛰️ Keep going, explorer!</div>${extra}</div>`:''}
  ${allDone?`<div class="card center" style="max-width:520px;margin:14px auto"><b class="f" style="font-size:24px">🎉 You finished every land!</b></div>`:''}</div>`;
  document.querySelectorAll('[data-land]').forEach(g=>{const go=()=>{V={s:'land',land:g.dataset.land};render();scrollTo(0,0)};g.onclick=go;g.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}}});
  $('#tok').onclick=()=>{AVS.first=false;AVS.buy=null;V={s:'avatar'};render()};
- bindFun();bindTasks();if(!MYTASKS||!mapView.t||Date.now()-mapView.t>60000){mapView.t=Date.now();loadTasks()}
+ bindFun();bindCheckPanel();if(!MYCHECKS||Date.now()-(window.__ckt||0)>60000){window.__ckt=Date.now();loadChecks()}bindTasks();if(!MYTASKS||!mapView.t||Date.now()-mapView.t>60000){mapView.t=Date.now();loadTasks()}
  /* walk the explorer along the road from the last land they were at */
  const SK='mq-at-'+ME.code+'-g'+ME.grade;let prev=null;try{prev=localStorage.getItem(SK)}catch(e){}
  try{localStorage.setItem(SK,String(ti))}catch(e){}
