@@ -213,7 +213,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .tasksh{font-size:21px;color:#1D4E89;margin-bottom:8px}.task{display:flex;gap:12px;align-items:center;padding:10px;border-radius:16px;background:#F2F9FE;margin-bottom:8px}.task.tdone{background:#E6F7EE}
 .tland svg{width:46px;height:46px;display:block}.tks{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}.tks span{background:#fff;border:2px solid #D6E6F2;border-radius:999px;padding:2px 10px;font-size:14px;font-weight:700}.tks span.ok{background:#DDF5E7;border-color:#9ED9B6;color:#1E7B4E}
 .tgo{font-size:18px;padding:10px 18px;white-space:nowrap}.tbad{font-family:Fredoka;font-weight:700;color:#1E7B4E;font-size:18px;white-space:nowrap}
-.funrow{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:1000px;margin:0 auto 14px}
+.funrow{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:1000px;margin:0 auto 14px}
 .fun{display:flex;flex-direction:column;align-items:center;gap:2px;background:#fff;border:3px solid #2F9BE0;border-radius:22px;padding:12px;color:#1D4E89;box-shadow:0 6px 16px rgba(20,90,140,.1);font-family:Fredoka}.fun b{font-size:20px}.fun .fe{font-size:36px;line-height:1}.fun .small{font-family:Nunito;color:var(--muted)}
 .fun.locked{border-color:#D6D0C2;filter:grayscale(.6);opacity:.75}.fun.gold{border-color:#FFC93C;background:linear-gradient(180deg,#FFF6D6,#fff)}
 .spgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.lbtabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}.lbtabs button{background:#F2F9FE;border:2px solid #D6E6F2;color:#1D4E89;padding:6px 12px;font-size:15px}.lbtabs button.on{background:#2F9BE0;color:#fff;border-color:#2F9BE0}
@@ -231,7 +231,7 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .ck{font-family:Fredoka;letter-spacing:.2em;text-transform:uppercase;color:#2B8A6E;font-weight:700}.ct{font-family:Fredoka;font-weight:700;font-size:40px;color:#1D4E89}.cs{font-size:18px;color:#3E5466}.cn{font-family:Fredoka;font-weight:700;font-size:56px;color:#F2483A;margin:2px 0}
 .cav svg{border-radius:50%;border:5px solid #FFC93C}.clands{display:flex;justify-content:center;gap:14px;flex-wrap:wrap;margin:12px 0}.clands span{display:flex;flex-direction:column;align-items:center;font-size:12px}.clands svg{width:38px;height:38px}.clands i{font-style:normal}
 .cf{display:flex;justify-content:space-between;font-weight:800;color:#1D4E89;margin-top:8px}.cp{font-size:12px;color:#6B7F8E;margin-top:6px}
-@media(max-width:700px){.funrow,.spgrid{grid-template-columns:1fr}.lane .who{width:90px}}
+@media(max-width:700px){.spgrid{grid-template-columns:1fr}.funrow{grid-template-columns:1fr 1fr}.lane .who{width:90px}}
 .lbw small{display:block;font-family:Nunito;font-size:12px;color:var(--muted);font-weight:700;text-align:right}.lbw{text-align:right}.trt{width:100%;border-collapse:collapse;margin:6px 0;font-size:16px}.trt th{font-size:12px;color:var(--muted);text-transform:uppercase;text-align:center;padding:4px}.trt td{text-align:center;padding:5px;border-top:1px solid #EFE6D2}.trt tr.tbest td{background:#FFF3C4}.mytries{max-height:330px;overflow:auto}
 .focusl{display:flex;flex-direction:column;gap:8px;max-width:460px;margin:12px auto;text-align:left}.focusi{display:flex;align-items:center;gap:12px;background:#FFF3C4;border-radius:16px;padding:8px 14px}.focusi svg{width:40px;height:40px;flex:none}
 .topres{list-style:none;padding:0;max-width:480px;margin:10px auto;text-align:left}.topres li{display:flex;align-items:center;gap:10px;padding:6px 4px;border-top:1px solid #EFE6D2}.topres svg{width:30px;height:30px;flex:none}.fchip{background:#FFE7A3;border-radius:999px;padding:1px 8px;font-size:12px;font-weight:800}
@@ -252,6 +252,12 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 #savechip .spin{width:14px;height:14px;border:3px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spn 1s linear infinite}@keyframes spn{to{transform:rotate(360deg)}}
 .card{position:relative}.flagb{position:absolute;right:10px;bottom:8px;background:none;border:0;font-size:18px;opacity:.45;cursor:pointer;padding:4px;box-shadow:none}.flagb:hover{opacity:1}
 .flr{display:grid;gap:6px;margin:10px 0}.flr label{display:flex;gap:8px;align-items:center;font-weight:800;background:#F7FBFE;border:2px solid #E3EEF6;border-radius:12px;padding:8px 10px;cursor:pointer}
+.cuplast{background:linear-gradient(180deg,#FFF6D6,#fff);border-color:#FFC93C;font-size:18px}
+.cupme{background:#EEF6FF;border-radius:16px;padding:10px 14px;margin:12px 0;font-size:18px}
+.cupbars{display:flex;flex-direction:column;gap:8px}.cupr{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:14px}.cupr.me{background:#FFF3C4}
+.cupn{width:30px;text-align:center;font-family:Fredoka;font-weight:700;font-size:20px}.cupc{color:#fff;font-family:Fredoka;font-weight:700;border-radius:12px;padding:6px 10px;min-width:58px;text-align:center}
+.cupt{flex:1;height:22px;background:#F1ECDD;border-radius:999px;overflow:hidden}.cupt i{display:block;height:100%;border-radius:999px;transition:width .8s}.cupv{font-family:Fredoka;font-size:20px;color:#1D4E89;width:56px;text-align:right}.cupk{width:90px}
+@media(max-width:600px){.cupk{display:none}}
 </style>
 </head>
 <body>
@@ -1553,10 +1559,10 @@ function dailyDone(){return !!(ME.done&&ME.done[`G${ME.grade}-daily-${dubaiDay()
 function startedStops(){let n=0;C.lands.forEach(L=>L.stops.forEach(st=>{if(QUESTS.some(q=>ME.done&&ME.done[`G${ME.grade}-${L.code}-${st.n}-${q[0]}`]))n++}));return n}
 /* ---------- 🏆 the Grand Treasure ---------- */
 function funRow(){const fin=allLandsDone(),sst=startedStops(),dd=dailyDone();
- return `<div class="funrow"><button class="fun" id="fspeed"><span class="fe">⚡</span><b>Beat the clock</b><span class="small">60 seconds of mental maths · race your friends</span></button>
+ return `<div class="funrow"><button class="fun" id="fcup"><span class="fe">🏆</span><b>Class Cup</b><span class="small" id="cupsm">${CUP&&CUP.table?cupLine():'Help your class win this week!'}</span></button><button class="fun" id="fspeed"><span class="fe">⚡</span><b>Beat the clock</b><span class="small">60 seconds of mental maths · race your friends</span></button>
   <button class="fun${sst?'':' locked'}" id="fdaily"><span class="fe">${dd?'✅':'🔁'}</span><b>Daily challenge</b><span class="small">${dd?'Done today! Back tomorrow.':sst?(()=>{const f=stopStats().filter(x=>x.weak&&(x.started||x.task)).sort((a,b)=>b.need-a.need)[0];return f?'🎯 Focus: '+esc(f.st.topic)+' · +5 ⭐':'10 mixed questions · +5 ⭐'})():'Finish a quest to unlock'}</span></button>
   <button class="fun${fin?' gold':' locked'}" id="ffin"><span class="fe">🏆</span><b>Grand Treasure</b><span class="small">${fin?'You finished every land!':'Finish every land to unlock'}</span></button></div>`}
-function bindFun(){$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
+function bindFun(){$('#fcup').onclick=()=>{V={s:'cup'};render()};if(!CUP||Date.now()-CUPT>60000)loadCup().then(()=>{const e=$('#cupsm');if(e)e.textContent=cupLine()});$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
  $('#ffin').onclick=()=>{if(!allLandsDone()){cheer(`${C.lands.filter(landDone).length} of ${C.lands.length} lands done — keep going! 🧭`);return}V={s:'finale'};render()};
  if(allLandsDone()){const k='mq-fin-'+ME.code+'-g'+ME.grade;let seen=null;try{seen=localStorage.getItem(k)}catch(e){}if(!seen){try{localStorage.setItem(k,'1')}catch(e){}setTimeout(()=>{V={s:'finale'};render()},2200)}}}
 function finaleView(){const sch=ME.school?esc(ME.school):'',owned=myAv().medal==='medal-compass';
@@ -1901,13 +1907,31 @@ async function checkEnd(){const {c,qs}=CK;const n=qs.filter(q=>(c.answers||{})[q
  $('#ckmap').onclick=()=>{CK=null;V={s:'map'};render()};happySound(true);clapSound(true);say('All done! Well done!','ck-done');
  const {data}=await rpc('mq_check_done',{p_code:ME.code,p_check:c.id});if(data&&typeof data.stars==='number'){ME.stars=data.stars;header()}c.done=true}
 
+/* ================= 🏆 Class Cup ================= */
+let CUP=null,CUPT=0,CUPSC='grade';
+async function loadCup(){const {data}=await rpc('mq_class_cup',{p_code:ME.code,p_scope:CUPSC});CUP=data||{table:[]};CUPT=Date.now();return CUP}
+const CUPCOL=['#F2483A','#2F9BE0','#2DBE6C','#F7B538','#9B6BE0','#FF8A3D','#1D9E9A','#E35D9C'];
+function cupPlace(n){return n===1?'1st':n===2?'2nd':n===3?'3rd':n+'th'}
+function cupLine(){if(!CUP||!CUP.table||!CUP.my_class)return 'Help your class win this week!';const i=CUP.table.findIndex(t=>t.class_name===CUP.my_class&&t.grade===CUP.my_grade);
+ if(i<0)return 'Help your class win this week!';return CUP.table.length<2?`Class ${CUP.my_class} · ${CUP.table[i].avg} points`:`Class ${CUP.my_class} is ${cupPlace(i+1)} of ${CUP.table.length}!`}
+async function cupView(){$('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← Map</button><span class="f">🏆 Class Cup</span></div><div class="card center">Loading…</div>`;$('#bk').onclick=()=>{V={s:'map'};render()};
+ await loadCup();if(V.s!=='cup')return;const C2=CUP||{table:[]},T=C2.table||[],mx=Math.max(1,...T.map(t=>+t.avg)),me=T.findIndex(t=>t.class_name===C2.my_class&&t.grade===C2.my_grade);
+ const end=C2.week_end?new Date(C2.week_end+'T23:59:59+04:00'):null,daysLeft=end?Math.max(0,Math.ceil((end-Date.now())/864e5)):0,last=C2.last&&+C2.last.total>0?C2.last:null;
+ $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← Map</button><span class="f">🏆 Class Cup</span></div>
+  ${last?`<div class="card center cuplast">🏆 Last week’s winner: <b>Class ${esc(last.class_name)}</b> with ${last.avg} points per child!</div>`:''}
+  <div class="card"><div class="row" style="flex-wrap:wrap;gap:10px"><div style="flex:1;min-width:220px"><h2 style="color:var(--sea);margin:0">This week’s Class Cup</h2><div class="muted">${daysLeft<=1?'Last day! Every point counts!':daysLeft+' days left'} · ends Sunday</div></div>
+   <div class="lbtabs"><button data-cs="grade" class="${CUPSC==='grade'?'on':''}">${GRADE[C2.my_grade]||'My grade'}</button><button data-cs="school" class="${CUPSC==='school'?'on':''}">Whole school</button></div></div>
+   ${me>=0?`<div class="cupme">Your class, <b>${esc(C2.my_class)}</b>, is <b>${cupPlace(me+1)}</b>${T.length>1?` of ${T.length}`:''}. You have earned <b>${C2.my_points}</b> point${C2.my_points===1?'':'s'} for your class this week! ${C2.my_points?'🎉':'Start a quest to help! 💪'}</div>`:'<div class="cupme">You are not in a class yet. Ask your teacher to add you to one!</div>'}
+   <div class="cupbars">${T.map((t,i)=>`<div class="cupr${i===me?' me':''}"><span class="cupn">${['🥇','🥈','🥉'][i]||i+1}</span><span class="cupc" style="background:${CUPCOL[i%CUPCOL.length]}">${esc(t.class_name)}</span><div class="cupt"><i style="width:${Math.max(4,100*t.avg/mx)}%;background:${CUPCOL[i%CUPCOL.length]}"></i></div><b class="cupv">${t.avg}</b><span class="small muted cupk">${t.playing}/${t.kids} playing</span></div>`).join('')||'<p class="muted">No classes yet.</p>'}</div>
+   <p class="small muted" style="margin-top:12px">⭐ Every right answer = 1 point · every quest finished = 5 points. We use the <b>average per child</b>, so small classes can win too. A new Cup starts every Monday.</p></div>`;
+ $('#bk').onclick=()=>{V={s:'map'};render()};document.querySelectorAll('[data-cs]').forEach(b=>b.onclick=()=>{CUPSC=b.dataset.cs;cupView()});if(me===0&&T.length>1&&C2.my_points)happySound(true)}
 /* ---------- views ---------- */
 function render(){clearInterval(TIMER);header();const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
  if(!C){a.innerHTML='<p class="center muted">Loading your map…</p>';return}
  if(V.s==='avatar'){a.innerHTML=avatarView();bindAv();if(!V.keep)window.scrollTo(0,0);V.keep=false;return}
  if(V.s!=='speed')raceStop();
- ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,champ:mixView,daily:mixView,finale:finaleView,check:checkView}[V.s]||mapView)();window.scrollTo(0,0)}
+ ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,cup:cupView,champ:mixView,daily:mixView,finale:finaleView,check:checkView}[V.s]||mapView)();window.scrollTo(0,0)}
 function bindAv(){const b=$('#bk');if(b)b.onclick=()=>{V={s:'map'};render()};const d=$('#avdone');if(d)d.onclick=()=>{if(!hasAvatar()){ME.avatar=myAv();avSave()}AVS.first=false;V={s:'map'};render()}}
 function signinView(){return `<div class="signin card center"><svg class="z bob" viewBox="0 0 220 220"><use href="#zaza"/></svg>
  <h1 style="font-size:34px;color:var(--sea)">Ready for your quest?</h1><p class="muted">Type your secret Maths Quest code.</p>
