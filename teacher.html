@@ -91,6 +91,12 @@ table{width:100%;border-collapse:collapse;font-size:14.5px}th{text-align:left;fo
 .pblock{background:#FFE7A0;border-radius:14px 14px 0 0;width:170px;text-align:center;font-size:54px}.p1 .pblock{height:170px;background:#FFC93C}.p2 .pblock{height:120px}.p3 .pblock{height:90px;background:#FAD7A0}
 .crrest{display:flex;flex-wrap:wrap;gap:10px 22px;justify-content:center;font-size:22px;color:#1D3A5F}
 .crcf{position:absolute;top:-20px;width:14px;height:18px;border-radius:3px;animation:crfall linear forwards;pointer-events:none}@keyframes crfall{to{transform:translateY(110vh) rotate(600deg)}}
+
+/* GL practice */
+.glstats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.glstats div{background:#F6FBFF;border:2px solid #DCEFFB;border-radius:16px;padding:10px 14px}.glstats b{display:block;font-family:Fredoka;font-size:30px;color:var(--sea)}.glstats span{font-size:13px;color:var(--muted)}
+.glcols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:14px 0}.glh3{font-family:Fredoka;color:#1D4E89;font-size:20px;margin:0 0 10px}
+.glr{display:grid;grid-template-columns:1fr 130px 44px;gap:10px;align-items:center;margin:7px 0;font-size:14px}.glbar{height:12px;background:#F1E8D4;border-radius:99px;overflow:hidden}.glbar i{display:block;height:100%;border-radius:99px}
+@media(max-width:760px){.glcols,.glstats{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -246,8 +252,8 @@ async function start(){if(!sb){renderLogin('Could not connect.');return}
   $('#trial').onclick=async()=>{const {data}=await sb.rpc('mq_start_trial');if(data&&data.ok){toast('Your 7-day trial has started!');start()}else toast('Could not start the trial')};return}
  if(!SCHOOL.active){$('#app').innerHTML=`<div class="card" style="max-width:640px;margin:30px auto;text-align:center"><h1 style="color:var(--sea)">Your Maths Quest plan has ended</h1><p>Children can't play until it is renewed. Choose a plan and we'll send your school an invoice.</p><button class="b1" id="planb">Choose a plan</button><p class="small muted" style="margin-top:12px">Questions? <a href="mailto:hello@school-mathquest.com">hello@school-mathquest.com</a></p></div>`;$('#planb').onclick=planModal;return}
  await load()}
-async function load(){const [{data:k},{data:p},{data:v},cl,tk,spd,cks,ckr]=await Promise.all([sb.from('mq_students').select('*').order('grade').order('class_name').order('first_name'),sb.from('mq_progress').select('*'),sb.from('mq_videos').select('*').order('created_at'),sb.from('mq_classes').select('*').order('grade').order('name'),sb.from('mq_tasks').select('*').order('created_at',{ascending:false}),sb.from('mq_speed').select('*'),sb.from('mq_checks').select('*').order('created_at',{ascending:false}),sb.from('mq_check_results').select('*')]);
- KIDS=k||[];PROG={};(p||[]).forEach(x=>PROG[x.student_id]=x);VIDS=v||[];CLASSES=(cl&&cl.data)||[];TASKS=(tk&&tk.data)||[];CHECKS=(cks&&cks.data)||[];CRES=(ckr&&ckr.data)||[];loadNC();SPEED={};((spd&&spd.data)||[]).forEach(x=>{(SPEED[x.student_id]=SPEED[x.student_id]||[]).push(x)});Promise.all([...new Set(KIDS.map(c=>PG(c)))].map(g=>content(g))).then(()=>{if(TV!=='child'&&TV!=='class')render()});render()}
+async function load(){const [{data:k},{data:p},{data:v},cl,tk,spd,cks,ckr,glr]=await Promise.all([sb.from('mq_students').select('*').order('grade').order('class_name').order('first_name'),sb.from('mq_progress').select('*'),sb.from('mq_videos').select('*').order('created_at'),sb.from('mq_classes').select('*').order('grade').order('name'),sb.from('mq_tasks').select('*').order('created_at',{ascending:false}),sb.from('mq_speed').select('*'),sb.from('mq_checks').select('*').order('created_at',{ascending:false}),sb.from('mq_check_results').select('*'),sb.from('mq_gl_results').select('*').order('created_at',{ascending:false})]);
+ KIDS=k||[];PROG={};(p||[]).forEach(x=>PROG[x.student_id]=x);VIDS=v||[];CLASSES=(cl&&cl.data)||[];TASKS=(tk&&tk.data)||[];CHECKS=(cks&&cks.data)||[];CRES=(ckr&&ckr.data)||[];GLR=(glr&&glr.data)||[];GLRERR=!!(glr&&glr.error);loadNC();SPEED={};((spd&&spd.data)||[]).forEach(x=>{(SPEED[x.student_id]=SPEED[x.student_id]||[]).push(x)});Promise.all([...new Set(KIDS.map(c=>PG(c)))].map(g=>content(g))).then(()=>{if(TV!=='child'&&TV!=='class')render()});render()}
 let SPEED={};
 function PG(kid){const g=kid.support&&kid.support.play_grade;return g!=null&&g!==''?+g:kid.grade}
 function supTags(kid){const u=kid.support||{},t=[];if(PG(kid)!==kid.grade)t.push('works at '+GL(PG(kid)));if(u.timer==='extra')t.push('extra time');if(u.timer==='off')t.push('no timer');if(u.big)t.push('bigger text');if(u.easy)t.push('easy-read font');if(u.read)t.push('read aloud');return t}
@@ -357,7 +363,46 @@ function bindVideos(){$('#vadd').onclick=async()=>{const m=$('#vm');m.classList.
  document.querySelectorAll('[data-vdel]').forEach(b=>b.onclick=async()=>{if(!confirm('Remove this video?'))return;const {error}=await sb.from('mq_videos').delete().eq('id',b.dataset.vdel);if(error){toast('Could not remove');return}VIDS=VIDS.filter(v=>v.id!==b.dataset.vdel);render();toast('Removed')})}
 function visible(){return KIDS.filter(c=>(F.grade==='all'||c.grade===+F.grade)&&(!F.q||(c.first_name+' '+c.class_name+' '+c.code).toLowerCase().includes(F.q)))}
 function ago(t){if(!t)return '—';const d=Math.floor((Date.now()-Date.parse(t))/864e5);return d<=0?'today':d===1?'yesterday':d+' days ago'}
-function render(){if(TV==='teachers'){renderTeachers();return}if(TV==='school'){renderSchool();return}if(TV==='checks'){renderChecks();return}if(TV==='classes'){renderClasses();return}if(TV==='tasks'){renderTasks();return}if(TV==='child'){renderChild();return}if(TV==='class'){renderClass();return}renderList()}
+/* ---------- GL practice results ---------- */
+let GLR=[],GLRERR=false,GLG=null,GLCLS='all';const GLCONT={};
+const TGLCAT={N:'Number and place value',C:'Addition, subtraction, multiplication and division',F:'Fractions, decimals and percentages',M:'Measurement',G:'Geometry',S:'Statistics',R:'Ratio and proportion',A:'Algebra'};
+const TGLPROC={F:'Fluency in facts and procedures',U:'Fluency in conceptual understanding',R:'Mathematical reasoning',P:'Problem solving'};
+async function glCont(g){if(!(g in GLCONT)){try{const r=await fetch(`content/gl-grade${g}.json`,{cache:'no-cache'});GLCONT[g]=await r.json()}catch(e){GLCONT[g]=null}}return GLCONT[g]}
+function glP(r,n){return n?Math.round(100*r/n):0}
+function glC(p){return p>=80?'#2DBE6C':p>=50?'#E9A800':'#E8502F'}
+function glLatest(kid,f){return GLR.find(r=>r.student_id===kid.id&&r.form===f&&r.grade===PG(kid))}
+function glCell(r,n){if(!r)return '<span class="muted">—</span>';const p=glP(r.score,r.total);
+ return `<b style="color:${glC(p)}">${r.score}/${r.total}</b> <span class="small">(${p}%)</span><div class="muted small">${new Date(r.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'})}${n>1?` · ${n} tries`:''}</div>`}
+function glSum(rs,key){const o={};rs.forEach(r=>{const a=(r.areas||{})[key]||{};for(const k in a){o[k]=o[k]||[0,0];o[k][0]+=a[k][0];o[k][1]+=a[k][1]}});return o}
+function glBarsT(o,names){const ks=Object.keys(names).filter(k=>o[k]);if(!ks.length)return '<p class="muted">No results yet.</p>';
+ return ks.map(k=>{const p=glP(o[k][0],o[k][1]);return `<div class="glr"><span>${esc(names[k])}</span><span class="glbar"><i style="width:${Math.max(p,2)}%;background:${glC(p)}"></i></span><b style="color:${glC(p)}">${p}%</b></div>`}).join('')}
+async function renderGL(){const grades=[...new Set(KIDS.map(k=>PG(k)))].sort((a,b)=>a-b);if(GLG===null||!grades.includes(GLG))GLG=grades[0]??0;
+ const D=await glCont(GLG);const classes=[...new Set(KIDS.filter(k=>PG(k)===GLG).map(k=>k.class_name))].sort();if(GLCLS!=='all'&&!classes.includes(GLCLS))GLCLS='all';
+ const ks=KIDS.filter(k=>PG(k)===GLG&&(GLCLS==='all'||k.class_name===GLCLS)).sort((a,b)=>(a.class_name||'').localeCompare(b.class_name||'')||a.first_name.localeCompare(b.first_name));
+ const latest=[];ks.forEach(k=>['A','B'].forEach(f=>{const r=glLatest(k,f);if(r)latest.push(r)}));
+ const cat=glSum(latest,'cat'),proc=glSum(latest,'proc');
+ const avg=f=>{const L=ks.map(k=>glLatest(k,f)).filter(Boolean);return L.length?[Math.round(L.reduce((s,r)=>s+glP(r.score,r.total),0)/L.length),L.length]:null};
+ const aA=avg('A'),aB=avg('B');
+ const rows=ks.map(k=>{const rA=glLatest(k,'A'),rB=glLatest(k,'B'),nA=GLR.filter(r=>r.student_id===k.id&&r.form==='A'&&r.grade===GLG).length,nB=GLR.filter(r=>r.student_id===k.id&&r.form==='B'&&r.grade===GLG).length;
+  const L=[rA,rB].filter(Boolean),c=glSum(L,'cat'),weak=Object.entries(c).filter(([,v])=>v[1]>=2).map(([k2,v])=>[k2,v[0]/v[1]]).sort((a,b)=>a[1]-b[1])[0];
+  const lm=L.filter(r=>r.mental_of).sort((a,b)=>b.created_at<a.created_at?-1:1)[0];
+  return `<tr><td><b>${esc(k.first_name)}</b></td><td>${esc(k.class_name||'')}</td><td>${glCell(rA,nA)}</td><td>${glCell(rB,nB)}</td>${GLG>=2?`<td>${lm?`${lm.mental}/${lm.mental_of}`:'<span class="muted">—</span>'}</td>`:''}<td>${weak&&weak[1]<.75?`<span class="chip" style="background:#FFE9E3;color:#B23A1E">${esc(TGLCAT[weak[0]])}</span>`:L.length?'<span class="chip" style="background:#DDF5E7;color:#1E7B4E">On track</span>':''}</td></tr>`}).join('');
+ /* questions the group found hardest */
+ let hard='';if(D){const idx={};['A','B'].forEach(f=>[...D[f].mental,...D[f].written].forEach(it=>idx[it.id]=[it,f]));const q={};
+  latest.forEach(r=>{const m=(r.areas||{}).q||{};for(const id in m){q[id]=q[id]||[0,0];q[id][1]++;if(!m[id])q[id][0]++}});
+  const L=Object.entries(q).filter(([id,v])=>idx[id]&&v[1]>=2&&v[0]>0).sort((a,b)=>b[1][0]/b[1][1]-a[1][0]/a[1][1]).slice(0,8);
+  hard=L.length?`<table><thead><tr><th>Question</th><th>Test</th><th>Area</th><th>Answered wrongly</th></tr></thead><tbody>${L.map(([id,v])=>{const [it,f]=idx[id];return `<tr><td>${esc(String(it.q).replace(/^\((?:Picture: )?(.*?)\)\s*/s,''))}<div class="muted small">Answer: ${esc(it.a)}${it.u&&!it.u.startsWith('e.g.')?' '+esc(it.u):''}</div></td><td>${f}${id.includes('-m')?' · mental':''}</td><td class="small">${esc(TGLCAT[it.cat])}</td><td><b style="color:${glC(100-glP(v[0],v[1]))}">${v[0]} of ${v[1]}</b></td></tr>`}).join('')}</tbody></table>`:'<p class="muted">Shows here once at least 2 children have finished a test.</p>'}
+ $('#app').innerHTML=tabsBar()+`<div class="card"><div class="row"><h2 style="color:var(--sea);font-size:22px">📝 GL Practice</h2><div class="spacer"></div>
+  <select id="glg" style="width:auto">${grades.map(g=>`<option value="${g}" ${g===GLG?'selected':''}>${GL(g)}</option>`).join('')}</select>
+  <select id="glcls" style="width:auto"><option value="all">All classes</option>${classes.map(c=>`<option ${c===GLCLS?'selected':''}>${esc(c)}</option>`).join('')}</select></div>
+  <p class="muted" style="margin:6px 0 12px">Practice tests in the style of the GL Progress Test in Maths, written by Maths Quest. Every grade has <b>Test A</b> and <b>Test B</b>. From Grade 2, each test starts with timed <b>mental maths</b> read aloud, followed by <b>applying and understanding</b> questions. KG2 and Grade 1 have every question read aloud. Children find them under <b>📝 GL Practice</b> on their map. Results show the latest try of each test.</p>
+  ${GLRERR?'<p class="bad" style="font-weight:800">GL results can’t be loaded yet. Please run <b>setup-mq-gl.sql</b> in Supabase.</p>':''}
+  <div class="glstats"><div><b>${aA?aA[0]+'%':'—'}</b><span>Test A average${aA?` · ${aA[1]} ${aA[1]===1?'child':'children'}`:''}</span></div><div><b>${aB?aB[0]+'%':'—'}</b><span>Test B average${aB?` · ${aB[1]} ${aB[1]===1?'child':'children'}`:''}</span></div><div><b>${ks.filter(k=>glLatest(k,'A')||glLatest(k,'B')).length}/${ks.length}</b><span>children have tried a test</span></div></div></div>
+  <div class="glcols"><div class="card"><h3 class="glh3">Maths areas</h3>${glBarsT(cat,TGLCAT)}</div><div class="card"><h3 class="glh3">Process skills</h3>${glBarsT(proc,TGLPROC)}</div></div>
+  <div class="card"><h3 class="glh3">Children</h3><div style="overflow:auto"><table><thead><tr><th>Name</th><th>Class</th><th>Test A</th><th>Test B</th>${GLG>=2?'<th>Mental maths</th>':''}<th>Area to support</th></tr></thead><tbody>${rows||`<tr><td colspan="6" class="muted">No children in ${GL(GLG)} yet.</td></tr>`}</tbody></table></div></div>
+  <div class="card"><h3 class="glh3">Questions the group found hardest</h3><div style="overflow:auto">${hard}</div></div>`;
+ bindTabsT();$('#glg').onchange=e=>{GLG=+e.target.value;GLCLS='all';renderGL()};$('#glcls').onchange=e=>{GLCLS=e.target.value;renderGL()}}
+function render(){if(TV==='gl'){renderGL();return}if(TV==='teachers'){renderTeachers();return}if(TV==='school'){renderSchool();return}if(TV==='checks'){renderChecks();return}if(TV==='classes'){renderClasses();return}if(TV==='tasks'){renderTasks();return}if(TV==='child'){renderChild();return}if(TV==='class'){renderClass();return}renderList()}
 function renderList(){const vis=visible();const week=KIDS.filter(c=>PROG[c.id]&&PROG[c.id].last_seen&&Date.now()-Date.parse(PROG[c.id].last_seen)<7*864e5).length;
  const totalStars=Object.values(PROG).reduce((n,p)=>n+p.stars,0);const ans=Object.values(PROG).reduce((n,p)=>n+p.answered,0),cor=Object.values(PROG).reduce((n,p)=>n+p.correct,0);
  $('#app').innerHTML=tabsBar()+`${SCHOOL.plan==='trial'?`<div class="card" style="background:#E8F0FF;border-color:#B9CDF5"><b>🎉 Free trial:</b> ${SCHOOL.days_left} day${SCHOOL.days_left===1?'':'s'} left. <button class="b2 sm" data-plan="1" style="margin-left:6px">Choose a plan</button></div>`:''}
@@ -623,7 +668,7 @@ function analyse(kid,cont){const p=PROG[kid.id]||{},done=p.done||{},R=p.facts||{
   return {n:st.n,topic:st.topic,qd,qt:kinds.length,acc,ans:n,s}})}))}
 const SCOL={new:['#F1ECDD','#8A7F66','Not started','⬜'],learning:['#FFF1C9','#8A6100','Learning','🟡'],secure:['#DDF5E7','#1E7B4E','Secure','🟢'],tricky:['#FDE3DD','#B23A1E','Tricky','🔴']};
 function chip(s){const c=SCOL[s];return `<span class="chip" style="background:${c[0]};color:${c[1]}">${c[3]} ${c[2]}</span>`}
-function tabsBar(){return `<div class="tabs"><button class="${TV==='school'?'on':''}" data-tv="school">🏛️ School</button><button class="${TV==='classes'?'on':''}" data-tv="classes">🏫 Classes</button><button class="${TV==='list'?'on':''}" data-tv="list">👧 Explorers</button><button class="${TV==='tasks'?'on':''}" data-tv="tasks">📝 Tasks</button><button class="${TV==='class'?'on':''}" data-tv="class">📊 Class progress</button><button class="${TV==='checks'?'on':''}" data-tv="checks">📋 Checks</button><button class="${TV==='teachers'?'on':''}" data-tv="teachers">👩‍🏫 Teachers</button>${SCHOOL&&SCHOOL.is_admin?'<a class="tabadm" href="admin.html">⚙️ Admin</a>':''}${TV==='child'&&RKID?`<button class="on">📄 ${esc((KIDS.find(k=>k.id===RKID)||{}).first_name||'')}</button>`:''}</div>`}
+function tabsBar(){return `<div class="tabs"><button class="${TV==='school'?'on':''}" data-tv="school">🏛️ School</button><button class="${TV==='classes'?'on':''}" data-tv="classes">🏫 Classes</button><button class="${TV==='list'?'on':''}" data-tv="list">👧 Explorers</button><button class="${TV==='tasks'?'on':''}" data-tv="tasks">📝 Tasks</button><button class="${TV==='class'?'on':''}" data-tv="class">📊 Class progress</button><button class="${TV==='checks'?'on':''}" data-tv="checks">📋 Checks</button><button class="${TV==='gl'?'on':''}" data-tv="gl">📝 GL Practice</button><button class="${TV==='teachers'?'on':''}" data-tv="teachers">👩‍🏫 Teachers</button>${SCHOOL&&SCHOOL.is_admin?'<a class="tabadm" href="admin.html">⚙️ Admin</a>':''}${TV==='child'&&RKID?`<button class="on">📄 ${esc((KIDS.find(k=>k.id===RKID)||{}).first_name||'')}</button>`:''}</div>`}
 function bindTabsT(){document.querySelectorAll('[data-tv]').forEach(b=>b.onclick=()=>{TV=b.dataset.tv;render()})}
 /* ----- one child ----- */
 async function renderChild(){const kid=KIDS.find(k=>k.id===RKID);if(!kid){TV='list';render();return}

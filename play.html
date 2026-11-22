@@ -285,18 +285,34 @@ input.ans:focus,textarea:focus{outline:none;border-color:var(--sea2)}
 .sndrow{display:flex;align-items:center;gap:12px;padding:12px 4px;border-top:1px solid #EFE6D2;cursor:pointer}.sndi{font-size:28px;width:36px;text-align:center}
 .tgl{appearance:none;-webkit-appearance:none;width:54px;height:30px;border-radius:999px;background:#D6D0C2;position:relative;cursor:pointer;transition:background .2s;flex:none}.tgl:checked{background:#2DBE6C}
 .tgl::after{content:'';position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:left .2s}.tgl:checked::after{left:27px}
-.spdrow{display:flex;gap:6px;width:100%;margin-top:8px}.spd{flex:1;font-family:Fredoka,Arial;font-weight:700;font-size:16px;padding:9px 6px;border-radius:14px;border:3px solid #DCE7F2;background:#fff;color:#1D4E89;cursor:pointer}.spd.on{border-color:#2F9BE0;background:#E6F3FB}
-.setdone{display:inline-block;margin-left:8px;background:#FFF3C4;border:2px solid #FFC93C;color:#8A5A00;border-radius:999px;padding:2px 12px;font-size:16px;vertical-align:middle}
-.setprog{display:inline-block;margin-left:8px;color:#6B7A8C;font-size:15px;font-family:Nunito,Arial;font-weight:800;vertical-align:middle}
-.setov{z-index:60}.setov .cf{position:fixed;top:-20px;width:10px;height:14px;border-radius:3px;animation:cfall 2.4s linear forwards}
-.setcard{max-width:520px;text-align:center;border:5px solid var(--cc);animation:setpop .5s cubic-bezier(.2,1.6,.4,1)}
-@keyframes setpop{0%{transform:scale(.5);opacity:0}100%{transform:scale(1);opacity:1}}
-.setfan{display:flex;justify-content:center;align-items:flex-end;height:150px;margin:6px 0 10px}
-.setc{width:84px;height:116px;margin:0 -10px;background:#fff;border:4px solid var(--cc);border-radius:14px;box-shadow:0 6px 14px rgba(0,0,0,.15);display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(var(--r)) translateY(0);transform-origin:50% 120%;animation:setdeal .6s var(--d) both}
-.setc .cicon{width:52px;height:52px;display:block}.setc .cicon svg{width:100%;height:100%}.setc b{font-family:Fredoka,Arial;color:#1D4E89;font-size:20px}.setc svg{max-width:64px}
-@keyframes setdeal{0%{opacity:0;transform:translateY(80px) rotate(0)}100%{opacity:1;transform:rotate(var(--r))}}
-.setrw{display:flex;justify-content:center;align-items:center;gap:22px;margin-top:10px}.setst{font-family:Fredoka,Arial;font-weight:700;font-size:34px;color:#B9820E;background:#FFF3C4;border-radius:18px;padding:6px 16px;animation:setpop .5s .8s both}
-.setmed{animation:setpop .5s 1.1s both}.seti{display:inline-block;width:38px;height:38px;vertical-align:-6px}.seti svg{width:100%;height:100%}
+
+/* GL practice */
+.glintro{display:flex;gap:16px;align-items:center;max-width:1000px;margin:0 auto 14px}.glhero{font-size:64px;line-height:1}
+.glforms{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:1000px;margin:0 auto}
+.glform{background:#fff;border:3px solid #2F9BE0;border-radius:24px;padding:18px;display:flex;flex-direction:column;gap:10px;box-shadow:0 6px 16px rgba(20,90,140,.1)}
+.glfh{font-family:Fredoka;font-size:30px;font-weight:700;color:#1D4E89}
+.glparts{display:flex;flex-direction:column;gap:8px}.glparts span{background:var(--sky);border-radius:14px;padding:8px 12px;font-size:15px;line-height:1.35}
+.gllast{font-size:15px;color:var(--muted)}.glbtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:auto}
+.glready{max-width:640px;margin:0 auto}.glear{font-size:70px;margin:8px 0}
+.glans{display:flex;align-items:center;justify-content:center;gap:10px}.glunit{font-family:Fredoka;font-size:26px;font-weight:600;color:var(--ink)}
+.glch button.on{background:var(--sea2);color:#fff;box-shadow:0 4px 0 var(--sea);border-color:var(--sea2)}
+.gldots{display:flex;flex-wrap:wrap;gap:6px;max-width:1000px;margin:0 auto 10px}
+.gldots button{width:34px;height:34px;padding:0;border-radius:50%;background:#fff;border:2px solid var(--line);color:var(--muted);font:700 14px Fredoka;box-shadow:none}
+.gldots button.a{background:#D8F5E4;border-color:var(--leaf);color:#1C7A45}.gldots button.n{background:var(--sea2);border-color:var(--sea2);color:#fff}
+.glbar{display:flex;justify-content:space-between;align-items:center;gap:10px}.glclock{font-family:Fredoka;font-weight:600;color:var(--sea)}
+.glnav{display:flex;justify-content:space-between;gap:10px;margin-top:18px}.glnav button[disabled]{opacity:.4}
+.glres{max-width:1000px;margin:0 auto 14px}
+.glscore{width:150px;height:150px;border-radius:50%;margin:0 auto;display:grid;place-content:center;background:conic-gradient(var(--leaf) calc(var(--p)*1%),#EADCC0 0);position:relative}
+.glscore:before{content:"";position:absolute;inset:14px;background:#fff;border-radius:50%}.glscore b,.glscore span{position:relative}.glscore b{font-family:Fredoka;font-size:46px;color:var(--sea);line-height:1}.glscore span{font-size:14px;color:var(--muted)}
+.glgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:1000px;margin:0 auto 14px}
+.glh{font-family:Fredoka;color:#1D4E89;font-size:22px;margin:0 0 10px}
+.glrow{display:grid;grid-template-columns:1fr 120px 46px;gap:10px;align-items:center;margin:7px 0;font-size:15px}
+.glb{height:14px;background:#F1E8D4;border-radius:99px;overflow:hidden}.glb i{display:block;height:100%;border-radius:99px}.glp{font-weight:800;text-align:right}
+.glnext{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:8px 0;border-bottom:1px dashed var(--line)}
+.card.glrev,.glres+.glgrid+.card{max-width:1000px;margin:0 auto 14px}.glrev summary{cursor:pointer;font-family:Fredoka;font-size:20px;color:#1D4E89}
+.glrev ol{margin:10px 0 0;padding-left:22px}.glrev li{margin:8px 0;line-height:1.45}.glrev li.no{color:var(--ink)}.glqi{font-size:14px}
+.fun.glfun{grid-column:1/-1;flex-direction:row;justify-content:center;gap:14px;border-color:#7B61C9;color:#4B3796;background:linear-gradient(90deg,#F3EEFF,#fff)}.fun.glfun .small{max-width:none}
+@media(max-width:700px){.glforms,.glgrid{grid-template-columns:1fr}.glintro{flex-direction:column;text-align:center}.glrow{grid-template-columns:1fr 80px 40px}.fun.glfun{flex-direction:column}}
 </style>
 </head>
 <body>
@@ -435,14 +451,12 @@ let HAVE=new Set(),KATE=null,PLAYTOK=0;
 fetch('audio/manifest.json',{cache:'no-cache'}).then(r=>r.ok?r.json():[]).then(a=>{if(Array.isArray(a))HAVE=new Set(a)}).catch(()=>{});
 function unlockAudio(){if(KATE)return;KATE=new Audio();KATE.preload='auto';try{KATE.src='data:audio/mp4;base64,';KATE.play().catch(()=>{})}catch(e){}}
 document.addEventListener('pointerdown',unlockAudio,{once:true});document.addEventListener('keydown',unlockAudio,{once:true});
-function robot(t,r){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9*(r||kRate());speechSynthesis.speak(u)}catch(e){}}
+function robot(t){try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(String(t).replace(/−/g,' minus ').replace(/×/g,' times ').replace(/÷/g,' divided by ').replace(/__/g,' blank ').replace(/…/g,' blank '));if(VOICE)u.voice=VOICE;u.lang='en-GB';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}
 /* say(text, clipName): plays Kate's recording if we have it, otherwise the device voice */
-const KSPEED={fast:1,slow:.85,vslow:.7};function kRate(){return KSPEED[(typeof SND!=='undefined'&&SND.speed)||'slow']||.85}
-function say(t,k,r){if(!t&&!k)return;const rate=r||kRate();try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
+function say(t,k){if(!t&&!k)return;try{speechSynthesis.cancel()}catch(e){}if(typeof SND!=='undefined'&&!SND.voice)return;
  if(k&&HAVE.has(k)){if(!KATE)unlockAudio();const tok=++PLAYTOK;try{KATE.pause()}catch(e){}
-  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;try{KATE.preservesPitch=true;KATE.webkitPreservesPitch=true;KATE.defaultPlaybackRate=KATE.playbackRate=rate}catch(e){}KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t,rate)});return}
- if(t)robot(t,rate)}
-function talking(){try{return (KATE&&!KATE.paused&&!KATE.ended&&KATE.currentTime>0)||speechSynthesis.speaking}catch(e){return false}}
+  KATE.src='audio/'+k+'.m4a';KATE.currentTime=0;KATE.volume=SND.vol;KATE.play().catch(err=>{if(tok!==PLAYTOK)return;if(err&&err.name==='NotAllowedError')return;HAVE.delete(k);if(t)robot(t)});return}
+ if(t)robot(t)}
 function praise(ok){const n=ok?1+Math.floor(Math.random()*10):1+Math.floor(Math.random()*4);say('',(ok?'p-':'e-')+n)}
 /* ---------- answer checking ---------- */
 function norm(s){return String(s??'').toLowerCase().replace(/−/g,'-').replace(/[’']/g,"'").replace(/\s+/g,' ').trim()}
@@ -466,7 +480,7 @@ function firstNum(s){const m=norm(s).replace(/,(?=\d{3})/g,'').match(/-?\d+(?:\.
 /* ---------- data ---------- */
 async function rpc0(fn,args){if(!sb)return {data:null,error:{message:'offline'}};try{return await sb.rpc(fn,args)}catch(e){return {data:null,error:e}}}
 /* answers, quests and scores are kept and sent again if the internet drops */
-const SAFE=['mq_answer','mq_complete','mq_check_save','mq_check_done','mq_speed_save','mq_avatar_save','mq_report'];
+const SAFE=['mq_gl_save','mq_answer','mq_complete','mq_check_save','mq_check_done','mq_speed_save','mq_avatar_save','mq_report'];
 const netErr=e=>!!e&&/fetch|network|offline|timeout|load failed|connection|abort/i.test(String(e.message||e));
 let OUTBOX=[];try{OUTBOX=JSON.parse(localStorage.getItem('mq-outbox')||'[]')}catch(e){}
 function saveBox(){try{localStorage.setItem('mq-outbox',JSON.stringify(OUTBOX.slice(-300)))}catch(e){}savingChip()}
@@ -505,8 +519,6 @@ const PEOPLE={
  knight:{name:'Knight',hair:'short',hc:'brown',skin:'s2'},pirate:{name:'Pirate captain',hair:'curly',hc:'dbrown',skin:'s4'},
  astro:{name:'Astronaut',hair:'short',hc:'black',skin:'s6'}};
 const AV_DEFAULT={char:'fox',bg:'honey',skin:'',hairc:'',eyes:'big',mouth:'smile',blush:'yes',top:'none',hat:'none',acc:'none',back:'none',pet:'none',medal:'none'};
-const LANDSET=[['NI','Number Island','#F2704E'],['TT','Times Table Town','#2F9BE0'],['FF','Fraction Falls','#1D9E9A'],['MM','Measure Market','#2DBE6C'],['SF','Shape Forest','#7A4A2A'],['DD','Data Desert','#B9820E'],['PP','Pattern Peaks','#9B6BE0']];
-function setClaimed(code){return Object.keys((typeof ME!=='undefined'&&ME&&ME.done)||{}).some(k=>k.endsWith('-'+code+'-SET'))}
 const AV_PARTS=[
  {k:'char',tab:'char',label:'Choose your character',opts:[...Object.keys(ANIMALS).map(id=>({id,name:ANIMALS[id].name})),...Object.keys(PEOPLE).map(id=>({id,name:PEOPLE[id].name}))]},
  {k:'skin',tab:'look',label:'Skin',people:1,opts:Object.keys(SKINS).map(id=>({id}))},
@@ -521,10 +533,10 @@ const AV_PARTS=[
  {k:'acc',tab:'extras',label:'Things to hold & wear',opts:[{id:'none',name:'None'},{id:'acc-glasses',name:'Glasses',price:30},{id:'acc-bowtie',name:'Bow tie',price:30},{id:'acc-necklace',name:'Pearl necklace',price:35},{id:'acc-sunglasses',name:'Sunglasses',price:40},{id:'acc-backpack',name:'Explorer backpack',price:20},{id:'acc-wand',name:'Magic wand',price:50},{id:'acc-sword',name:'Sword',price:50},{id:'acc-shield',name:'Shield',price:50},{id:'acc-headphones',name:'Headphones',price:50},{id:'acc-pencil',name:'Magic pencil',price:60}]},
  {k:'back',tab:'extras',label:'Special',opts:[{id:'none',name:'None'},{id:'back-cape',name:'Royal cape',price:80},{id:'back-fairy',name:'Fairy wings',price:120},{id:'back-wings',name:'Butterfly wings',price:150},{id:'back-jetpack',name:'Rocket jet-pack',price:150}]},
  {k:'pet',tab:'extras',label:'Pets',opts:[{id:'none',name:'None'},{id:'pet-bee',name:'Pet bee',price:100},{id:'pet-cat',name:'Pet kitten',price:120}]},
- {k:'medal',tab:'extras',label:'Medals',opts:[{id:'none',name:'None'},{id:'medal-champ',name:'Champion medal',price:250},{id:'medal-compass',name:'Golden compass',price:0,need:'allLands'},...LANDSET.map(([c,n])=>({id:'medal-set-'+c,name:n+' medal',price:0,need:'set-'+c}))]},
+ {k:'medal',tab:'extras',label:'Medals',opts:[{id:'none',name:'None'},{id:'medal-champ',name:'Champion medal',price:250},{id:'medal-compass',name:'Golden compass',price:0,need:'allLands'}]},
  {k:'bg',tab:'bg',label:'Background',opts:[{id:'honey'},{id:'sky'},{id:'mint'},{id:'pink'},{id:'lilac'},{id:'bg-garden',name:'Garden',price:60},{id:'bg-castle',name:'Castle',price:60},{id:'bg-beach',name:'Beach',price:60},{id:'bg-space',name:'Space',price:60},{id:'bg-library',name:'Library',price:60}]}];
 const AV_TABS=[['char','🐾 Character'],['look','😊 Look'],['clothes','👕 Clothes'],['hats','👑 Hats'],['extras','✨ Extras'],['bg','🖼️ Background']];
-const NEEDS={allLands:'Finish every land to unlock the Golden compass 🧭'};LANDSET.forEach(([c,n])=>NEEDS['set-'+c]=`Collect every ${n} card to unlock this medal 🎖️`);
+const NEEDS={allLands:'Finish every land to unlock the Golden compass 🧭'};
 function avOpt(id){for(const p of AV_PARTS){const o=p.opts.find(o=>o.id===id);if(o)return Object.assign({k:p.k},o)}return null}
 function isShopItem(id){const o=avOpt(id);return !!o&&(o.price>0||!!o.need)}
 function avOf(a){const r=Object.assign({},AV_DEFAULT,(a&&typeof a==='object')?a:{});if(!ANIMALS[r.char]&&!PEOPLE[r.char])r.char='fox';return r}
@@ -656,7 +668,6 @@ function avatarSVG(a0,size,round){const a=avOf(a0);const id='av'+(++AVN);const k
  if(H==='hat-crown')o+=`<path d="M38 36 L40 12 L50 24 L60 6 L70 24 L80 12 L82 36 Z" fill="#F5B700" ${OL} stroke-linejoin="round"/><circle cx="60" cy="28" r="3.5" fill="#D62839"/><circle cx="47" cy="31" r="2.5" fill="#3D7DD8"/><circle cx="73" cy="31" r="2.5" fill="#3DBB76"/>`;
  o=pre+(kind==='frog'&&o?`<g transform="translate(0 -14)">${o}</g>`:o);
  if(a.acc==='acc-headphones')o+=`<path d="M24 60 C20 12 100 12 96 60" fill="none" stroke="#1F2A44" stroke-width="5"/><rect x="16" y="52" width="13" height="20" rx="6" fill="#E25555" ${OL}/><rect x="91" y="52" width="13" height="20" rx="6" fill="#E25555" ${OL}/>`;
- if(/^medal-set-/.test(a.medal||'')){const ls=LANDSET.find(x=>x[0]===a.medal.slice(10));if(ls)o+=`<path d="M52 90 L60 101 L68 90" fill="none" stroke="${ls[2]}" stroke-width="5"/><circle cx="60" cy="110" r="11" fill="${ls[2]}" stroke="#1D4E89" stroke-width="2"/><circle cx="60" cy="110" r="7.5" fill="#FFF6D6"/><path d="M60 104.5 L61.8 108.4 L66 108.8 L62.8 111.5 L63.8 115.6 L60 113.4 L56.2 115.6 L57.2 111.5 L54 108.8 L58.2 108.4Z" fill="${ls[2]}"/>`}
  if(a.medal==='medal-compass')o+=`<path d="M50 90 L60 102 L70 90" fill="none" stroke="#1D4E89" stroke-width="4"/><circle cx="60" cy="110" r="11" fill="#FFC93C" stroke="#B9820E" stroke-width="2.5"/><circle cx="60" cy="110" r="7.5" fill="#FFF6D6"/><path d="M60 103.5 L62.4 110 L60 116.5 L57.6 110Z" fill="#F2483A"/><path d="M53.5 110 L60 107.6 L66.5 110 L60 112.4Z" fill="#1D4E89" opacity=".7"/>`;
  if(a.medal==='medal-champ')o+=`<path d="M52 92 L60 104 L68 92" fill="none" stroke="#D62839" stroke-width="4"/><circle cx="60" cy="110" r="8" fill="#F5B700" ${OL}/><path d="M60 105 l1.6 3.2 3.4 .5 -2.5 2.4 .6 3.4 -3.1 -1.6 -3.1 1.6 .6 -3.4 -2.5 -2.4 3.4 -.5z" fill="#fff"/>`;
  if(a.medal==='medal-trophy')o+=`<g transform="translate(72 102)"><path d="M0 0 H16 V5 Q16 13 8 14 Q0 13 0 5 Z" fill="#F5B700" stroke="#B7791F" stroke-width="1.5"/><rect x="6" y="14" width="4" height="4" fill="#B7791F"/><rect x="3" y="18" width="10" height="3" rx="1" fill="#B7791F"/></g>`;
@@ -674,7 +685,7 @@ let AVS={tab:'char',mode:'dress',buy:null,msg:'',saveT:null,dirty:false};
 function myP(){return ME}
 function myAv(){const p=myP();return avOf(p.avatar)}
 function hasAvatar(){const p=myP();return p.avatar&&Object.keys(p.avatar).length>0}
-function owns(id){if(id==='medal-compass')return allLandsDone();if(/^medal-set-/.test(id))return setClaimed(id.slice(10));const o=avOpt(id);if(!o||!isShopItem(id))return true;return (myP().owned||[]).includes(id)}
+function owns(id){if(id==='medal-compass')return allLandsDone();const o=avOpt(id);if(!o||!isShopItem(id))return true;return (myP().owned||[]).includes(id)}
 function balance(){return stars()}
 function savePR(){}
 function avSave(){AVS.dirty=true;clearTimeout(AVS.saveT);AVS.saveT=setTimeout(async()=>{const c=sb;if(!c||!ME){AVS.dirty=false;return}
@@ -830,7 +841,7 @@ let ROOM=null;function room(){if(typeof SND!=='undefined'&&!SND.fx)return null;c
  inp.gain.value=SND.vol;ROOM=inp;return ROOM}
 function bell(f,t,d,vol){const a=ac();if(!a)return;const r=room();if(!r)return;const n=a.currentTime+t;[[f,1],[f*2.01,0.22],[f*3.02,0.06]].forEach(([fr,m])=>{const o=a.createOscillator(),g=a.createGain();o.type='sine';o.frequency.value=fr;g.gain.setValueAtTime(0.0001,n);g.gain.exponentialRampToValueAtTime(Math.max((vol||0.1)*m,0.0002),n+0.008);g.gain.exponentialRampToValueAtTime(0.0001,n+d);o.connect(g);g.connect(r);o.start(n);o.stop(n+d+0.05)})}
 /* ================= 🔊 Sound and music settings ================= */
-let SND={fx:true,voice:true,music:false,vol:0.8,speed:'slow'};try{Object.assign(SND,JSON.parse(localStorage.getItem('mq-snd')||'{}'))}catch(e){}
+let SND={fx:true,voice:true,music:false,vol:0.8};try{Object.assign(SND,JSON.parse(localStorage.getItem('mq-snd')||'{}'))}catch(e){}
 function saveSnd(){try{localStorage.setItem('mq-snd',JSON.stringify(SND))}catch(e){}if(KATE)KATE.volume=SND.vol;if(ROOM)ROOM.gain.value=SND.vol;if(MUS.g)MUS.g.gain.value=0.22*SND.vol;musicFor(V&&V.s)}
 /* gentle tunes made in the browser: one for the map and one for each land (no music files needed) */
 const TUNES={map:{bpm:96,root:60,mel:[0,4,7,9,7,4,2,4, 0,2,4,7,9,7,4,0],bass:[0,0,5,5,7,7,5,5]},
@@ -854,12 +865,10 @@ function sndPanel(){const ov=document.createElement('div');ov.className='howov';
  const sw=(k,ic,t,d)=>`<label class="sndrow"><span class="sndi">${ic}</span><span style="flex:1"><b>${t}</b><br><span class="small muted">${d}</span></span><input type="checkbox" class="tgl" data-snd="${k}" ${SND[k]?'checked':''}></label>`;
  ov.innerHTML=`<div class="howcard" style="max-width:460px"><div class="row"><b class="f" style="font-size:24px;color:#1D4E89">🔊 Sound and music</b><div class="spacer"></div><button class="b2 sm" id="sndX">✕</button></div>
   ${sw('voice','🗣️','Kate’s voice','Reads questions, praise and tips')}${sw('fx','🔔','Sound effects','Bells, cheers and claps')}${sw('music','🎵','Music','A gentle tune for each land')}
-  <div class="sndrow" style="flex-wrap:wrap"><span class="sndi">🐢</span><span style="flex:1"><b>How Kate reads</b><br><span class="small muted">Choose how fast Kate speaks</span></span><div class="spdrow">${[['fast','🐇 Fast'],['slow','🐢 Slow'],['vslow','🐌 Very slow']].map(([k,l])=>`<button class="spd ${(SND.speed||'slow')===k?'on':''}" data-spd="${k}">${l}</button>`).join('')}</div></div>
   <label class="sndrow"><span class="sndi">🔉</span><span style="flex:1"><b>Volume</b><input type="range" id="sndV" min="0" max="1" step="0.05" value="${SND.vol}" style="width:100%"></span></label>
   <p class="small muted" style="margin:6px 0 0">These settings are saved on this device.</p></div>`;
  document.body.appendChild(ov);ov.querySelector('#sndX').onclick=()=>ov.remove();ov.onclick=e=>{if(e.target===ov)ov.remove()};
  ov.querySelectorAll('[data-snd]').forEach(c=>c.onchange=()=>{SND[c.dataset.snd]=c.checked;saveSnd();if(c.dataset.snd==='fx'&&c.checked)bell(1046.5,0,.5,.08);if(c.dataset.snd==='voice'&&c.checked)say('Hello!','hello');header()});
- ov.querySelectorAll('[data-spd]').forEach(b=>b.onclick=()=>{SND.speed=b.dataset.spd;saveSnd();ov.querySelectorAll('[data-spd]').forEach(x=>x.classList.toggle('on',x===b));const w=SND.voice;SND.voice=true;say('Hello! This is how I will read to you.','spd-hello');SND.voice=w});
  ov.querySelector('#sndV').oninput=e=>{SND.vol=+e.target.value;saveSnd()};ov.querySelector('#sndV').onchange=()=>bell(1046.5,0,.5,.08)}
 
 function happySound(big){[1046.5,1318.5,1568,2093].forEach((f,i)=>bell(f,i*0.075,1.0,0.085));if(big)[1568,2093,2637,3136].forEach((f,i)=>bell(f,0.45+i*0.08,1.2,0.07))}
@@ -1251,107 +1260,14 @@ function visPP(t,g){let m;
  const sq=seqVis(t);if(sq)return sq;
  m=t.match(/^(\d+)% of (\d+) = \?$/)||t.match(/What is (\d+)% of (\d+)\?/);if(m){const p=+m[1],N=+m[2];if(p%10===0)return fpBarModel(N,10,p/10);if(p%25===0)return fpBarModel(N,4,p/25);if(p%5===0)return fpBarModel(N,20,p/5)}
  return ''}
-/* ===== extra pictures (used by checks and anywhere a land has no picture) ===== */
-const XN=s=>+String(s).replace(/,/g,'');
-function heightBars(list,unit){const mx=Math.max(...list.map(x=>x[1])),H=260,W=list.length*120+40;let o=`<path d="M20 ${H-40} H${W-20}" stroke="${VC.ln}" stroke-width="3"/>`;
- list.forEach(([n,v],i)=>{const h=(v/mx)*(H-90),x=50+i*120;o+=`<rect x="${x}" y="${H-40-h}" width="60" height="${h}" rx="10" fill="${PAL[i]}"/>`+T(x+30,H-48-h,`${v} ${unit}`,17)+T(x+30,H-12,n,18)});return fpWrap(W,H,o)}
-function jugsVis(list,unit){const W=list.length*170+20;let o='';list.forEach(([n,v],i)=>{const x=30+i*170,mx=Math.max(...list.map(z=>z[1])),cap=Math.max(mx,1),lv=v/cap*150;
- o+=`<path d="M${x} 30 H${x+110} V190 Q${x+110} 205 ${x+95} 205 H${x+15} Q${x} 205 ${x} 190 Z" fill="#fff" stroke="${VC.ln}" stroke-width="4"/><path d="M${x+110} 60 q30 10 0 60" fill="none" stroke="${VC.ln}" stroke-width="4"/>`;
- o+=`<rect x="${x+4}" y="${203-lv}" width="102" height="${lv}" fill="#9ED3F5"/>`;for(let k=1;k<=v&&k<=12;k++)o+=`<path d="M${x+4} ${203-k*150/cap} h18" stroke="${VC.ln}" stroke-width="2"/>`;
- o+=T(x+55,232,`${n}: ${v} ${unit}`,18)});return fpWrap(W,245,o)}
-function mlJug(start,add){const cap=Math.max(1000,Math.ceil((start+add)/1000)*1000),sy=v=>210-v/cap*180;let o=`<path d="M110 30 H230 V210 H110 Z" fill="#fff" stroke="${VC.ln}" stroke-width="4"/>`;
- o+=`<rect x="112" y="${sy(start)}" width="116" height="${210-sy(start)}" fill="#9ED3F5"/>`;for(let v=0;v<=cap;v+=cap/10){o+=`<path d="M230 ${sy(v)} h${v%(cap/2)?10:18}" stroke="${VC.ln}" stroke-width="2"/>`;if(v%(cap/5)===0)o+=T(255,sy(v)+6,v+' ml',16,VC.ln,'start')}
- o+=`<path d="M40 70 q40 -40 80 -10" fill="none" stroke="${VC.o}" stroke-width="4"/><path d="M108 50 l12 10 l-14 6" fill="none" stroke="${VC.o}" stroke-width="4"/>`+T(55,95,'+'+add+' ml',20,VC.o);return fpWrap(340,230,o)}
-function noteVis(x,y,v){return `<rect x="${x}" y="${y}" width="120" height="62" rx="8" fill="#BFE6C8" stroke="#3E8E58" stroke-width="3"/><circle cx="${x+95}" cy="${y+31}" r="16" fill="none" stroke="#3E8E58" stroke-width="2"/>`+T(x+50,y+40,v+' Dh',22,'#2D6B42')}
-function moneyThing(x,y,s){const m=String(s).match(/(\d+)[- ]dirham note/);if(m)return [noteVis(x,y,m[1]),130];const f=String(s).match(/(\d+) fils/);if(f)return [coin(x+30,y+31,f[1]+'f',false,'#E8D18A'),70];
- const d=String(s).match(/(\d+) dirhams?/);if(d)return [coin(x+30,y+31,d[1]+' Dh',false,'#D7DCE2'),70];return ['',0]}
-function moneyPair(a,b){let o='',x=10;[a,b].forEach((s,i)=>{const [svg,w]=moneyThing(x,20,s);o+=svg;x+=w+(i?0:60);if(!i)o+=T(x-30,58,'or',22,VC.mut)});return fpWrap(x+10,100,o)}
-function tagVis(x,y,lab,price){return `<path d="M${x} ${y+10} L${x+20} ${y} H${x+140} V${y+60} H${x+20} L${x} ${y+50} Z" fill="#FFF0D9" stroke="${VC.o}" stroke-width="3"/><circle cx="${x+18}" cy="${y+30}" r="5" fill="${VC.o}"/>`+T(x+82,y+26,lab,16)+T(x+82,y+50,price,18,VC.o)}
-function shopVis(items,note){let o='',x=10;items.forEach(([l,p])=>{o+=tagVis(x,20,l,p);x+=160});if(note){o+=T(x+10,58,'pay',18,VC.mut);o+=noteVis(x+40,19,note);x+=170}return fpWrap(x+10,100,o)}
-function coinsAmt(d,f){const g=[];if(d>0)g.push([Math.min(d,10),'1 Dh','#D7DCE2',d+(d===1?' dirham':' dirhams')]);const fils=[];let r=f;[50,25].forEach(c=>{while(r>=c){fils.push(c);r-=c}});
- if(fils.length)fils.forEach((c,i)=>{const last=g[g.length-1];if(last&&last[1]===c+'f'){last[0]++;}else g.push([1,c+'f','#E8D18A',''])});if(f)g[g.length-1][3]=(g[g.length-1][3]||'')+f+' fils';return coinsVis(g)}
-function compareBase(a,b){return baseTen(Math.floor(a/100),Math.floor(a%100/10),a%10).replace('<svg','<svg data-n="'+a+'"')+`<div class="f" style="font-size:22px;margin:4px 0">${a} ⟷ ${b}</div>`+baseTen(Math.floor(b/100),Math.floor(b%100/10),b%10)}
-function markLine(lo,hi,marks,step,fmt){fmt=fmt||(v=>Number(v).toLocaleString('en-GB'));const W=640,x=v=>60+(v-lo)/(hi-lo)*(W-120);let o=`<path d="M20 70 H${W-20}" stroke="${VC.ln}" stroke-width="4"/>`;
- const n=Math.round((hi-lo)/step),labs=[...Array(n+1)].map((_,i)=>fmt(Math.round((lo+i*step)*1000)/1000)),every=n<=10&&Math.max(...labs.map(l=>l.length))*9*(n+1)<W-40;for(let i=0;i<=n;i++){const v=lo+i*step,X=x(v),big=i===0||i===n;o+=`<path d="M${X} ${big?56:62} V${big?84:78}" stroke="${VC.ln}" stroke-width="${big?3:2}"/>`;if(big||every)o+=T(X,110,labs[i],every&&!big?15:18)}
- marks.forEach(([v,lab,col],i)=>{const X=x(v),c=col||PAL[i];o+=`<path d="M${X} 66 L${X-9} 38 H${X+9} Z" fill="${c}"/>`+T(X,30,lab,17,c)});return fpWrap(W,124,o)}
-function roundVis(n,p){const lo=Math.floor(n/p)*p,hi=lo+p,f=v=>p<1?String(Math.round(v*100)/100):Number(v).toLocaleString('en-GB');return markLine(lo,hi,[[n,f(n),VC.o]],p/10,f)}
-function jumpVis(n,step,up){const f=v=>Number(v).toLocaleString('en-GB');let o=`<path d="M20 80 H500" stroke="${VC.ln}" stroke-width="4"/>`;const a=up?110:410,b=up?410:110;
- o+=`<path d="M${a} 68 V92 M${b} 68 V92" stroke="${VC.ln}" stroke-width="3"/>`+T(a,120,f(n),20)+`<rect x="${b-34}" y="98" width="68" height="32" rx="8" fill="${VC.y}"/>`+T(b,122,'?',22);
- o+=`<path d="M${a} 66 Q260 10 ${b} 66" fill="none" stroke="${VC.o}" stroke-width="4"/><path d="M${b-(up?14:-14)} 54 L${b} 66 L${b-(up?2:-2)} 50" fill="none" stroke="${VC.o}" stroke-width="4"/>`+T(260,26,(up?'+ ':'− ')+f(step),22,VC.o);return fpWrap(520,140,o).replace('viewBox="0 0','viewBox="0 -6')}
-function turnVis(q){const r=90,cx=130,cy=120;let o=`<circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff" stroke="${VC.mut}" stroke-width="3" stroke-dasharray="6 6"/><path d="M${cx} ${cy-r} V${cy+r} M${cx-r} ${cy} H${cx+r}" stroke="${VC.mut}" stroke-width="2"/>`;
- const end=q*90,a=e=>(e-90)*Math.PI/180,R=r-14;let d=`M${cx} ${cy-R}`;if(q>=4)d+=` A${R} ${R} 0 1 1 ${cx-.1} ${cy-R}`;else d+=` A${R} ${R} 0 ${q>2?1:0} 1 ${cx+R*Math.cos(a(end))} ${cy+R*Math.sin(a(end))}`;
- o+=`<path d="${d}" fill="none" stroke="${VC.o}" stroke-width="6"/>`;const ex=cx+R*Math.cos(a(q>=4?359:end)),ey=cy+R*Math.sin(a(q>=4?359:end)),ang=a(q>=4?359:end)+Math.PI/2;
- o+=`<path d="M${ex} ${ey} l${-14*Math.cos(ang)+8*Math.sin(ang)} ${-14*Math.sin(ang)-8*Math.cos(ang)} M${ex} ${ey} l${-14*Math.cos(ang)-8*Math.sin(ang)} ${-14*Math.sin(ang)+8*Math.cos(ang)}" stroke="${VC.o}" stroke-width="5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="7" fill="${VC.ln}"/>`;return fpWrap(260,240,o)}
-function angleOne(d){const cx=150,cy=130,r=110,a=d*Math.PI/180;let o=`<path d="M${cx} ${cy} H${cx+r}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/><path d="M${cx} ${cy} L${cx+Math.cos(a)*r} ${cy-Math.sin(a)*r}" stroke="${VC.ln}" stroke-width="5" stroke-linecap="round"/>`;
- o+=`<path d="M${cx+36} ${cy} A36 36 0 ${d>180?1:0} 0 ${cx+36*Math.cos(a)} ${cy-36*Math.sin(a)}" fill="none" stroke="${VC.o}" stroke-width="4"/>`;const m=a/2;o+=T(cx+66*Math.cos(m),cy-66*Math.sin(m)+7,d+'°',20,VC.o);return fpWrap(300,260,o)}
-function cuboidVis(a,b,c,unit,qa,qb,qc){const s=Math.min(200/(a+b*.5),130/(c+b*.5),22),w=a*s,h=c*s,dx=b*s*.5,dy=b*s*.5,x=90,y=30+dy,F='#DCEBFA',st=`stroke="${VC.ln}" stroke-width="3" stroke-linejoin="round"`;
- let o=`<polygon points="${x},${y} ${x+w},${y} ${x+w},${y+h} ${x},${y+h}" fill="${F}" ${st}/><polygon points="${x},${y} ${x+dx},${y-dy} ${x+w+dx},${y-dy} ${x+w},${y}" fill="#B5D4F4" ${st}/><polygon points="${x+w},${y} ${x+w+dx},${y-dy} ${x+w+dx},${y+h-dy} ${x+w},${y+h}" fill="#85B7EB" ${st}/>`;
- o+=T(x+w/2,y+h+26,qa||`${a} ${unit}`,18)+T(x+w+dx/2+10,y+h-dy/2+16,qb||`${b} ${unit}`,18,VC.ln,'start')+T(x-8,y+h/2+6,qc||`${c} ${unit}`,18,VC.ln,'end');
- return fpWrap(x+w+dx+110,y+h+44,o)}
-function circleVis(r,unit,which,qlab){let o=`<circle cx="130" cy="120" r="95" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/><circle cx="130" cy="120" r="5" fill="${VC.ln}"/>`;
- o+=which==='d'?`<path d="M35 120 H225" stroke="${VC.o}" stroke-width="5"/>`+T(130,108,qlab,20,VC.o):`<path d="M130 120 H225" stroke="${VC.o}" stroke-width="5"/>`+T(178,108,qlab,20,VC.o);return fpWrap(260,240,o)}
-function paraVis(b,h,unit){const s=Math.min(260/b,170/h,28),w=b*s,H=h*s,off=Math.min(60,w*.35),x=80,y=20;let o=`<polygon points="${x+off},${y} ${x+off+w},${y} ${x+w},${y+H} ${x},${y+H}" fill="#DCEBFA" stroke="${VC.ln}" stroke-width="4"/>`;
- o+=`<path d="M${x+off} ${y} V${y+H}" stroke="${VC.o}" stroke-width="3" stroke-dasharray="7 5"/><rect x="${x+off}" y="${y+H-14}" width="14" height="14" fill="none" stroke="${VC.o}" stroke-width="2"/>`+T(x+off+10,y+H/2+6,`${h} ${unit}`,18,VC.o,'start')+T(x+w/2,y+H+28,`${b} ${unit}`,18);
- return fpWrap(x+off+w+30,y+H+44,o)}
-function partWhole(total,tl,parts,unit){/* parts: [[value or '?',label]] */const W=520;let o=`<rect x="10" y="10" width="${W-20}" height="46" rx="6" fill="#E6F1FB" stroke="${VC.ln}" stroke-width="3"/>`+T(W/2,41,tl,20);
- let x=10;const known=parts.filter(p=>p[0]!=='?').reduce((s,p)=>s+p[0],0),rest=Math.max(total-known,total*.15);
- parts.forEach(([v,l],i)=>{const w=(v==='?'?rest:v)/total*(W-20);o+=`<rect x="${x}" y="64" width="${w}" height="46" rx="6" fill="${v==='?'?VC.y:PAL[i]}" opacity="${v==='?'?1:.85}" stroke="#fff" stroke-width="3"/>`+T(x+w/2,94,l,w<80?14:19,v==='?'?VC.ln:'#fff');x+=w});return fpWrap(W,120,o)}
-function scaleBars(base,k,unit){const s=Math.min(60,440/(base*k)),W=base*k*s+150;let o=T(10,40,'1×',20,VC.mut,'start')+`<rect x="60" y="20" width="${base*s}" height="30" rx="5" fill="${VC.b}"/>`+T(60+base*s+8,42,base+' '+unit,17,VC.ln,'start');
- o+=T(10,100,k+'×',20,VC.mut,'start');for(let i=0;i<k;i++)o+=`<rect x="${60+i*base*s}" y="80" width="${base*s}" height="30" rx="5" fill="${VC.o}" stroke="#fff" stroke-width="3"/>`;o+=T(60+k*base*s+8,102,'?',22,VC.o,'start');return fpWrap(W,130,o)}
-function tenthsStrip(n){const W=520,s=50;let o='';for(let i=0;i<10;i++)o+=`<rect x="${10+i*s}" y="10" width="${s}" height="60" fill="${i<n?VC.b:'#fff'}" stroke="${VC.ln}" stroke-width="2"/>`;return fpWrap(W,80,o)}
-function visExtra(t,g){let m;
- m=t.match(/(\w+) is (\d+) cm, (\w+) is (\d+) cm, (\w+) is (\d+) cm/);if(m)return heightBars([[m[1],+m[2]],[m[3],+m[4]],[m[5],+m[6]]],'cm');
- m=t.match(/Jug A holds (\d+) cups\. Jug B holds (\d+) cups/);if(m)return jugsVis([['A',+m[1]],['B',+m[2]]],'cups');
- m=t.match(/A jug has (\d+) ml\. You pour in (\d+) ml/);if(m)return mlJug(+m[1],+m[2]);
- m=t.match(/Which is worth more: (.+?) or (.+?)\?/);if(m)return moneyPair(m[1],m[2]);
- m=t.match(/Which is hotter, (-?\d+) ?°C or (-?\d+) ?°C/);if(m)return thermo([+m[1],+m[2]]);
- m=t.match(/A (\w+) costs (\d+) dirhams?\. You pay with a (\d+)-dirham note/);if(m)return shopVis([[m[1],m[2]+' Dh']],m[3]);
- m=t.match(/You buy something for (\d+) dirhams? (\d+) fils and pay with a (\d+)-dirham note/);if(m)return shopVis([['price',`${m[1]} Dh ${m[2]}f`]],m[3]);
- m=t.match(/A (\w+) costs (\d+) dirhams? and a (\w+) costs (\d+) dirhams?/);if(m)return shopVis([[m[1],m[2]+' Dh'],[m[3],m[4]+' Dh']]);
- m=t.match(/^(\d+) dirhams?(?: (\d+) fils)? \+ (\d+) dirhams?(?: (\d+) fils)? = \?/);if(m)return coinsAmt(+m[1],+(m[2]||0))+'<div class="f" style="font-size:24px">+</div>'+coinsAmt(+m[3],+(m[4]||0));
- m=t.match(/^(\d{1,2}) \? (\d{1,2})\s+Which sign/);if(m)return compareBase(+m[1],+m[2]);
- m=t.match(/Which is (?:greater|bigger), ([\d,.]+) or ([\d,.]+)\?/);if(m){const a=XN(m[1]),b=XN(m[2]),dec=/\./.test(m[1]+m[2]);if(dec&&Math.max(a,b)<=1)return markLine(0,1,[[a,m[1]],[b,m[2]]],.1,v=>String(v));
-  const top=[10,100,1000,10000,100000,1000000,10000000].find(x=>x>=Math.max(a,b));if(top)return markLine(0,top,[[a,m[1]],[b,m[2]]],top/10)}
- m=t.match(/Which is the greatest: ([\d,]+), ([\d,]+) or ([\d,]+)\?/);if(m){const v=[m[1],m[2],m[3]].map(XN),top=[1000,10000,100000,1000000,10000000].find(x=>x>=Math.max(...v));if(top)return markLine(0,top,v.map((x,i)=>[x,['A','B','C'][i]]),top/10)}
- m=t.match(/What is ([\d,]+) (more|less) than ([\d,]+)\?/);if(m)return jumpVis(XN(m[3]),XN(m[1]),m[2]==='more');
- m=t.match(/Round ([\d,]+(?:\.\d+)?) to the nearest ([\d,]+|whole number)\./);if(m){const n=XN(m[1]),p=m[2]==='whole number'?1:XN(m[2]);if(p>0&&n>0)return roundVis(n,p)}
- m=t.match(/Round (\d+\.\d+) to one decimal place/);if(m)return roundVis(+m[1],.1);
- m=t.match(/^(\d+) × (\d+) = (\d+) × \?$/);if(m&&+m[1]*+m[2]<=100)return dotArray(+m[1],+m[2]);
- m=t.match(/^(\d+) × (\d+) = \?$/);if(m&&+m[1]<=12&&+m[2]<=12&&+m[1]*+m[2]<=72)return dotArray(+m[1],+m[2]);
- m=t.match(/^(\d+) ÷ (\d+) = \?$/);if(m&&+m[1]<=60&&+m[2]<=10&&+m[1]%+m[2]===0)return shareVis(+m[1],+m[2]);
- m=t.match(/^\? × (\d+) = (\d+)$/);if(m&&+m[2]<=60&&+m[2]%+m[1]===0)return dotArray(+m[2]/+m[1],+m[1]);
- m=t.match(/^Is (\d+) odd or even\?/);if(m&&+m[1]<=30)return pairsVis(+m[1]);
- m=t.match(/How many right angles (?:are in|make) (?:a |an )?(\d+ |one |two |three |four )?(quarter|half|three-quarter|full) turns?/);
- if(m){const k={quarter:1,half:2,'three-quarter':3,full:4}[m[2]],w=m[1]?(WORDNUM[m[1].trim()]||+m[1]):1;const q=k*w;if(q>=1&&q<=4)return turnVis(q)}
- m=t.match(/Perimeter of a square with (?:sides of )?(\d+) (cm|m)(?: sides)?/);if(m)return rectVis(+m[1],+m[1],m[2]);
- m=t.match(/Area of a parallelogram with base (\d+) (cm|m) and height (\d+)/);if(m)return paraVis(+m[1],+m[3],m[2]);
- m=t.match(/(?:Volume of a cuboid|cubes make a cuboid) (\d+) cm × (\d+) cm × (\d+) cm/);if(m)return cuboidVis(+m[1],+m[3],+m[2],'cm');
- m=t.match(/A cuboid has a volume of (\d+) cm³\. Its base is (\d+) cm by (\d+) cm/);if(m)return cuboidVis(+m[2],+m[3],+m[1]/(+m[2]*+m[3])||4,'cm',null,null,'?');
- m=t.match(/A cube has a volume of (\d+) cm³/);if(m)return cuboidVis(4,4,4,'cm','?','?','?');
- m=t.match(/A circle has a (radius|diameter) of (\d+) (cm|m)/);if(m)return circleVis(+m[2],m[3],m[1]==='radius'?'r':'d',`${m[2]} ${m[3]}`);
- m=t.match(/Is (\d+)° acute, obtuse or reflex/);if(m)return angleOne(+m[1]);
- m=t.match(/^(1|2|3) (m|kg|l) [−-] (\d+) (cm|g|ml) = \? (cm|g|ml)/);if(m){const tot=+m[1]*(m[2]==='m'?100:1000);return partWhole(tot,`${m[1]} ${m[2]} = ${tot} ${m[4]}`,[[+m[3],`${m[3]} ${m[4]}`],['?','?']],m[4])}
- m=t.match(/^(\d) (l|kg|m) \+ (\d+) (ml|g|cm) = \? (ml|g|cm)/);if(m){const a=+m[1]*(m[2]==='m'?100:1000);return partWhole(a+ +m[3],'?',[[a,`${m[1]} ${m[2]}`],[+m[3],`${m[3]} ${m[4]}`]],m[4])}
- m=t.match(/Which is longer, 1 m or (\d+) cm\?/);if(m)return heightBars([['1 m',100],[m[1]+' cm',+m[1]]],'cm').replace(/100 cm<\/text>/,'</text>');
- m=t.match(/A tower is (\d+) times as tall as (\d+) cm/);if(m&&+m[1]<=6)return scaleBars(+m[2],+m[1],'cm');
- m=t.match(/enlarged by scale factor (\d+)\. A side of (\d+) cm/);if(m&&+m[1]<=6)return scaleBars(+m[2],+m[1],'cm');
- m=t.match(/A (\d+)-dirham item (?:falls|rises) in price by (\d+)%/);if(m){const p=+m[2],parts={50:2,25:4,20:5,10:10,5:20}[p];if(parts)return fpBarModel(+m[1],parts,1)}
- m=t.match(/^Write 0\.(\d) as a fraction/);if(m)return tenthsStrip(+m[1]);
- m=t.match(/^Can (?:a|an|you stack a) (cube|cuboid|sphere|cylinder|cone|pyramid)/);if(m)return shape3D(m[1]);
- m=t.match(/(?:Does|Is) a (?:regular )?(square|rectangle|pentagon|hexagon|octagon|triangle)\b/);if(m)return shape2D(m[1]);
- m=t.match(/lines of symmetry does (?:a|an) (?:regular )?(square|rectangle|pentagon|hexagon|octagon|equilateral triangle|rhombus)/);if(m)return shape2D(m[1]);
- return ''}
 function visFor(q,land,grade){try{const t=String(q);
- const f={FF:fracPic,NI:visNI,TT:visTT,MM:visMM,SF:visSF,DD:visDD,PP:visPP}[land];let s=f?f(t,grade)||'':'';
- if(!s)s=visExtra(t,grade)||'';
- if(!s)for(const k of ['MM','SF']){if(k===land)continue;s={MM:visMM,SF:visSF}[k](t,grade)||'';if(s)break}
- return s}catch(e){return ''}}
+ const f={FF:fracPic,NI:visNI,TT:visTT,MM:visMM,SF:visSF,DD:visDD,PP:visPP}[land];return f?f(t,grade)||'':''}catch(e){return ''}}
 
 function picBox(pic){/* a description we can't draw: show it as a big, clear list */
  const m=String(pic).match(/^([^:—]+)[:—]\s*(.+)$/);if(m&&/[;,]/.test(m[2])){const items=m[2].split(/\s*[;]\s*|,\s+(?=[A-Za-z])/).map(x=>x.replace(/\.$/,'').trim()).filter(Boolean);
   return `<div class="pic"><div class="pict">🖼️ ${esc(cap(m[1].trim()))}</div><ul class="picl">${items.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`}
  return `<div class="pic">🖼️ ${esc(pic)}</div>`}
-function fpFor(q,land){const s=visFor(q,land||V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
+function fpFor(q){const s=visFor(q,V.land,ME.grade);return s?`<div class="fpwrap">${s}</div>`:''}
 /* ---------- learn-first fact cards (left side) ---------- */
 function bigText(lines,col,mono){/* a card picture made of big, clear maths text */const h=lines.length*54+20;return fpWrap(420,h,lines.map((l,i)=>mono?`<text x="210" y="${52+i*54}" text-anchor="middle" xml:space="preserve" font-family="Menlo,Consolas,monospace" font-weight="700" font-size="36" fill="${i===lines.length-1?VC.o:VC.ln}">${esc(l)}</text>`:T(210,52+i*54,l,i===0?40:34,i===0?(col||VC.o):VC.ln)).join('')+(mono?`<path d="M110 ${h-66} H310" stroke="${VC.ln}" stroke-width="3"/>`:''))}
 const FACTS={
@@ -1734,8 +1650,9 @@ function funRow(){const fin=allLandsDone(),sst=startedStops(),dd=dailyDone();
  const [cg,ct]=cardCount(),co=chestOpened();
  return `<div class="funrow"><button class="fun${co?'':' chestready'}" id="fchest"><span class="fe">${co?'✅':'🎁'}</span><b>Treasure chest</b><span class="small">${co?'Opened! Back tomorrow 🌙':'A surprise every day! Tap to open'}</span></button><button class="fun" id="fcards"><span class="fe">📒</span><b>My cards</b><span class="small">${cg} of ${ct} collected</span></button><button class="fun" id="fcup"><span class="fe">🏆</span><b>Class Cup</b><span class="small" id="cupsm">${CUP&&CUP.table?cupLine():'Help your class win this week!'}</span></button><button class="fun" id="fspeed"><span class="fe">⚡</span><b>Beat the clock</b><span class="small">60 seconds of mental maths · race your friends</span></button>
   <button class="fun${sst?'':' locked'}" id="fdaily"><span class="fe">${dd?'✅':'🔁'}</span><b>Daily challenge</b><span class="small">${dd?'Done today! Back tomorrow.':sst?(()=>{const f=stopStats().filter(x=>x.weak&&(x.started||x.task)).sort((a,b)=>b.need-a.need)[0];return f?'🎯 Focus: '+esc(f.st.topic)+' · +5 ⭐':'10 mixed questions · +5 ⭐'})():'Finish a quest to unlock'}</span></button>
-  <button class="fun${fin?' gold':' locked'}" id="ffin"><span class="fe">🏆</span><b>Grand Treasure</b><span class="small">${fin?'You finished every land!':'Finish every land to unlock'}</span></button></div>`}
-function bindFun(){$('#fchest').onclick=openChest;$('#fcards').onclick=()=>{V={s:'cards'};render()};checkNewCards();setTimeout(checkNewSets,900);$('#fcup').onclick=()=>{V={s:'cup'};render()};if(!CUP||Date.now()-CUPT>60000)loadCup().then(()=>{const e=$('#cupsm');if(e)e.textContent=cupLine()});$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
+  <button class="fun${fin?' gold':' locked'}" id="ffin"><span class="fe">🏆</span><b>Grand Treasure</b><span class="small">${fin?'You finished every land!':'Finish every land to unlock'}</span></button>
+  <button class="fun glfun" id="fgl"><span class="fe">📝</span><b>GL Practice</b><span class="small">Practise for your GL maths test · Test A and Test B</span></button></div>`}
+function bindFun(){$('#fgl').onclick=()=>{GLS=null;V={s:'gl'};render()};$('#fchest').onclick=openChest;$('#fcards').onclick=()=>{V={s:'cards'};render()};checkNewCards();$('#fcup').onclick=()=>{V={s:'cup'};render()};if(!CUP||Date.now()-CUPT>60000)loadCup().then(()=>{const e=$('#cupsm');if(e)e.textContent=cupLine()});$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
  $('#ffin').onclick=()=>{if(!allLandsDone()){cheer(`${C.lands.filter(landDone).length} of ${C.lands.length} lands done — keep going! 🧭`);return}V={s:'finale'};render()};
  if(allLandsDone()){const k='mq-fin-'+ME.code+'-g'+ME.grade;let seen=null;try{seen=localStorage.getItem(k)}catch(e){}if(!seen){try{localStorage.setItem(k,'1')}catch(e){}setTimeout(()=>{V={s:'finale'};render()},2200)}}}
 function finaleView(){const sch=ME.school?esc(ME.school):'',owned=myAv().medal==='medal-compass';
@@ -2066,7 +1983,7 @@ function checkView(){if(!CK){V={s:'map'};render();return}const {c,qs}=CK;
   <button class="b1" id="ckgo" style="font-size:24px;padding:14px 36px">I’m ready! 🚀</button></div>`;$('#bk').onclick=()=>{CK=null;V={s:'map'};render()};$('#ckgo').onclick=()=>{CK.intro=false;render()};say("Let's see what you know! Take your time and try your best.",'ck-intro');return}
  if(CK.i>=qs.length)return checkEnd();
  const it=qs[CK.i],[pic,text]=splitPic(it.q),pct=Math.round(100*CK.i/qs.length);
- $('#app').innerHTML=head+`<div class="card center"><div class="ckbar"><i style="width:${pct}%"></i></div><div class="muted" style="font-weight:800">Question ${CK.i+1} of ${qs.length}</div>${fpFor(it.q,String(it.stop||'').split('-')[0])||(pic?picBox(pic):'')}
+ $('#app').innerHTML=head+`<div class="card center"><div class="ckbar"><i style="width:${pct}%"></i></div><div class="muted" style="font-weight:800">Question ${CK.i+1} of ${qs.length}</div>${fpFor(it.q)||(pic?picBox(pic):'')}
   <div class="qtext">${esc(text)} <button class="b2" id="hear" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>${answerUI(it)}<div class="msg" id="fb"></div>
   <div style="margin-top:10px"><button class="b2 sm" id="ckskip">I don’t know yet → skip</button></div></div>`;
  $('#bk').onclick=()=>{CK=null;V={s:'map'};render();loadChecks()};$('#hear').onclick=()=>say(text,it.k);autoRead(text,it.k);
@@ -2173,11 +2090,11 @@ function cardHTML(c,i){const L=c.L,col=L?(GUARD[L.code]||{}).col||'#2F9BE0':'#FF
  if(c.kind==='guard')return `<button class="mcard gold" data-ci="${i}" style="--cc:${col}"><span class="cbadge">⚔️ Guardian</span>${guardSVG(L.code,96)}<b>${esc(GUARD[L.code].name)}</b><span class="small">${esc(L.name)}</span></button>`;
  if(c.kind==='treasure')return `<button class="mcard gold" data-ci="${i}" style="--cc:#FFC93C"><span class="cbadge">🏆 Legend</span><div style="font-size:64px;line-height:1.2">🧭</div><b>Golden compass</b><span class="small">Grand Treasure</span></button>`;
  return `<button class="mcard" data-ci="${i}" style="--cc:${col}"><span class="cbadge">${esc(L.name)} · ${c.st.n}</span><span class="cicon">${LANDICON[L.code]}</span><b>${esc(c.st.topic)}</b><span class="small">${c.fact?esc(c.fact.t):''}</span></button>`}
-function cardsView(){const A=allCards(),got=A.filter(c=>c.got).length;checkNewSets();
+function cardsView(){const A=allCards(),got=A.filter(c=>c.got).length;
  $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← Map</button><span class="f">📒 My cards</span></div>
   <div class="card"><div class="row" style="flex-wrap:wrap;gap:10px"><div style="flex:1"><h2 style="color:var(--sea);margin:0">My card album</h2><div class="muted">Finish a stop to unlock its card. Befriend guardians for golden cards!</div></div><div class="calbum"><b>${got}</b> / ${A.length}</div></div>
   <div class="gbar" style="margin:10px 0 16px"><i style="width:${100*got/A.length}%"></i></div>
-  ${C.lands.map(L=>{const [sg,sn]=setCount(L);return `<h3 class="f chh">${LANDICON[L.code]} ${esc(L.name)} ${sg===sn?`<span class="setdone">🎖️ Set complete!</span>`:`<span class="setprog">${sg} / ${sn} cards · collect them all for a medal 🎖️</span>`}</h3><div class="cgrid">${A.map((c,i)=>c.L===L?cardHTML(c,i):'').join('')}</div>`}).join('')}
+  ${C.lands.map(L=>`<h3 class="f chh">${LANDICON[L.code]} ${esc(L.name)}</h3><div class="cgrid">${A.map((c,i)=>c.L===L?cardHTML(c,i):'').join('')}</div>`).join('')}
   <h3 class="f chh">🏆 Legend card</h3><div class="cgrid">${cardHTML(A[A.length-1],A.length-1)}</div></div>`;
  $('#bk').onclick=()=>{V={s:'map'};render()};
  document.querySelectorAll('[data-ci]').forEach(b=>b.onclick=()=>{const c=A[+b.dataset.ci];if(!c.got){cheer(c.kind==='stop'?`Finish ${c.L.name} stop ${c.st.n} to unlock! 🔒`:'Keep exploring to unlock! 🔒');return}cardBig(c)})}
@@ -2192,24 +2109,6 @@ function cardBig(c){const ov=document.createElement('div');ov.className='howov';
 /* new cards since last visit → small celebration on the map */
 function checkNewCards(){const [g]=cardCount();const k='mq-cards-'+ME.code+'-g'+ME.grade;let seen=null;try{seen=+localStorage.getItem(k)}catch(e){}if(seen===null||isNaN(seen)){try{localStorage.setItem(k,g)}catch(e){}return}
  if(g>seen){try{localStorage.setItem(k,g)}catch(e){}cheer(`📒 New card${g-seen>1?'s':''} for your album! (${g-seen})`)}}
-/* 🎖️ land set bonus: collect every card of a land → celebration, +20 ⭐ and a medal */
-function setCount(L){const A=allCards().filter(c=>c.L===L);return [A.filter(c=>c.got).length,A.length]}
-let SETBUSY=false;
-function checkNewSets(){if(SETBUSY||!C||!ME)return;const L=C.lands.find(L=>{const [g,n]=setCount(L);return n>0&&g===n&&!(ME.done&&ME.done[`G${ME.grade}-${L.code}-SET`])});if(L)setParty(L)}
-async function setParty(L){SETBUSY=true;const key=`G${ME.grade}-${L.code}-SET`,col=(GUARD[L.code]||{}).col||'#2F9BE0',A=allCards().filter(c=>c.L===L);
- const {data}=await rpc('mq_complete',{p_code:ME.code,p_key:key,p_kind:'set'});if(data){ME.stars=data.stars;ME.done=data.done;header()}else{ME.done=ME.done||{};ME.done[key]=1}
- happySound(true);setTimeout(()=>clapSound(true),150);
- const ov=document.createElement('div');ov.className='howov setov';let conf='';const cols=['#FF6B4A','#FFD23F','#2DBE6C','#2F9BE0','#8E5BD6','#FF8FB1'];
- for(let i=0;i<60;i++)conf+=`<i class="cf" style="left:${Math.random()*100}vw;animation-delay:${(Math.random()*.8).toFixed(2)}s;animation-duration:${(1.8+Math.random()*1.4).toFixed(2)}s;background:${cols[i%cols.length]}"></i>`;
- const fan=A.map((c,i)=>{const r=(i-(A.length-1)/2)*12;return `<div class="setc" style="--r:${r}deg;--d:${i*.12}s;--cc:${col}">${c.kind==='guard'?guardSVG(L.code,64):`<span class="cicon">${LANDICON[L.code]}</span><b>${c.st?c.st.n:''}</b>`}</div>`}).join('');
- const med=Object.assign({},myAv(),{medal:'medal-set-'+L.code});
- ov.innerHTML=`${conf}<div class="howcard setcard" style="--cc:${col}"><div class="f" style="font-size:16px;color:${col};letter-spacing:2px">SET COMPLETE!</div><h2 class="f" style="margin:4px 0 6px;color:#1D4E89;font-size:30px"><span class="seti">${LANDICON[L.code]}</span> ${esc(L.name)}</h2>
-  <div class="setfan">${fan}</div><div style="font-size:19px;font-weight:800">You collected every ${esc(L.name)} card!</div>
-  <div class="setrw"><div class="setst">+20 ⭐</div><div class="setmed">${avatarSVG(med,90)}<div class="small"><b>New medal!</b></div></div></div>
-  <div class="row" style="justify-content:center;gap:10px;margin-top:10px"><button class="b1" id="setwear">Wear my medal 🎖️</button><button class="b2" id="setok">Yay! ✓</button></div></div>`;
- document.body.appendChild(ov);say(`Amazing! You collected every ${L.name} card! Here is your medal.`,'set-'+L.code);
- const close=()=>{ov.remove();SETBUSY=false;setTimeout(checkNewSets,400)};
- ov.querySelector('#setok').onclick=()=>{close();if(V.s==='cards')render()};ov.querySelector('#setwear').onclick=()=>{close();avPick('medal','medal-set-'+L.code);cheer('Looking great! 🎖️')}}
 /* 🎁 treasure chest: once a day */
 const FUNFACTS=['Zero is the only number that can’t be written in Roman numerals.','A shape with 100 sides is called a hectogon.','If you add the numbers 1 to 100, you get 5,050!','Every odd number has an “e” in it when you write it in English: one, three, five, seven…','A circle has an endless number of lines of symmetry.','The number 4 is the only number with the same number of letters as its value (f-o-u-r).','Honeybees build their honeycomb out of hexagons. They fit together with no gaps!','There are 86,400 seconds in one day.','Multiply any number by 9, add the digits, and keep adding until you get one digit: it’s always 9 (unless you started with 0).','A “googol” is 1 followed by 100 zeros.','Opposite faces of a dice always add up to 7.','The word “hundred” comes from an old word meaning 120!','A snail shell grows in a spiral pattern.','Pizza cut into 8 equal slices: each slice is one eighth, or 0.125, of the pizza.','111,111,111 × 111,111,111 = 12,345,678,987,654,321. Wow!','A square is a special rectangle, and also a special rhombus.','The equals sign (=) was invented in 1557 because writing “is equal to” was too slow.','Some ancient people counted in 60s. That’s why there are 60 minutes in an hour!','A triangle’s three angles always add up to 180°.','Your heart beats about 100,000 times a day.','There are more possible ways to shuffle a pack of cards than stars in our galaxy.','The number pi (π) goes on forever without repeating.','Bees, starfish and snowflakes all show beautiful symmetry.','In a room of 23 people, there’s about a 50% chance two share a birthday!','12 is the smallest number with six factors: 1, 2, 3, 4, 6 and 12.','A millipede doesn’t really have a thousand legs. Most have fewer than 100!','Numbers that read the same backwards, like 121 or 4,334, are called palindromes.','The hands of a clock overlap 22 times a day.','You can make every whole number by adding at most four square numbers together.','Sunflower seeds grow in spirals that follow a famous number pattern.'];
 function chestKey(){return `G${ME.grade}-chest-${dubaiDay()}`}
@@ -2221,12 +2120,131 @@ async function openChest(){if(chestOpened()){cheer('Come back tomorrow for a new
   ov.querySelector('#chok').onclick=()=>{ov.remove();render()};miniParty();happySound(true);say('Fun maths fact! '+f,'ff-'+(fi+1))},1100)}
 
 /* ---------- views ---------- */
+/* ---------- GL practice: tests in the style of the GL Progress Test in Maths (Test A and Test B) ---------- */
+const GLCAT={N:'Number and place value',C:'Addition, subtraction, multiplication and division',F:'Fractions, decimals and percentages',M:'Measurement',G:'Geometry: shape, position and direction',S:'Statistics',R:'Ratio and proportion',A:'Algebra'};
+const GLPROC={F:'Fluency in facts and procedures',U:'Fluency in conceptual understanding',R:'Mathematical reasoning',P:'Problem solving'};
+const GLLAND={N:'NI',C:'TT',F:'FF',M:'MM',G:'SF',S:'DD',R:'PP',A:'PP'};
+let GLD={},GLS=null,GLMINE=null;
+async function glLoad(g){if(GLD[g])return GLD[g];try{const r=await fetch(`content/gl-grade${g}.json`,{cache:'no-cache'});GLD[g]=await r.json()}catch(e){GLD[g]=null}return GLD[g]}
+async function glMine(){const {data}=await rpc('mq_gl_mine',{p_code:ME.code});GLMINE=Array.isArray(data)?data:(GLMINE||[]);return GLMINE}
+function glPct(r,n){return n?Math.round(100*r/n):0}
+function glCol(p){return p>=80?'#2DBE6C':p>=50?'#FFC93C':'#FF6B4A'}
+function glMmss(s){s=Math.max(0,s|0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2)}
+function glHead(t){return `<div class="qhead"><button class="back" id="bk">← ${GLS&&GLS.stage!=='menu'?'Stop test':'Quest map'}</button><span class="f">📝 ${t}</span></div>`}
+function glView(){const g=ME.grade,D=GLD[g];
+ if(D===undefined){$('#app').innerHTML='<p class="center muted">Loading your GL practice…</p>';glLoad(g).then(()=>{if(V.s==='gl')render()});return}
+ if(!D){$('#app').innerHTML=glHead('GL Practice')+'<div class="card center"><p>GL practice is not ready for your grade yet.</p></div>';$('#bk').onclick=()=>{V={s:'map'};render()};return}
+ if(!GLS)GLS={stage:'menu'};
+ ({menu:glMenu,intro:glIntro,mental:glMental,written:glWritten,check:glCheckList,result:glResult}[GLS.stage]||glMenu)(D)}
+function glLast(f){return (GLMINE||[]).find(r=>r.grade===ME.grade&&r.form===f)}
+function glMenu(D){const nm=D.A.mental.length,nw=D.A.written.length;
+ const card=f=>{const L=glLast(f),n=(GLMINE||[]).filter(r=>r.grade===ME.grade&&r.form===f),best=n.reduce((b,r)=>Math.max(b,glPct(r.score,r.total)),0);
+  return `<div class="glform"><div class="glfh">Test ${f}</div>
+  <div class="glparts">${nm?`<span>🎧 Part 1 · Mental maths<br><b>${nm} questions</b> read by Kate</span><span>✏️ Part 2 · Applying and understanding<br><b>${nw} questions</b> at your own pace</span>`:`<span>🎧 <b>${nw} questions</b><br>Kate reads every question to you</span>`}</div>
+  ${L?`<div class="gllast">Last time: <b>${L.score}/${L.total}</b> (${glPct(L.score,L.total)}%) · best ${best}% · ${n.length} ${n.length===1?'try':'tries'}</div>`:'<div class="gllast">Not tried yet · ⭐ 10 stars the first time you finish</div>'}
+  <div class="glbtns"><button class="b1" data-glgo="${f}">${L?'Try again':'Start Test '+f} →</button>${L?`<button class="b2" data-glrep="${f}">My report</button>`:''}</div></div>`};
+ $('#app').innerHTML=glHead('GL Practice')+`<div class="card glintro"><div class="glhero">📝</div><div><h1 style="color:var(--sea);font-size:clamp(26px,4vw,36px);margin:0">GL Practice · ${esc(D.name)}</h1>
+  <p style="margin:6px 0 0">Get ready for the GL maths test. These tests work like the real one${nm?': first Kate reads the <b>mental maths</b> questions, then you answer the <b>written</b> questions at your own pace':''}. You see your score and the areas to practise at the end.</p>
+  <p class="muted small" style="margin:6px 0 0">About ${D.mins} minutes · ${D.year} · You can use paper for working out.</p></div></div>
+  <div class="glforms">${card('A')}${card('B')}</div>
+  <p class="muted small center" style="margin-top:12px">Practice tests written by Maths Quest in the style of the GL Progress Test in Maths. Not made by or linked to GL Assessment.</p>`;
+ $('#bk').onclick=()=>{GLS=null;V={s:'map'};render()};
+ document.querySelectorAll('[data-glgo]').forEach(b=>b.onclick=()=>glStart(D,b.dataset.glgo));
+ document.querySelectorAll('[data-glrep]').forEach(b=>b.onclick=()=>{const L=glLast(b.dataset.glrep);if(L){GLS={stage:'result',form:b.dataset.glrep,saved:L,old:true};render()}});
+ if(!GLMINE||Date.now()-(glMenu.t||0)>30000){glMenu.t=Date.now();glMine().then(()=>{if(V.s==='gl'&&GLS&&GLS.stage==='menu')render()})}}
+function glStart(D,f){const T=D[f];GLS={stage:'intro',form:f,part:T.mental.length?'mental':'written',mental:T.mental,written:T.written,i:0,ans:{},t0:Date.now(),read:!!D.read};render()}
+function glIntro(D){const m=GLS.part==='mental';
+ $('#app').innerHTML=glHead(`GL Practice · Test ${GLS.form}`)+`<div class="card center glready"><div style="font-size:64px">${m?'🎧':'✏️'}</div>
+  ${m?`<h2 style="color:var(--sea)">Part 1: Mental maths</h2><p>Kate will read each question. Work it out <b>in your head</b> and type the answer before the timer runs out.</p><p class="muted">There are ${GLS.mental.length} questions. Some give you 5 seconds, some 10 and some 15. You can hear each question once more.</p>`
+   :GLS.read?`<h2 style="color:var(--sea)">Listen and answer</h2><p>Kate will read every question to you. Tap 🔊 to hear it again.</p><p class="muted">There are ${GLS.written.length} questions. Take your time. You can go back and change an answer.</p>`
+   :`<h2 style="color:var(--sea)">Part 2: Applying and understanding</h2><p>Read each question carefully. You can use paper for working out. Tap 🔊 to hear a question.</p><p class="muted">There are ${GLS.written.length} questions. You can skip a question and come back to it.</p>`}
+  <button class="b1" id="glgo" style="font-size:24px;margin-top:8px">I’m ready! →</button></div>`;
+ glBindStop();$('#glgo').onclick=()=>{unlockAudio();GLS.stage=GLS.part;GLS.i=0;if(GLS.part==='written')GLS.tw=Date.now();render()}}
+function glBindStop(){$('#bk').onclick=()=>{if(confirm('Stop the test? Your answers will not be saved.')){clearInterval(TIMER);GLS={stage:'menu'};render()}}}
+function glAnsUI(it,cur){
+ if(it.t==='choice')return `<div class="choices glch">${it.c.map(c=>`<button class="b2${cur===c?' on':''}" data-glc="${esc(c)}">${esc(c)}</button>`).join('')}</div>`;
+ const ph=it.u&&it.u.startsWith('e.g.')?it.u:it.t==='fraction'?'e.g. 3/4':it.t==='text'?(/^\(/.test(it.a)?'e.g. (2, 3)':'type your answer'):/:\d\d$/.test(it.a)?'e.g. 10:45':'';
+ const unit=it.u&&!it.u.startsWith('e.g.')?`<span class="glunit">${esc(it.u)}</span>`:'';
+ return `<form id="glf" class="glans"><input class="ans" id="glin" autocomplete="off" inputmode="${it.t==='number'&&!/[a-z:(]/i.test(it.a)&&!(it.u||'').startsWith('e.g.')?'decimal':'text'}" placeholder="${ph}" value="${esc(cur||'')}">${unit}</form>`}
+function glBindAns(it,save){document.querySelectorAll('[data-glc]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-glc]').forEach(x=>x.classList.remove('on'));b.classList.add('on');save(b.dataset.glc)});
+ const i=$('#glin');if(i){i.oninput=()=>save(i.value);setTimeout(()=>i.focus(),50)}}
+function glMental(){const L=GLS.mental;if(GLS.i>=L.length){GLS.part='written';GLS.stage='intro';render();return}
+ const it=L[GLS.i],sec=(it.sec||10)*(TM()||1);let heard=0;
+ $('#app').innerHTML=glHead(`Test ${GLS.form} · Mental maths`)+`<div class="card center"><div class="muted" style="font-weight:800">Question ${GLS.i+1} of ${L.length} · ${it.sec||10}-second question</div>
+  <div class="glear">🎧</div><div class="timer"><i id="tb"></i></div>${glAnsUI(it,GLS.ans[it.id])}
+  <div style="margin-top:14px"><button class="b1" id="glnx">${GLS.i+1<L.length?'Next →':'Finish part 1 →'}</button> <button class="b2" id="glrp">🔊 Hear again</button></div></div>`;
+ glBindStop();const save=v=>{GLS.ans[it.id]=v};glBindAns(it,save);
+ const go=()=>say(it.q,it.k);setTimeout(go,300);
+ $('#glrp').onclick=()=>{if(heard<1){heard++;go();if(heard>=1)$('#glrp').disabled=true}};
+ const next=()=>{clearInterval(TIMER);const i=$('#glin');if(i)save(i.value);GLS.i++;render()};
+ $('#glnx').onclick=next;const f=$('#glf');if(f)f.onsubmit=e=>{e.preventDefault();next()};
+ if(TM()===0){$('#tb').parentNode.style.display='none';return}
+ let left=sec*10+30;const total=left;TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)next()},100)}
+function glWritten(){const L=GLS.written,it=L[GLS.i],[pic,text]=splitPic(it.q);
+ const vis=(()=>{try{return visFor(it.q,it.l,ME.grade)}catch(e){return ''}})();
+ const el=Math.round((Date.now()-(GLS.tw||Date.now()))/1000);
+ $('#app').innerHTML=glHead(`Test ${GLS.form} · ${GLS.read?'Listen and answer':'Applying and understanding'}`)+`<div class="gldots">${L.map((x,j)=>`<button class="${j===GLS.i?'n':GLS.ans[x.id]&&String(GLS.ans[x.id]).trim()?'a':''}" data-glj="${j}" aria-label="Question ${j+1}">${j+1}</button>`).join('')}</div>
+  <div class="card center"><div class="glbar"><span class="muted" style="font-weight:800">Question ${GLS.i+1} of ${L.length}</span><span class="glclock" id="glck">⏱️ ${glMmss(el)}</span></div>
+  ${vis?`<div class="fpwrap">${vis}</div>`:pic?picBox(pic):''}<div class="qtext">${esc(text)} <button class="b2" id="glhear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+  ${glAnsUI(it,GLS.ans[it.id])}
+  <div class="glnav"><button class="b2" id="glbk" ${GLS.i?'':'disabled'}>← Back</button>${GLS.i+1<L.length?'<button class="b1" id="glnx">Next →</button>':'<button class="b1" id="glend">Finish test ✓</button>'}</div></div>`;
+ glBindStop();const save=v=>{GLS.ans[it.id]=v};glBindAns(it,save);
+ $('#glhear').onclick=()=>say(text,it.k);if(GLS.read||SUP.read)setTimeout(()=>say(text,it.k),350);
+ const keep=()=>{const i=$('#glin');if(i)save(i.value)};
+ $('#glbk').onclick=()=>{keep();GLS.i=Math.max(0,GLS.i-1);render()};
+ const nx=$('#glnx');if(nx)nx.onclick=()=>{keep();GLS.i++;render()};
+ const f=$('#glf');if(f)f.onsubmit=e=>{e.preventDefault();keep();if(GLS.i+1<L.length){GLS.i++;render()}else glFinishAsk()};
+ const en=$('#glend');if(en)en.onclick=()=>{keep();glFinishAsk()};
+ document.querySelectorAll('[data-glj]').forEach(b=>b.onclick=()=>{keep();GLS.i=+b.dataset.glj;render()});
+ TIMER=setInterval(()=>{const c=$('#glck');if(c)c.textContent='⏱️ '+glMmss((Date.now()-GLS.tw)/1000)},1000)}
+function glFinishAsk(){const miss=GLS.written.filter(x=>!String(GLS.ans[x.id]||'').trim()).length;
+ if(miss){GLS.stage='check';render();return}glFinish()}
+function glCheckList(){const L=GLS.written,miss=L.map((x,j)=>[x,j]).filter(([x])=>!String(GLS.ans[x.id]||'').trim());
+ $('#app').innerHTML=glHead(`Test ${GLS.form}`)+`<div class="card center"><div style="font-size:54px">🤔</div><h2 style="color:var(--sea)">You have ${miss.length} question${miss.length===1?'':'s'} without an answer</h2>
+  <p>Do you want to go back and try ${miss.length===1?'it':'them'}? A good guess is better than nothing!</p>
+  <div class="gldots" style="justify-content:center">${miss.map(([x,j])=>`<button class="n" data-glj="${j}">${j+1}</button>`).join('')}</div>
+  <div style="margin-top:14px"><button class="b2" id="glgoback">Go back</button> <button class="b1" id="glsub">Finish and see my score</button></div></div>`;
+ glBindStop();$('#glgoback').onclick=()=>{GLS.stage='written';GLS.i=miss[0][1];render()};
+ document.querySelectorAll('[data-glj]').forEach(b=>b.onclick=()=>{GLS.stage='written';GLS.i=+b.dataset.glj;render()});$('#glsub').onclick=glFinish}
+function glMark(){const all=[...GLS.mental.map(x=>[x,'m']),...GLS.written.map(x=>[x,'w'])],cat={},proc={},q={};let sc=0,ms=0;
+ all.forEach(([it,part])=>{const ok=check(it,GLS.ans[it.id]);if(ok){sc++;if(part==='m')ms++}q[it.id]=ok?1:0;
+  (cat[it.cat]=cat[it.cat]||[0,0]);cat[it.cat][1]++;if(ok)cat[it.cat][0]++;(proc[it.p]=proc[it.p]||[0,0]);proc[it.p][1]++;if(ok)proc[it.p][0]++});
+ return {score:sc,total:all.length,mental:GLS.mental.length?ms:null,mental_of:GLS.mental.length||null,areas:{cat,proc,q}}}
+async function glFinish(){clearInterval(TIMER);const r=glMark(),secs=Math.round((Date.now()-GLS.t0)/1000);
+ const saved=Object.assign({grade:ME.grade,form:GLS.form,secs,at:new Date().toISOString()},r);
+ GLS={stage:'result',form:GLS.form,saved,ans:GLS.ans,fresh:true};render();
+ const {data}=await rpc('mq_gl_save',{p_code:ME.code,p_grade:ME.grade,p_form:saved.form,p_score:r.score,p_total:r.total,p_mental:r.mental,p_mental_of:r.mental_of,p_areas:r.areas,p_secs:secs});
+ if(data&&typeof data.stars==='number'){ME.stars=data.stars;header();if(data.give)cheer(`+${data.give} ⭐ Test finished!`)}
+ GLMINE=[saved,...(GLMINE||[])]}
+function glBars(obj,names){return Object.keys(names).filter(k=>obj&&obj[k]).map(k=>{const [r,n]=obj[k],p=glPct(r,n);
+ return `<div class="glrow"><span class="gln">${esc(names[k])}</span><span class="glb"><i style="width:${Math.max(p,3)}%;background:${glCol(p)}"></i></span><span class="glp">${r}/${n}</span></div>`}).join('')}
+function glResult(){const D=GLD[ME.grade],R=GLS.saved,A=R.areas||{},p=glPct(R.score,R.total),T=D[R.form];
+ const cats=Object.entries(A.cat||{}).filter(([,v])=>v[1]>=2).map(([k,v])=>[k,v[0]/v[1]]).sort((a,b)=>a[1]-b[1]);
+ const weak=cats.filter(([,x])=>x<0.75).slice(0,2),strong=cats.filter(([,x])=>x>=0.8).slice(-2).reverse();
+ const lands=new Set((C.lands||[]).map(l=>l.code));
+ const msg=p>=85?'Brilliant work! 🏆':p>=65?'Great effort! 🎉':p>=40?'Good try — keep practising! 💪':'Keep going — practice makes progress! 🌱';
+ const items=[...T.mental.map(x=>[x,'🎧']),...T.written.map(x=>[x,'✏️'])];
+ const mine=GLS.ans,qmap=A.q||{};
+ $('#app').innerHTML=`<div class="qhead"><button class="back" id="bk">← GL Practice</button><span class="f">📝 Test ${R.form} · My report</span></div>
+  <div class="card center glres"><div class="glscore" style="--p:${p}"><b>${R.score}</b><span>out of ${R.total}</span></div><h2 style="color:var(--sea);margin:8px 0 4px">${msg}</h2>
+  <p class="muted" style="margin:0">${p}% correct${R.mental_of?` · Mental maths ${R.mental}/${R.mental_of} · Written ${R.score-R.mental}/${R.total-R.mental_of}`:''}${R.secs?` · ${Math.round(R.secs/60)} minutes`:''}</p></div>
+  <div class="glgrid"><div class="card"><h3 class="glh">Maths areas</h3>${glBars(A.cat,GLCAT)}</div><div class="card"><h3 class="glh">Ways of thinking</h3>${glBars(A.proc,GLPROC)}
+   <p class="muted small" style="margin:10px 0 0">These are the four skills the GL test looks at: knowing facts, understanding ideas, explaining and reasoning, and solving problems.</p></div></div>
+  <div class="card"><h3 class="glh">🎯 What to practise next</h3>${weak.length?weak.map(([k])=>{const lc=GLLAND[k];return `<div class="glnext"><span><b>${esc(GLCAT[k])}</b></span>${lands.has(lc)?`<button class="b3" data-glland="${lc}">Practise in ${esc((C.lands.find(l=>l.code===lc)||{}).name||'')} →</button>`:''}</div>`}).join(''):'<p style="margin:0">You did well in every area. Try the other test, or beat your own score! ⭐</p>'}
+   ${strong.length?`<p class="muted" style="margin:10px 0 0">💪 Strongest: ${strong.map(([k])=>esc(GLCAT[k])).join(' and ')}</p>`:''}</div>
+  <details class="card glrev"><summary><b>Check my answers</b> (${R.score} right)</summary><ol>${items.map(([it,ic])=>{const ok=mine?check(it,mine[it.id]):!!qmap[it.id],a=mine?String(mine[it.id]||'').trim():null;
+   return `<li class="${ok?'ok':'no'}"><span class="glqi">${ic}</span> ${esc(splitPic(it.q)[1])}<br>${ok?'<span class="ok">✔ Correct</span>':`<span class="bad">✘</span> ${a!==null?`You wrote: <b>${esc(a||'—')}</b> · `:''}Answer: <b>${esc(it.a)}${it.u&&!it.u.startsWith('e.g.')?' '+esc(it.u):''}</b>`}</li>`}).join('')}</ol></details>
+  <div class="center" style="margin:14px 0"><button class="b2" id="glagain">Try Test ${R.form} again</button> <button class="b1" id="glother">Try Test ${R.form==='A'?'B':'A'}</button></div>`;
+ $('#bk').onclick=()=>{GLS={stage:'menu'};render()};
+ $('#glagain').onclick=()=>glStart(D,R.form);$('#glother').onclick=()=>glStart(D,R.form==='A'?'B':'A');
+ document.querySelectorAll('[data-glland]').forEach(b=>b.onclick=()=>{GLS=null;V={s:'land',land:b.dataset.glland};render()});
+ if(GLS.fresh){GLS.fresh=false;if(p>=65)setTimeout(()=>{happySound(true);clapSound(true)},300)}}
 function render(){clearInterval(TIMER);header();setTimeout(()=>musicFor(V.s),0);const a=$('#app');try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){};
  if(!ME){a.innerHTML=signinView();bindSignin();return}
  if(!C){a.innerHTML='<p class="center muted">Loading your map…</p>';return}
  if(V.s==='avatar'){a.innerHTML=avatarView();bindAv();if(!V.keep)window.scrollTo(0,0);V.keep=false;return}
  if(V.s!=='speed')raceStop();
- ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,cup:cupView,boss:bossView,cards:cardsView,champ:mixView,daily:mixView,finale:finaleView,check:checkView}[V.s]||mapView)();window.scrollTo(0,0)}
+ ({map:mapView,land:landView,learn:learnView,practise:practiseView,listen:listenView,play:playView,think:thinkView,use:useView,speed:speedView,cup:cupView,boss:bossView,cards:cardsView,champ:mixView,daily:mixView,finale:finaleView,check:checkView,gl:glView}[V.s]||mapView)();window.scrollTo(0,0)}
 function bindAv(){const b=$('#bk');if(b)b.onclick=()=>{V={s:'map'};render()};const d=$('#avdone');if(d)d.onclick=()=>{if(!hasAvatar()){ME.avatar=myAv();avSave()}AVS.first=false;V={s:'map'};render()}}
 function signinView(){return `<div class="signin card center"><svg class="z bob" viewBox="0 0 220 220"><use href="#zaza"/></svg>
  <h1 style="font-size:34px;color:var(--sea)">Ready for your quest?</h1><p class="muted">Type your secret Maths Quest code.</p>
@@ -2375,12 +2393,12 @@ function listenView(){clearInterval(TIMER);
  $('#app').innerHTML=(V.mtc?`<div class="qhead"><button class="back" id="bk">← Times Table Town</button><span class="f">⏱️ Multiplication check</span><div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div></div>`:qhead('🎧 Listen and answer',`<div class="dots">${Q.list.map((_,j)=>`<i class="${j<Q.res.length?(Q.res[j]?'c':'w'):j===Q.i?'n':''}"></i>`).join('')}</div>`))+
  `<div class="card center"><div class="muted" style="font-weight:800">Listen carefully…</div>${V.mtc?'':fpFor(it.q)}<div class="qtext" id="qt" style="min-height:44px">${V.mtc?esc(it.q)+' = ?':'🎧'}</div><div class="timer"><i id="tb"></i></div>
  <form id="af"><input class="ans" id="ans" autocomplete="off" inputmode="decimal"><div style="margin-top:12px"><button class="b1">Check</button> ${V.mtc?'':'<button type="button" class="b2" id="rp">🔊 Hear again</button>'}</div></form><div class="msg" id="fb"></div></div>`;
- bindBack();const go=()=>{const sp=SND.speed||'slow';if(V.mtc){say(it.q,it.k,1);return}if(sp!=='fast'&&it.k&&HAVE.has('ls-'+it.k))say(it.q,'ls-'+it.k,sp==='vslow'?.85:1);else say(it.q,it.k,{fast:1,slow:.8,vslow:.7}[sp]||.8)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
+ bindBack();const go=()=>{say(it.q,it.k)};setTimeout(go,250);const rp=$('#rp');if(rp)rp.onclick=go;
  let left=sec*10+(V.mtc?0:25);const total=left;const done=(g)=>{clearInterval(TIMER);const ok=check(it,g);Q.res.push(ok);
   if(!V.mtc)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
   if(ok)miniParty();else STREAK=0;$('#fb').innerHTML=ok?'<span class="ok">✔ Correct!</span>':`<span class="bad">The answer was <b>${esc(it.a)}</b>.</span>`;if(!V.mtc)$('#qt').textContent=splitPic(it.q)[1];
   setTimeout(()=>{Q.i++;render()},ok?800:1800)};
- if(TM()===0){const tb=$('#tb');if(tb)tb.parentNode.style.display='none'}else TIMER=setInterval(()=>{if(!V.mtc&&talking())return;left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
+ if(TM()===0){const tb=$('#tb');if(tb)tb.parentNode.style.display='none'}else TIMER=setInterval(()=>{left--;const b=$('#tb');if(b)b.style.width=(100*left/total)+'%';if(left<=0)done($('#ans')?$('#ans').value:'')},100);
  $('#ans').focus();$('#af').onsubmit=e=>{e.preventDefault();done($('#ans').value)}}
 /* ---------- play it: beat the clock ---------- */
 function playView(){clearInterval(TIMER);const st=stopObj();const pool=st.practise.filter(x=>x.t==='number'||x.t==='choice');
