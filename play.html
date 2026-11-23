@@ -1652,7 +1652,7 @@ function funRow(){const fin=allLandsDone(),sst=startedStops(),dd=dailyDone();
   <button class="fun${sst?'':' locked'}" id="fdaily"><span class="fe">${dd?'✅':'🔁'}</span><b>Daily challenge</b><span class="small">${dd?'Done today! Back tomorrow.':sst?(()=>{const f=stopStats().filter(x=>x.weak&&(x.started||x.task)).sort((a,b)=>b.need-a.need)[0];return f?'🎯 Focus: '+esc(f.st.topic)+' · +5 ⭐':'10 mixed questions · +5 ⭐'})():'Finish a quest to unlock'}</span></button>
   <button class="fun${fin?' gold':' locked'}" id="ffin"><span class="fe">🏆</span><b>Grand Treasure</b><span class="small">${fin?'You finished every land!':'Finish every land to unlock'}</span></button>
   <button class="fun glfun" id="fgl"><span class="fe">📝</span><b>GL Practice</b><span class="small">Practise for your GL maths test · Test A and Test B</span></button></div>`}
-function bindFun(){$('#fgl').onclick=()=>{GLS=null;V={s:'gl'};render()};$('#fchest').onclick=openChest;$('#fcards').onclick=()=>{V={s:'cards'};render()};checkNewCards();$('#fcup').onclick=()=>{V={s:'cup'};render()};if(!CUP||Date.now()-CUPT>60000)loadCup().then(()=>{const e=$('#cupsm');if(e)e.textContent=cupLine()});$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
+function bindFun(){$('#fgl').onclick=()=>{GLS=null;GLON=null;V={s:'gl'};render()};$('#fchest').onclick=openChest;$('#fcards').onclick=()=>{V={s:'cards'};render()};checkNewCards();$('#fcup').onclick=()=>{V={s:'cup'};render()};if(!CUP||Date.now()-CUPT>60000)loadCup().then(()=>{const e=$('#cupsm');if(e)e.textContent=cupLine()});$('#fspeed').onclick=()=>{SP=null;V={s:'speed'};render()};$('#fdaily').onclick=()=>{if(!startedStops()){cheer('Finish a quest first! 🧭');return}if(dailyDone()){cheer('Done today! Come back tomorrow 🌙');return}Q=null;V={s:'daily'};render()};
  $('#ffin').onclick=()=>{if(!allLandsDone()){cheer(`${C.lands.filter(landDone).length} of ${C.lands.length} lands done — keep going! 🧭`);return}V={s:'finale'};render()};
  if(allLandsDone()){const k='mq-fin-'+ME.code+'-g'+ME.grade;let seen=null;try{seen=localStorage.getItem(k)}catch(e){}if(!seen){try{localStorage.setItem(k,'1')}catch(e){}setTimeout(()=>{V={s:'finale'};render()},2200)}}}
 function finaleView(){const sch=ME.school?esc(ME.school):'',owned=myAv().medal==='medal-compass';
@@ -2124,7 +2124,8 @@ async function openChest(){if(chestOpened()){cheer('Come back tomorrow for a new
 const GLCAT={N:'Number and place value',C:'Addition, subtraction, multiplication and division',F:'Fractions, decimals and percentages',M:'Measurement',G:'Geometry: shape, position and direction',S:'Statistics',R:'Ratio and proportion',A:'Algebra'};
 const GLPROC={F:'Fluency in facts and procedures',U:'Fluency in conceptual understanding',R:'Mathematical reasoning',P:'Problem solving'};
 const GLLAND={N:'NI',C:'TT',F:'FF',M:'MM',G:'SF',S:'DD',R:'PP',A:'PP'};
-let GLD={},GLS=null,GLMINE=null;
+let GLD={},GLS=null,GLMINE=null,GLON=null;
+async function glOn(){try{const {data,error}=await sb.rpc('mq_gl_status',{p_code:ME.code});GLON=(error||!data)?true:data.on!==false}catch(e){GLON=true}}
 async function glLoad(g){if(GLD[g])return GLD[g];try{const r=await fetch(`content/gl-grade${g}.json`,{cache:'no-cache'});GLD[g]=await r.json()}catch(e){GLD[g]=null}return GLD[g]}
 async function glMine(){const {data}=await rpc('mq_gl_mine',{p_code:ME.code});GLMINE=Array.isArray(data)?data:(GLMINE||[]);return GLMINE}
 function glPct(r,n){return n?Math.round(100*r/n):0}
@@ -2132,6 +2133,8 @@ function glCol(p){return p>=80?'#2DBE6C':p>=50?'#FFC93C':'#FF6B4A'}
 function glMmss(s){s=Math.max(0,s|0);return Math.floor(s/60)+':'+('0'+s%60).slice(-2)}
 function glHead(t){return `<div class="qhead"><button class="back" id="bk">← ${GLS&&GLS.stage!=='menu'?'Stop test':'Quest map'}</button><span class="f">📝 ${t}</span></div>`}
 function glView(){const g=ME.grade,D=GLD[g];
+ if(GLON===null){$('#app').innerHTML='<p class="center muted">Loading your GL practice…</p>';glOn().then(()=>{if(V.s==='gl')render()});return}
+ if(GLON===false){$('#app').innerHTML=glHead('GL Practice')+'<div class="card center" style="padding:34px 20px"><div style="font-size:54px">🔒</div><h2 style="margin:8px 0">GL Practice is not part of your school’s subscription</h2><p class="muted" style="font-size:18px">Ask your teacher if your school would like to add it.</p></div>';$('#bk').onclick=()=>{V={s:'map'};render()};return}
  if(D===undefined){$('#app').innerHTML='<p class="center muted">Loading your GL practice…</p>';glLoad(g).then(()=>{if(V.s==='gl')render()});return}
  if(!D){$('#app').innerHTML=glHead('GL Practice')+'<div class="card center"><p>GL practice is not ready for your grade yet.</p></div>';$('#bk').onclick=()=>{V={s:'map'};render()};return}
  if(!GLS)GLS={stage:'menu'};

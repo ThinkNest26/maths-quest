@@ -376,7 +376,10 @@ function glCell(r,n){if(!r)return '<span class="muted">—</span>';const p=glP(r
 function glSum(rs,key){const o={};rs.forEach(r=>{const a=(r.areas||{})[key]||{};for(const k in a){o[k]=o[k]||[0,0];o[k][0]+=a[k][0];o[k][1]+=a[k][1]}});return o}
 function glBarsT(o,names){const ks=Object.keys(names).filter(k=>o[k]);if(!ks.length)return '<p class="muted">No results yet.</p>';
  return ks.map(k=>{const p=glP(o[k][0],o[k][1]);return `<div class="glr"><span>${esc(names[k])}</span><span class="glbar"><i style="width:${Math.max(p,2)}%;background:${glC(p)}"></i></span><b style="color:${glC(p)}">${p}%</b></div>`}).join('')}
-async function renderGL(){const grades=[...new Set(KIDS.map(k=>PG(k)))].sort((a,b)=>a-b);if(GLG===null||!grades.includes(GLG))GLG=grades[0]??0;
+let GLON=null,GLONT=0;async function glOnT(){try{const {data,error}=await sb.rpc('mq_gl_status');GLON=(error||!data)?true:data.on!==false}catch(e){GLON=true}GLONT=Date.now()}
+async function renderGL(){if(GLON===null||Date.now()-GLONT>60000)await glOnT();
+ if(GLON===false){$('#app').innerHTML=tabsBar()+`<div class="card" style="text-align:center;padding:30px;margin-top:4px"><div style="font-size:54px">🔒</div><h2 style="font-size:24px;margin:8px 0">GL Practice is not part of your subscription</h2><p class="muted">GL Practice gives your children Test A and Test B with timed mental maths and written questions, and a report for every child. To add it, please contact ThinkNest.</p></div>`;bindTabsT();return}
+ const grades=[...new Set(KIDS.map(k=>PG(k)))].sort((a,b)=>a-b);if(GLG===null||!grades.includes(GLG))GLG=grades[0]??0;
  const D=await glCont(GLG);const classes=[...new Set(KIDS.filter(k=>PG(k)===GLG).map(k=>k.class_name))].sort();if(GLCLS!=='all'&&!classes.includes(GLCLS))GLCLS='all';
  const ks=KIDS.filter(k=>PG(k)===GLG&&(GLCLS==='all'||k.class_name===GLCLS)).sort((a,b)=>(a.class_name||'').localeCompare(b.class_name||'')||a.first_name.localeCompare(b.first_name));
  const latest=[];ks.forEach(k=>['A','B'].forEach(f=>{const r=glLatest(k,f);if(r)latest.push(r)}));
