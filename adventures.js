@@ -59,6 +59,7 @@
 .advlocks .o{filter:none}.advlocks .c{opacity:.35}
 .advcard .qtext{font-family:Fredoka;font-size:28px;color:#16323A;margin:10px 0 14px;font-weight:600}
 .advcard .hint{display:flex;gap:10px;align-items:center;text-align:left;background:#E6F8FF;border-radius:16px;padding:10px 12px;margin-top:10px;font-weight:700;color:#1D4E89}
+.advword{display:inline-block;background:#E0F4FF;color:#0B5C7A;border-radius:999px;padding:3px 14px;font-weight:800;font-size:16px;margin:4px 0}
 .advrew{font-family:Fredoka;font-size:34px;color:#B7791F;margin:6px 0}
 .advcity{background:linear-gradient(180deg,#BEE7A5,#8FD07A);border:4px solid #6DB05A;border-radius:26px;padding:16px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:760px;margin:0 auto}
 .advplot{aspect-ratio:4/3;border-radius:20px;background:#D9C59A;border:3px dashed #A88C5A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;color:#6B5531;font-family:Fredoka;font-size:18px;padding:6px;min-width:0;text-align:center;line-height:1.1}
@@ -75,7 +76,11 @@
 .advprog .bar{flex:1;height:16px;border-radius:99px;background:#E4F1E8;overflow:hidden}.advprog .bar i{display:block;height:100%;background:linear-gradient(90deg,#2DBE6C,#FFC93C);border-radius:99px}
 `;document.head.appendChild(s)})();
 
-/* ---------- Number Forest: 13 stops along the path (positions on the 1536×864 picture) ---------- */
+/* ---------- the zones ----------
+   Each playable zone has a map picture (1536×864), stops along its path (x,y on that picture),
+   and where its questions come from. Kinds: ob = obstacle, ch = treasure chest (3 locks),
+   my = mystery chest (gem), boss = the final challenge. */
+const ADVKIND={ob:{coins:10,gems:0},ch:{coins:30,gems:0},my:{coins:15,gems:1},boss:{coins:50,gems:2}};
 const FOREST=[
  {x:147,y:772,k:'ob',e:'🪵',n:'Fallen log',s:'A giant log blocks the path!',w:'You rolled the log away!'},
  {x:387,y:622,k:'ch',e:'🧰',n:'Treasure chest',s:'A treasure chest with 3 locks!',w:'The chest is open!'},
@@ -90,11 +95,28 @@ const FOREST=[
  {x:1106,y:258,k:'my',e:'🎁',n:'Mystery chest',s:'Another glowing mystery chest!',w:'You found a gem!'},
  {x:1284,y:198,k:'ch',e:'🧰',n:'Treasure chest',s:'The last chest before the gate!',w:'The chest is open!'},
  {x:1318,y:112,k:'boss',e:'✨',n:'The Forest Gate',s:'The ancient Forest Gate! Solve 3 tricky problems to open it.',w:'You opened the Forest Gate!'}];
-const ADVKIND={ob:{q:1,d:[1,2],coins:10,gems:0},ch:{q:3,d:[1,2,3],coins:30,gems:0},my:{q:1,d:[3],coins:15,gems:1},boss:{q:3,d:[2,3],coins:50,gems:2}};
+const ISLAND=[
+ {x:251,y:600,k:'ob',e:'🦀',n:'Grumpy crab',s:'A grumpy crab snaps at you and won’t move!',w:'The crab scuttled away happily!'},
+ {x:464,y:573,k:'ch',e:'🧰',n:'Treasure chest',s:'A pirate chest with 3 locks!',w:'The chest is open!'},
+ {x:671,y:605,k:'ob',e:'🌴',n:'Fallen palm tree',s:'A palm tree has fallen across the path!',w:'You moved the palm tree!'},
+ {x:797,y:530,k:'ob',e:'🐚',n:'Giant clam',s:'A giant clam is snapped shut on the path!',w:'The clam opened up!'},
+ {x:623,y:427,k:'ch',e:'🧰',n:'Treasure chest',s:'Another pirate chest with 3 locks!',w:'The chest is open!'},
+ {x:507,y:377,k:'my',e:'🎁',n:'Mystery chest',s:'A glowing mystery chest. Only a real-life problem opens it!',w:'You found a gem!'},
+ {x:512,y:293,k:'ob',e:'🦜',n:'Pirate parrot',s:'A cheeky pirate parrot says: “Answer my question or you shall not pass!”',w:'The parrot flew off squawking “Well done!”'},
+ {x:647,y:281,k:'ch',e:'🧰',n:'Treasure chest',s:'A chest hidden by the waterfall!',w:'The chest is open!'},
+ {x:820,y:330,k:'ob',e:'🌉',n:'Wobbly rope bridge',s:'Planks are missing from the rope bridge!',w:'You fixed the rope bridge!'},
+ {x:1067,y:353,k:'ob',e:'🌊',n:'Big wave',s:'A big wave washes over the path! Wait for the answer to calm the sea.',w:'The sea is calm again!'},
+ {x:1026,y:238,k:'my',e:'🎁',n:'Mystery chest',s:'Another glowing mystery chest!',w:'You found a gem!'},
+ {x:1031,y:158,k:'ob',e:'🗿',n:'Stone guardian',s:'An old stone guardian blocks the hilltop path!',w:'The guardian stepped aside!'},
+ {x:1183,y:165,k:'ch',e:'🧰',n:'Treasure chest',s:'The last chest before the treasure!',w:'The chest is open!'},
+ {x:1290,y:118,k:'boss',e:'❌',n:'X marks the spot',s:'The Captain’s Treasure! Solve 3 real-life problems to dig it up.',w:'You found the Captain’s Treasure!'}];
+/* where questions come from: src() gives a list of items; each lock asks for a level (d) or a word problem (w) */
 const ZONES=[
- {id:'forest',n:'Number Forest',t:'Number and place value',img:'img/adv-forest-sm.webp',open:true},
- {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true},
- {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',e:'🏝️',bg:'linear-gradient(135deg,#7FDBE8,#F7D98B)'},
+ {id:'forest',n:'Number Forest',t:'Number and place value',img:'img/adv-forest-sm.webp',map:'img/adv-forest.webp',open:true,ico:'🌲',bg:'linear-gradient(180deg,#0F3B26,#1E5B3A)',spots:FOREST,start:[62,852],badge:'Forest Explorer',
+  locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{d:[3]}],my:[{d:[3]}],boss:[{d:[2,3]},{d:[2,3]},{d:[3]}]},src:()=>advLand('NI')},
+ {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
+  locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{w:1}],my:[{w:1}],boss:[{w:1},{w:1},{w:1}]},src:()=>advLand('TT').concat(advLand('NI').filter(it=>/[+−×÷]/.test(it.q))),words:()=>advWords(['NI','TT','MM'])},
+ {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true},
  {id:'mount',n:'Geometry Mountains',t:'Shapes, angles and geometry',e:'🏔️',bg:'linear-gradient(135deg,#B9A6F2,#E7E1FF)'},
  {id:'river',n:'Fraction River',t:'Fractions and decimals',e:'🌊',bg:'linear-gradient(135deg,#5BC0EB,#C6F1E7)'},
  {id:'caves',n:'Mystery Caves',t:'Reasoning and logic',e:'🕯️',bg:'linear-gradient(135deg,#3B3355,#8C7AB8)'}];
@@ -105,80 +127,90 @@ const BUILD=[
  {id:'stadium',e:'🏟️',n:'Stadium',c:180,g:2},{id:'wheel',e:'🎡',n:'Big wheel',c:200,g:2},{id:'rocket',e:'🚀',n:'Rocket launch',c:250,g:3}];
 const PLOTS=9;
 const advX=(x)=>(x/1536*100).toFixed(2)+"%",advY=(y)=>(y/864*100).toFixed(2)+"%";
+function advZ(id){return ZONES.find(z=>z.id===id)}
 
 /* ---------- saving ---------- */
 let ADV=null,ADVQ=null,ADVSAVE=null,ADVSRV=null;
 function advKey(){return 'mq-adv-'+ME.code}
-function advBlank(){return {v:1,t:0,coins:0,gems:0,round:1,cleared:[],built:{},badges:[],seen:[]}}
+function advBlank(){return {v:2,t:0,coins:0,gems:0,zs:{},built:{},badges:[],seen:[]}}
 function advFix(a){const b=advBlank();if(!a||typeof a!=='object')return b;Object.keys(b).forEach(k=>{if(a[k]===undefined)a[k]=b[k]});
- a.coins=Math.max(0,+a.coins||0);a.gems=Math.max(0,+a.gems||0);if(!Array.isArray(a.cleared))a.cleared=[];if(!Array.isArray(a.seen))a.seen=[];if(!a.built||typeof a.built!=='object')a.built={};if(!Array.isArray(a.badges))a.badges=[];return a}
+ a.coins=Math.max(0,+a.coins||0);a.gems=Math.max(0,+a.gems||0);if(!Array.isArray(a.seen))a.seen=[];if(!a.built||typeof a.built!=='object')a.built={};if(!Array.isArray(a.badges))a.badges=[];
+ if(!a.zs||typeof a.zs!=='object')a.zs={};
+ if(Array.isArray(a.cleared)){a.zs.forest=a.zs.forest||{c:a.cleared,r:a.round||1};delete a.cleared;delete a.round}
+ Object.keys(a.zs).forEach(k=>{const z=a.zs[k];if(!z||!Array.isArray(z.c))a.zs[k]={c:[],r:1}});a.v=2;return a}
+function advZS(id){if(!ADV.zs[id])ADV.zs[id]={c:[],r:1};return ADV.zs[id]}
 async function advLoad(){if(ADV&&ADV._code===ME.code)return ADV;let loc=null;try{loc=JSON.parse(localStorage.getItem(advKey())||'null')}catch(e){}
  let srv=null;const r=await rpc0('mq_adv_get',{p_code:ME.code});if(!r.error){ADVSRV=true;srv=r.data}else ADVSRV=false;
  const a=advFix(srv&&loc?((+srv.t||0)>=(+loc.t||0)?srv:loc):(srv||loc));a._code=ME.code;ADV=a;
- if(loc&&srv&&(+loc.t||0)>(+srv.t||0))advSave();return ADV}
-function advSave(){if(!ADV)return;ADV.t=Date.now();const out=Object.assign({},ADV);delete out._code;out.seen=out.seen.slice(-60);
+ if(loc&&(!srv||(+loc.t||0)>(+srv.t||0)))advSave();return ADV}
+function advSave(){if(!ADV)return;ADV.t=Date.now();const out=Object.assign({},ADV);delete out._code;out.seen=out.seen.slice(-60);ADV.seen=out.seen;
  try{localStorage.setItem(advKey(),JSON.stringify(out))}catch(e){}
  clearTimeout(ADVSAVE);ADVSAVE=setTimeout(()=>{if(ADVSRV!==false)rpc0('mq_adv_save',{p_code:ME.code,p_state:out}).then(r=>{if(r.error&&!netErr(r.error))ADVSRV=false})},700)}
 
 /* ---------- questions from the child's grade ---------- */
-function advPool(){const l=(C.lands||[]).find(x=>x.code==='NI');return l?l.stops.flatMap(s=>s.practise||[]):[]}
-function advPick(ds){const pool=advPool();if(!pool.length)return null;const seen=new Set(ADV.seen.slice(-40)),w=ME.wrong||{},f=ME.facts||{};
- let c=pool.filter(it=>ds.includes(it.d)&&!seen.has(it.id));if(!c.length)c=pool.filter(it=>ds.includes(it.d));if(!c.length)c=pool.slice();
- c.sort((a,b)=>((f[a.id]||0)*2-(w[a.id]||0)*3+Math.random()*4)-((f[b.id]||0)*2-(w[b.id]||0)*3+Math.random()*4));
+function advLand(code){const l=(C.lands||[]).find(x=>x.code===code);return l?l.stops.flatMap(s=>(s.practise||[]).map(it=>Object.assign({_land:code},it))):[]}
+/* real-life word problems with an answer the website can mark (a number, maybe with a unit) */
+function advWords(codes){const out=[];codes.forEach(code=>{const l=(C.lands||[]).find(x=>x.code===code);if(!l)return;
+ l.stops.forEach(s=>(s.use||[]).forEach((u,i)=>{if(u&&typeof u.a==='string'&&/^-?[\d,]+(\.\d+)?( ?[a-z²³%]+)?$/i.test(u.a.trim())&&u.q)
+  out.push({id:'use-'+code+'-'+s.n+'-'+i,_use:true,_land:code,q:u.q,a:u.a.trim(),t:'number',d:3,k:u.k,h:'Read it slowly. What do you need to find? Which numbers matter? Do you need to add, take away, multiply or divide?'})}))});return out}
+function advPick(z,want){let pool;if(want.w&&z.words){pool=z.words();if(!pool.length)want={d:[3]}}
+ if(!want.w||!pool||!pool.length){pool=z.src().filter(it=>want.d.includes(it.d));if(!pool.length)pool=z.src()}
+ if(!pool.length)return null;const seen=new Set(ADV.seen.slice(-40)),w=ME.wrong||{},f=ME.facts||{};
+ let c=pool.filter(it=>!seen.has(it.id));if(!c.length)c=pool.slice();
+ const sc=it=>(f[it.id]||0)*2-(w[it.id]||0)*3+Math.random()*4;c.sort((a,b)=>sc(a)-sc(b));
  const it=c[0];ADV.seen.push(it.id);return it}
 
 /* ---------- views ---------- */
 function advChips(){return `<span class="advchip" id="advc">🪙 ${ADV.coins}</span><span class="advchip gem" id="advg">💎 ${ADV.gems}</span>`}
-function advBump(){['#advc','#advg'].forEach(s=>{const e=$(s);if(e){e.classList.remove('pop');void e.offsetWidth;e.classList.add('pop')}});const c=$('#advc'),g=$('#advg');if(c)c.textContent='🪙 '+ADV.coins;if(g)g.textContent='💎 '+ADV.gems}
 function advView(){const a=$('#app');if(!ADV||ADV._code!==ME.code){a.innerHTML='<p class="center muted">Opening your adventure map…</p>';advLoad().then(()=>{if(V.s==='adv')render()});return}
- V.land='NI';if(V.z==='forest')return advForest();if(V.z==='city')return advCity();
- const fd=ADV.cleared.length,cb=Object.keys(ADV.built).length;
+ const z=V.z&&advZ(V.z);if(z&&z.build)return advCity();if(z&&z.spots)return advZone(z);
+ const cb=Object.keys(ADV.built).length;
  a.innerHTML=`<div class="advbar"><button class="back" id="advbk">← Map</button><span class="ttl">🗺️ Adventures</span><span class="sp"></span>${advChips()}</div>
  <p class="muted" style="margin:0 0 12px;font-weight:800">Explore magical worlds. Every problem you solve opens the way, unlocks treasure and earns coins to build your own Math City!</p>
- <div class="advzones">${ZONES.map(z=>{const st=z.id==='forest'?(fd?`${fd} of ${FOREST.length} stops`:'Start exploring'):z.id==='city'?`${cb} of ${PLOTS} buildings`:'Coming soon';
-  return `<button class="advz${z.open?'':' soon'}" data-zone="${z.id}"><div class="zimg" style="background-image:${z.img?`url(${z.img})`:'none'};${z.bg?'background:'+z.bg:''}">${z.e?`<span class="zemo">${z.e}</span>`:''}</div><div class="zt"><h3>${esc(z.n)}</h3><p>${esc(z.t)}</p><span class="zst">${z.open?(z.id==='city'?'🏗️ ':'🧭 ')+st:'🔒 Coming soon'}</span></div></button>`}).join('')}</div>`;
+ <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const st=z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
+  return `<button class="advz${z.open?'':' soon'}" data-zone="${z.id}"><div class="zimg" style="background-image:${z.img?`url(${z.img})`:'none'};${z.img?'':'background:'+z.bg}">${z.e?`<span class="zemo">${z.e}</span>`:''}</div><div class="zt"><h3>${esc(z.n)}</h3><p>${esc(z.t)}</p><span class="zst">${z.open?(z.build?'🏗️ ':'🧭 ')+st:'🔒 Coming soon'}</span></div></button>`}).join('')}</div>`;
  $('#advbk').onclick=()=>{V={s:'map'};render()};
- document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>{const z=ZONES.find(x=>x.id===b.dataset.zone);if(!z.open){cheer(z.n+' is coming soon! 🧭');return}V={s:'adv',z:z.id,land:'NI'};render()})}
+ document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>{const z=advZ(b.dataset.zone);if(!z.open){cheer(z.n+' is coming soon! 🧭');return}V={s:'adv',z:z.id,land:'NI'};render()})}
 
-function advForest(){const a=$('#app');const n=ADV.cleared.length,all=n>=FOREST.length;const cur=all?FOREST.length-1:n;
- const me=FOREST[all?FOREST.length-1:Math.max(0,n-1)],meX=n===0?62:me.x,meY=n===0?852:me.y-24;
- const spots=FOREST.map((s,i)=>{const done=i<n,next=i===n&&!all;const cls=done?'done':next?'next':'lock';
+function advZone(z){const a=$('#app'),S=z.spots,zs=advZS(z.id);const n=zs.c.length,all=n>=S.length;const cur=all?S.length-1:n;
+ const me=S[all?S.length-1:Math.max(0,n-1)],meX=n===0?z.start[0]:me.x,meY=n===0?z.start[1]:me.y-24;
+ const spots=S.map((s,i)=>{const done=i<n,next=i===n&&!all;const cls=done?'done':next?'next':'lock';
   return `<button class="advspot ${cls}${s.k==='boss'?' boss':''}" data-spot="${i}" style="left:${advX(s.x)};top:${advY(s.y)}" aria-label="${esc(s.n)}${done?', done':next?', next stop':', locked'}">${done?'✓':`<span class="e">${s.e}</span>`}${next?`<span class="tag">${esc(s.n)}</span>`:''}</button>`}).join('');
- a.innerHTML=`<div class="advbar"><button class="back" id="advbk">← Adventures</button><span class="ttl">🌲 Number Forest</span><span class="sp"></span>${advChips()}</div>
- <div class="advmapw"><div class="advscroll" id="advsc"><div class="advmap">${spots}<div class="advme" style="left:${advX(meX)};top:${advY(meY)}"><div class="advmeb">${avatarSVG(myAv(),120)}</div></div></div></div>
- <div class="advtip">${all?`🏆 You explored the whole forest! <button class="b1" id="advagain">🔁 Explore again with new problems</button>`:`<span>Next: ${FOREST[cur].e} <b>${esc(FOREST[cur].n)}</b> · ${n} of ${FOREST.length} stops</span><button class="b1" id="advnext">Go! 🧭</button>`}<button class="b2" id="advcity">🏗️ Build Math City</button></div></div>`;
+ a.innerHTML=`<div class="advbar"><button class="back" id="advbk">← Adventures</button><span class="ttl">${z.ico} ${esc(z.n)}</span><span class="sp"></span>${advChips()}</div>
+ <div class="advmapw" style="background:${z.bg}"><div class="advscroll" id="advsc"><div class="advmap" style="background-image:url(${z.map})">${spots}<div class="advme" style="left:${advX(meX)};top:${advY(meY)}"><div class="advmeb">${avatarSVG(myAv(),120)}</div></div></div></div>
+ <div class="advtip">${all?`🏆 You explored the whole of ${esc(z.n)}! <button class="b1" id="advagain">🔁 Explore again with new problems</button>`:`<span>Next: ${S[cur].e} <b>${esc(S[cur].n)}</b> · ${n} of ${S.length} stops</span><button class="b1" id="advnext">Go! 🧭</button>`}<button class="b2" id="advcity">🏗️ Build Math City</button></div></div>`;
  $('#advbk').onclick=()=>{V={s:'adv'};render()};$('#advcity').onclick=()=>{V={s:'adv',z:'city',land:'NI'};render()};
- const nx=$('#advnext');if(nx)nx.onclick=()=>advOpen(n);
- {const sc=$('#advsc'),mp=sc&&sc.firstElementChild;if(sc&&mp&&mp.offsetWidth>sc.clientWidth){const t=FOREST[cur].x/1536*mp.offsetWidth;sc.scrollLeft=Math.max(0,t-sc.clientWidth/2)}}
- const ag=$('#advagain');if(ag)ag.onclick=()=>{ADV.cleared=[];ADV.round=(ADV.round||1)+1;advSave();render();cheer('A new forest adventure! 🌲')};
+ const nx=$('#advnext');if(nx)nx.onclick=()=>advOpen(z,n);
+ {const sc=$('#advsc'),mp=sc&&sc.firstElementChild;if(sc&&mp&&mp.offsetWidth>sc.clientWidth){const t=S[cur].x/1536*mp.offsetWidth;sc.scrollLeft=Math.max(0,t-sc.clientWidth/2)}}
+ const ag=$('#advagain');if(ag)ag.onclick=()=>{zs.c=[];zs.r=(zs.r||1)+1;advSave();render();cheer('A new adventure! '+z.ico)};
  document.querySelectorAll('[data-spot]').forEach(b=>b.onclick=()=>{const i=+b.dataset.spot;
-  if(i<ADV.cleared.length){cheer(`${FOREST[i].e} Done! Keep exploring.`);return}if(i>ADV.cleared.length){cheer('Clear the glowing stop first! ✨');return}advOpen(i)})}
+  if(i<zs.c.length){cheer(`${S[i].e} Done! Keep exploring.`);return}if(i>zs.c.length){cheer('Clear the glowing stop first! ✨');return}advOpen(z,i)})}
 
 /* ---------- solving a stop ---------- */
-function advOpen(i){const s=FOREST[i],K=ADVKIND[s.k];ADVQ={i,s,K,got:0,it:null,tries:0};advNextQ()}
+function advOpen(z,i){const s=z.spots[i],K=ADVKIND[s.k],L=z.locks[s.k];ADVQ={z,i,s,K,L,got:0,it:null,tries:0};advNextQ()}
 function advClose(){const o=document.getElementById('advov');if(o)o.remove();ADVQ=null}
-function advNextQ(){const q=ADVQ;q.it=advPick(q.K.d.length===3?[q.K.d[Math.min(q.got,2)]]:q.K.d);q.tries=0;advDraw()}
-function advDraw(){const q=ADVQ,s=q.s,it=q.it;let o=document.getElementById('advov');if(!o){o=document.createElement('div');o.id='advov';o.className='advov';document.body.appendChild(o)}
+function advNextQ(){const q=ADVQ;q.it=advPick(q.z,q.L[Math.min(q.got,q.L.length-1)]);q.tries=0;advDraw()}
+function advDraw(){const q=ADVQ,s=q.s,it=q.it,nq=q.L.length;let o=document.getElementById('advov');if(!o){o=document.createElement('div');o.id='advov';o.className='advov';document.body.appendChild(o)}
  if(!it){o.innerHTML=`<div class="advcard"><p>No questions found for your grade yet.</p><button class="b1" id="advx2">OK</button></div>`;$('#advx2').onclick=advClose;return}
- const [pic,text]=splitPic(it.q);const locks=q.K.q>1?`<div class="advlocks" aria-label="${q.got} of ${q.K.q} locks open">${Array.from({length:q.K.q},(_,j)=>j<q.got?'<span class="o">🔓</span>':'<span class="c">🔒</span>').join('')}</div>`:'';
- o.innerHTML=`<div class="advcard" role="dialog" aria-label="${esc(s.n)}"><button class="x" id="advx" aria-label="Close">✕</button><div class="se">${s.e}</div><h2>${esc(s.n)}</h2><div class="story">${esc(s.s)}${q.K.q>1?` Solve ${q.K.q} problems to open it.`:' Solve this to get past.'}</div>${locks}
- ${fpFor(it.q)||(pic?picBox(pic):'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
+ V.land=it._land||'NI';const [pic,text]=splitPic(it.q);const locks=nq>1?`<div class="advlocks" aria-label="${q.got} of ${nq} locks open">${Array.from({length:nq},(_,j)=>j<q.got?'<span class="o">🔓</span>':'<span class="c">🔒</span>').join('')}</div>`:'';
+ o.innerHTML=`<div class="advcard" role="dialog" aria-label="${esc(s.n)}"><button class="x" id="advx" aria-label="Close">✕</button><div class="se">${s.e}</div><h2>${esc(s.n)}</h2><div class="story">${esc(s.s)}${nq>1?` Solve ${nq} problems to open it.`:' Solve this to get past.'}</div>${locks}
+ ${it._use?'<div class="advword">🗺️ Real-life problem</div>':''}${fpFor(it.q)||(pic?picBox(pic):'')}<div class="qtext">${esc(text)} <button class="b2" id="hear" aria-label="Hear the question" style="padding:4px 12px;font-size:16px;vertical-align:middle">🔊</button></div>
  ${answerUI(it)}<div class="msg" id="fb"></div><div id="hn"></div></div>`;
  $('#advx').onclick=advClose;$('#hear').onclick=()=>say(text,it.k);autoRead(text,it.k);
  bindAnswer(it,g=>{const ok=check(it,g);
-  if(q.tries===0){rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
+  if(q.tries===0){if(!it._use)rpc('mq_answer',{p_code:ME.code,p_qid:it.id,p_correct:ok}).then(({data})=>{if(typeof data==='number'){ME.stars=data;header()}});
    ME.facts=ME.facts||{};ME.wrong=ME.wrong||{};if(ok)ME.facts[it.id]=(ME.facts[it.id]||0)+1;else ME.wrong[it.id]=(ME.wrong[it.id]||0)+1}
-  if(ok){q.got++;celebrate(false,()=>{if(!ADVQ)return;if(q.got>=q.K.q)advWin();else advNextQ()});return}
+  if(ok){q.got++;celebrate(false,()=>{if(!ADVQ)return;if(q.got>=nq)advWin();else advNextQ()});return}
   if(q.tries===0){q.tries=1;oops();$('#fb').innerHTML='<span class="bad">Not quite. Have another go!</span>';$('#hn').innerHTML=`<div class="hint">💡<div>${esc(it.h||'Read it again slowly and find the important numbers.')}</div></div>`;const i=$('#ans');if(i){i.value='';i.focus()}return}
-  gentleSound();$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(it.a)}</b>.</span> ${howBtn(it)} <div style="margin-top:10px"><button class="b3" id="advnq">Try a new problem →</button></div>`;bindHow(it);$('#advnq').onclick=advNextQ;
+  gentleSound();$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(it.a)}</b>.</span> ${it._use?'':howBtn(it)} <div style="margin-top:10px"><button class="b3" id="advnq">Try a new problem →</button></div>`;if(!it._use)bindHow(it);$('#advnq').onclick=advNextQ;
   document.querySelectorAll('#advov [data-c],#advov .ans,#advov .b1').forEach(e=>e.disabled=true)})}
-function advWin(){const q=ADVQ,s=q.s,K=q.K;ADV.coins+=K.coins;ADV.gems+=K.gems;if(!ADV.cleared.includes(q.i))ADV.cleared.push(q.i);
- const fin=s.k==='boss';if(fin&&!ADV.badges.includes('forest'))ADV.badges.push('forest');advSave();
+function advWin(){const q=ADVQ,s=q.s,K=q.K,z=q.z,zs=advZS(z.id);ADV.coins+=K.coins;ADV.gems+=K.gems;if(!zs.c.includes(q.i))zs.c.push(q.i);
+ const fin=s.k==='boss';if(fin&&!ADV.badges.includes(z.id))ADV.badges.push(z.id);advSave();
  const o=document.getElementById('advov');miniParty();happySound(true);setTimeout(()=>clapSound(true),150);
  const opened=s.k==='ob'?'✅':s.k==='boss'?'🏆':'💰';
  o.innerHTML=`<div class="advcard"><div class="se" style="font-size:84px">${opened}</div><h2>${esc(s.w)}</h2>
  <div class="advrew">+${K.coins} 🪙${K.gems?` &nbsp;+${K.gems} 💎`:''}</div>
- ${fin?`<p style="font-weight:800;color:#1E5B3A">🌲 You explored the whole of Number Forest, ${esc(ME.first_name)}! You earned the <b>Forest Explorer</b> badge.</p>`:''}
+ ${fin?`<p style="font-weight:800;color:#1E5B3A">${z.ico} You explored the whole of ${esc(z.n)}, ${esc(ME.first_name)}! You earned the <b>${esc(z.badge)}</b> badge.</p>`:''}
  <p class="muted" style="font-weight:800">You now have 🪙 ${ADV.coins} and 💎 ${ADV.gems}. Spend them in Math City!</p>
  <div class="row" style="justify-content:center;gap:10px;display:flex;flex-wrap:wrap">${fin?'':'<button class="b1" id="advon">Keep exploring 🧭</button>'}<button class="b2" id="advbuild">🏗️ Build in Math City</button></div></div>`;
  say(s.w+(K.gems?' You found a gem!':''));
@@ -192,9 +224,9 @@ function advCity(){const a=$('#app');const b=ADV.built,n=Object.keys(b).length,p
  <div class="advprog"><span>City progress</span><div class="bar"><i style="width:${pc}%"></i></div><span>${pc}%</span></div>
  <div class="advcity">${Array.from({length:PLOTS},(_,i)=>{const it=b[i]&&BUILD.find(x=>x.id===b[i]);
   return it?`<div class="advplot built${ADVNEW===i?' new':''}"><span class="pe">${it.e}</span><span>${esc(it.n)}</span></div>`:`<button class="advplot" data-plot="${i}"><span style="font-size:34px">＋</span><span>Build here</span></button>`}).join('')}</div>
- <p class="center muted" style="font-weight:800;margin-top:12px">${n>=PLOTS?'🎉 Your city is complete! Amazing work, '+esc(ME.first_name)+'!':'Earn 🪙 coins and 💎 gems in Number Forest, then tap an empty plot to build.'}</p>
- <div class="center"><button class="b1" id="advfor">🌲 Go to Number Forest</button></div>`;ADVNEW=null;
- $('#advbk').onclick=()=>{V={s:'adv'};render()};$('#advfor').onclick=()=>{V={s:'adv',z:'forest',land:'NI'};render()};
+ <p class="center muted" style="font-weight:800;margin-top:12px">${n>=PLOTS?'🎉 Your city is complete! Amazing work, '+esc(ME.first_name)+'!':'Earn 🪙 coins and 💎 gems in Number Forest and Treasure Island, then tap an empty plot to build.'}</p>
+ <div class="center"><button class="b1" id="advfor">🗺️ Go exploring</button></div>`;ADVNEW=null;
+ $('#advbk').onclick=()=>{V={s:'adv'};render()};$('#advfor').onclick=()=>{V={s:'adv'};render()};
  document.querySelectorAll('[data-plot]').forEach(p=>p.onclick=()=>advShop(+p.dataset.plot))}
 function advShop(i){let o=document.getElementById('advov');if(!o){o=document.createElement('div');o.id='advov';o.className='advov';document.body.appendChild(o)}
  const have=new Set(Object.values(ADV.built));
