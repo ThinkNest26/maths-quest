@@ -112,7 +112,7 @@ const ISLAND=[
  {x:1290,y:118,k:'boss',e:'❌',n:'X marks the spot',s:'The Captain’s Treasure! Solve 3 real-life problems to dig it up.',w:'You found the Captain’s Treasure!'}];
 /* where questions come from: src() gives a list of items; each lock asks for a level (d) or a word problem (w) */
 const ZONES=[
- {id:'forest',n:'Number Forest',t:'Number and place value',img:'img/adv-forest-sm.webp',map:'img/adv-forest.webp',open:true,game:'forest-game.js?v=1',ico:'🌲',bg:'linear-gradient(180deg,#0F3B26,#1E5B3A)',spots:FOREST,start:[62,852],badge:'Forest Explorer',
+ {id:'forest',n:'Number Forest',t:'Number and place value',img:'img/adv-forest-sm.webp',map:'img/adv-forest.webp',open:true,game:'forest-game.js?v=2',ico:'🌲',bg:'linear-gradient(180deg,#0F3B26,#1E5B3A)',spots:FOREST,start:[62,852],badge:'Forest Explorer',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{d:[3]}],my:[{d:[3]}],boss:[{d:[2,3]},{d:[2,3]},{d:[3]}]},src:()=>advLand('NI')},
  {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{w:1}],my:[{w:1}],boss:[{w:1},{w:1},{w:1}]},src:()=>advLand('TT').concat(advLand('NI').filter(it=>/[+−×÷]/.test(it.q))),words:()=>advWords(['NI','TT','MM'])},

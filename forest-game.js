@@ -132,7 +132,7 @@ function update(){G.t++;if(G.pause)return;
  if(G.inv>0)G.inv--;
  reveal();
  // zone check
- const z=G.px<15*T?0:G.px<30*T?1:G.px<45*T?2:3;if(z!==G.zone){G.zone=z;toast('📍 '+ZONES[z].name)}
+ const z=G.px<15*T?0:G.px<30*T?1:G.px<45*T?2:3;if(z!==G.zone){G.zone=z;toast('📍 '+ZONES[z].name);talk('zone'+z)}
  // near a box / final gate?
  near=null;G.boxes.forEach(b=>{if(!b.open&&Math.hypot(b.x*T+32-G.px,b.y*T+32-G.py)<80)near=b});
  if(!near&&!G.final.open&&G.keys>=3&&Math.hypot(FINAL.x*T+32-G.px,(FINAL.y-2)*T+32-G.py)<110)near='final';
@@ -265,7 +265,9 @@ let last=0,acc=0;function loop(ts){if(!ON)return;acc+=Math.min(60,ts-last);last=
    like everywhere else on the site, and coins, gems and progress are saved to the adventure. */
 let ON=false,Z=null,WRAP=null,DONE=null;
 const live=()=>typeof ADV!=='undefined'&&ADV&&typeof ME!=='undefined'&&ME;
-function say(t){try{if(typeof window.say==='function'&&window.say!==say){window.say(t);return}}catch(e){}say0(t)}
+function say(t,k){try{if(typeof window.say==='function'&&window.say!==say){window.say(t,k);return}}catch(e){}say0(t)}
+const VO={"intro": "An old explorer has left you a treasure map. Explore the forest, find the golden boxes, and use your maths to unlock the way to the Ancient Stone Gate!", "back": "Welcome back, explorer! Let's carry on with your adventure.", "map": "Follow the red dotted path. Find the golden boxes, and answer the question inside to get a key. Each key opens the next gate. Look out for bees, the wild boar, and the prickly thorns!", "key": "Correct! You found a key! The next gate is now open. Keep exploring!", "key3": "Correct! You have all the keys! Now go to the Ancient Stone Gate on the hill.", "coins": "Bonus coins for exploring!", "gem": "A sparkling gem! You can spend gems in Math City.", "heart": "An extra heart! You found an extra life.", "win": "Hooray! You explored Number Forest! You earned the Forest Explorer badge!", "zone0": "Sunny Meadow.", "zone1": "Whispering River.", "zone2": "Buzzing Woods.", "zone3": "Ancient Hill.", "tip-1-0": "Here's a tip from Wise Owl. To find ten more, the tens digit goes up by one!", "tip-1-1": "Here's a tip from Wise Owl. Counting in twos: 2, 4, 6, 8, 10. These are even numbers.", "tip-1-2": "Here's a tip from Wise Owl. A number line helps you count on and back.", "tip-2-0": "Here's a tip from Wise Owl. To find one hundred more, the hundreds digit goes up by one.", "tip-2-1": "Here's a tip from Wise Owl. In 345, the 3 means 3 hundreds. That's 300!", "tip-2-2": "Here's a tip from Wise Owl. Counting in fifties: 50, 100, 150, 200. It goes up by half a hundred.", "tip-3-0": "Here's a tip from Wise Owl. When you round, look at the digit to the right. If it is 5 or more, round up!", "tip-3-1": "Here's a tip from Wise Owl. In 4,582, the 4 is worth 4,000.", "tip-3-2": "Here's a tip from Wise Owl. Roman numerals: I is 1, V is 5, X is 10, L is 50, and C is 100.", "tip-4-0": "Here's a tip from Wise Owl. Negative numbers are below zero, like a cold winter morning of minus 5 degrees.", "tip-4-1": "Here's a tip from Wise Owl. Rounding to the nearest thousand? Look at the hundreds digit.", "tip-4-2": "Here's a tip from Wise Owl. Dividing by one hundred moves every digit two places to the right.", "tip-5-0": "Here's a tip from Wise Owl. A square number is a number times itself. 6 times 6 is 36.", "tip-5-1": "Here's a tip from Wise Owl. A prime number has exactly two factors: one, and itself.", "tip-5-2": "Here's a tip from Wise Owl. One million has six zeros!", "fact-0": "Here's an amazing fact from Wise Owl. Zero is the only number that is neither positive nor negative.", "fact-1": "Here's an amazing fact from Wise Owl. The word hundred comes from an old word that meant one hundred and twenty!", "fact-2": "Here's an amazing fact from Wise Owl. A googol is 1 followed by one hundred zeros.", "fact-3": "Here's an amazing fact from Wise Owl. Ancient Egyptians used a picture of a frog for one hundred thousand!", "fact-4": "Here's an amazing fact from Wise Owl. If you count one number every second, it takes eleven and a half days to reach one million.", "fact-5": "Here's an amazing fact from Wise Owl. Bees build their honeycombs from hexagons. Clever bees!"};
+function talk(k){if(VO[k])say(VO[k],'fg-'+k)}
 function busy(e){const tg=e.target&&e.target.tagName;return tg==='INPUT'||tg==='TEXTAREA'||tg==='SELECT'||!!document.getElementById('advov')}
 function fgSave(){if(!live())return;ADV.coins=G.coins;ADV.gems=G.gems;
  ADV.fg={o:G.boxes.map((b,i)=>b.open?i:-1).filter(i=>i>=0),f:G.final.step};advSave()}
@@ -302,16 +304,16 @@ function askBox(b){const qi=G.boxes.filter(x=>x.k==='q').indexOf(b);
  const want=(Z&&Z.locks&&Z.locks.ch&&Z.locks.ch[qi])||{d:[Math.min(qi+1,3)]};
  qAsk({img:'gold',n:'Golden treasure box',s:'Answer the question to open it. There is a key inside!'},want,first=>{
   G.asked++;if(first)G.first++;b.open=true;b.anim=0;snd('open');G.keys++;const c=first?30:15;G.coins+=c;
-  const gi=G.keys-1,gate=G.gates[gi];fgSave();hud();
+  const gi=G.keys-1,gate=G.gates[gi];fgSave();hud();talk(gate?'key':'key3');
   card(`<div class="fg-big">${pic('heroKey',6)}</div><h2>Correct! You found a key!</h2><p>+${c} 🪙 coins</p><p>${gate?'The gate to <b>'+ZONES[gi+1].name+'</b> is now open. Keep exploring!':'You have all the keys! Go to the <b>Ancient Stone Gate</b> on the hill.'}</p><button class="fg-go" id="fg-ok">Let’s go! ➜</button>`);
   $('fg-ok').onclick=()=>{if(gate){gate.open=true;gate.anim=0;snd('gate');G.parts.push({x:gate.x*T+32,y:gate.y*T,vx:0,vy:-1,l:90,txt:'Gate open! 🔓',c:'#FFE08A'})}close()}})}
 
-function surprise(b){b.open=true;b.anim=0;const r=b.x%5;let html;
- if(r===0){G.coins+=25;html=`<div class="fg-big">${pic('surpOpen',4.5)}</div><h2>🪙 Bonus coins!</h2><p>+25 coins for exploring!</p>`;snd('coin')}
- else if(r===1){G.gems++;html=`<div class="fg-big">${pic('surpOpen',4.5)}</div><h2>💎 A sparkling gem!</h2><p>+1 gem. Spend gems in Math City!</p>`;snd('right')}
- else if(r===2){const t=pick(TIPS[grade]);html=`<div class="fg-owlrow">${pic('owl',6)}<div><h2>💡 Wise Owl’s maths tip!</h2><p>${t}</p></div></div>`;say(t)}
- else if(r===3){const f=pick(FACTS);html=`<div class="fg-owlrow">${pic('owl',6)}<div><h2>🤓 Wise Owl’s amazing fact!</h2><p>${f}</p></div></div>`;say(f)}
- else{G.hearts=Math.min(G.hearts+1,4);html=`<div class="fg-big">${pic('surpOpen',4.5)}</div><h2>❤️ Extra heart!</h2><p>You found an extra life.</p>`;snd('right')}
+function surprise(b){b.open=true;b.anim=0;const r=({11:2,2:0,26:3,35:4,55:1})[b.x]??b.x%5;let html;
+ if(r===0){talk('coins');G.coins+=25;html=`<div class="fg-big">${pic('surpOpen',4.5)}</div><h2>🪙 Bonus coins!</h2><p>+25 coins for exploring!</p>`;snd('coin')}
+ else if(r===1){talk('gem');G.gems++;html=`<div class="fg-big">${pic('surpOpen',4.5)}</div><h2>💎 A sparkling gem!</h2><p>+1 gem. Spend gems in Math City!</p>`;snd('right')}
+ else if(r===2){const ti=Math.floor(Math.random()*TIPS[grade].length),t=TIPS[grade][ti];html=`<div class="fg-owlrow">${pic('owl',6)}<div><h2>💡 Wise Owl’s maths tip!</h2><p>${t}</p></div></div>`;talk('tip-'+grade+'-'+ti)}
+ else if(r===3){const fi=Math.floor(Math.random()*FACTS.length),f=FACTS[fi];html=`<div class="fg-owlrow">${pic('owl',6)}<div><h2>🤓 Wise Owl’s amazing fact!</h2><p>${f}</p></div></div>`;talk('fact-'+fi)}
+ else{talk('heart');G.hearts=Math.min(G.hearts+1,4);html=`<div class="fg-big">${pic('surpOpen',4.5)}</div><h2>❤️ Extra heart!</h2><p>You found an extra life.</p>`;snd('right')}
  fgSave();card(html+`<button class="fg-go" id="fg-ok">Keep exploring ➜</button>`);$('fg-ok').onclick=close;hud()}
 
 function openFinal(){G.pause=true;K.u=K.d=K.l=K.r=0;
@@ -320,7 +322,7 @@ function openFinal(){G.pause=true;K.u=K.d=K.l=K.r=0;
   qAsk({img:'stone',n:'The Ancient Stone Gate',s:`Riddle ${G.final.step+1} of 3. Solve all three to open the gate!`},want,first=>{
    G.asked++;if(first)G.first++;G.final.step++;fgSave();snd('right');setTimeout(step,300)})};step()}
 
-function win(){G.pause=true;snd('win');const pct=G.asked?G.first/G.asked:1,st=pct>=.85?3:pct>=.6?2:1;G.coins+=50;G.gems+=2;hud();
+function win(){G.pause=true;snd('win');setTimeout(()=>talk('win'),900);const pct=G.asked?G.first/G.asked:1,st=pct>=.85?3:pct>=.6?2:1;G.coins+=50;G.gems+=2;hud();
  let badge='';if(live()){ADV.coins=G.coins;ADV.gems=G.gems;ADV.fg=null;if(!ADV.badges.includes('forest')){ADV.badges.push('forest');badge=' You earned the <b>Forest Explorer</b> badge!'}advSave()}
  const nm=live()&&ME.first_name?', '+esc(ME.first_name):'';
  $('fg-ov').innerHTML=`<div class="fg-parch"><div class="fg-row" style="gap:0">${pic('heroKey',6.5)}${pic('goldOpen',4.5,'margin-left:-.3em')}</div><h1>🏆 You explored Number Forest${nm}!</h1><div style="font-size:4em">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p>+50 🪙 · +2 💎 · ${G.first} of ${G.asked} right first time</p><p>${badge||'Badge: <b>Forest Explorer</b>'}</p>
@@ -334,7 +336,7 @@ function intro(){G.pause=true;const n=G.boxes.filter(b=>b.k==='q'&&b.open).lengt
  <p>${back?`Welcome back, ${nm}! You have ${n} of 3 keys. Carry on from <b>${ZONES[Math.min(n,3)].name}</b>.`:`Hello ${nm}! An old explorer has left you a treasure map. Explore the forest, find the golden boxes and use your maths to unlock the way to the Ancient Stone Gate!`}</p>
  <div class="fg-row" style="margin:.6em 0"><button class="fg-go" id="fg-begin">Open the map 🗺️</button>${back?'<button class="fg-go fg-sub" id="fg-restart">Start again ↺</button>':''}</div>
  <p style="font-size:1em;opacity:.8;padding-right:12%">Computer: arrow keys to walk · Space to open boxes · M for the map &nbsp;|&nbsp; iPad: use the buttons</p></div>`;$('fg-ov').hidden=false;
- $('fg-begin').onclick=()=>showMap(true);const rs=$('fg-restart');if(rs)rs.onclick=()=>{fresh();intro()}}
+ $('fg-begin').onclick=()=>{showMap(true);talk('map')};setTimeout(()=>talk(back?'back':'intro'),300);const rs=$('fg-restart');if(rs)rs.onclick=()=>{fresh();intro()}}
 
 /* start a new forest (keeps coins and gems) */
 function fresh(){if(live()){ADV.fg=null;advSave()}reset();if(live()){G.coins=ADV.coins;G.gems=ADV.gems}hud()}
