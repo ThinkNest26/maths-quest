@@ -116,7 +116,7 @@ const ZONES=[
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{d:[3]}],my:[{d:[3]}],boss:[{d:[2,3]},{d:[2,3]},{d:[3]}]},src:()=>advLand('NI')},
  {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{w:1}],my:[{w:1}],boss:[{w:1},{w:1},{w:1}]},src:()=>advLand('TT').concat(advLand('NI').filter(it=>/[+−×÷]/.test(it.q))),words:()=>advWords(['NI','TT','MM'])},
- {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true},
+ {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true,game:'city-game.js?v=1',api:'CG',ico:'🏙️'},
  {id:'mount',n:'Geometry Mountains',t:'Shapes, angles and geometry',e:'🏔️',bg:'linear-gradient(135deg,#B9A6F2,#E7E1FF)'},
  {id:'river',n:'Fraction River',t:'Fractions and decimals',e:'🌊',bg:'linear-gradient(135deg,#5BC0EB,#C6F1E7)'},
  {id:'caves',n:'Mystery Caves',t:'Reasoning and logic',e:'🕯️',bg:'linear-gradient(135deg,#3B3355,#8C7AB8)'}];
@@ -163,11 +163,11 @@ function advPick(z,want){let pool;if(want.w&&z.words){pool=z.words();if(!pool.le
 /* ---------- views ---------- */
 function advChips(){return `<span class="advchip" id="advc">🪙 ${ADV.coins}</span><span class="advchip gem" id="advg">💎 ${ADV.gems}</span>`}
 function advView(){const a=$('#app');if(!ADV||ADV._code!==ME.code){a.innerHTML='<p class="center muted">Opening your adventure map…</p>';advLoad().then(()=>{if(V.s==='adv')render()});return}
- const z=V.z&&advZ(V.z);if(z&&z.build)return advCity();if(z&&z.game)return advGame(z);if(z&&z.spots)return advZone(z);
- const cb=Object.keys(ADV.built).length;
+ const z=V.z&&advZ(V.z);if(z&&z.game)return advGame(z);if(z&&z.build)return advCity();if(z&&z.spots)return advZone(z);
+ const cb=ADV.city&&ADV.city.p?Object.keys(ADV.city.p).length:Object.keys(ADV.built).length;
  a.innerHTML=`<div class="advbar"><button class="back" id="advbk">← Map</button><span class="ttl">🗺️ Adventures</span><span class="sp"></span>${advChips()}</div>
  <p class="muted" style="margin:0 0 12px;font-weight:800">Explore magical worlds. Every problem you solve opens the way, unlocks treasure and earns coins to build your own Math City!</p>
- <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const st=z.game?(ADV.fg&&Array.isArray(ADV.fg.o)?`${ADV.fg.o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?'🏆 Explored! Play again':'Start exploring'):z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
+ <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const st=z.build?(cb?`${cb} building${cb>1?'s':''} in your city`:'Start building'):z.game?(ADV.fg&&Array.isArray(ADV.fg.o)?`${ADV.fg.o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?'🏆 Explored! Play again':'Start exploring'):z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
   return `<button class="advz${z.open?'':' soon'}" data-zone="${z.id}"><div class="zimg" style="background-image:${z.img?`url(${z.img})`:'none'};${z.img?'':'background:'+z.bg}">${z.e?`<span class="zemo">${z.e}</span>`:''}</div><div class="zt"><h3>${esc(z.n)}</h3><p>${esc(z.t)}</p><span class="zst">${z.open?(z.build?'🏗️ ':'🧭 ')+st:'🔒 Coming soon'}</span></div></button>`}).join('')}</div>`;
  $('#advbk').onclick=()=>{V={s:'map'};render()};
  document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>{const z=advZ(b.dataset.zone);if(!z.open){cheer(z.n+' is coming soon! 🧭');return}V={s:'adv',z:z.id,land:'NI'};render()})}
@@ -187,10 +187,10 @@ function advZone(z){const a=$('#app'),S=z.spots,zs=advZS(z.id);const n=zs.c.leng
   if(i<zs.c.length){cheer(`${S[i].e} Done! Keep exploring.`);return}if(i>zs.c.length){cheer('Clear the glowing stop first! ✨');return}advOpen(z,i)})}
 
 /* ---------- Number Forest: the explore-the-forest game (forest-game.js) ---------- */
-function advGame(z){const a=$('#app');if(window.FG&&FG.on)return;a.innerHTML=`<p class="center muted" style="padding:40px 0">🌲 Opening ${esc(z.n)}…</p>`;
- const go=()=>FG.start(z,view=>{V=view||{s:'adv'};render()});
- if(window.FG)return go();const s=document.createElement('script');s.src=z.game;s.onload=go;
- s.onerror=()=>{s.remove();a.innerHTML=`<p class="center muted" style="padding:40px 0">The forest could not open. Check the internet and try again.</p><div class="center"><button class="b1" id="advbk2">← Adventures</button></div>`;$('#advbk2').onclick=()=>{V={s:'adv'};render()}};
+function advGame(z){const a=$('#app'),nm=z.api||'FG';if(window[nm]&&window[nm].on)return;a.innerHTML=`<p class="center muted" style="padding:40px 0">${z.ico||'🌲'} Opening ${esc(z.n)}…</p>`;
+ const go=()=>window[nm].start(z,view=>{V=view||{s:'adv'};render()});
+ if(window[nm])return go();const s=document.createElement('script');s.src=z.game;s.onload=go;
+ s.onerror=()=>{s.remove();a.innerHTML=`<p class="center muted" style="padding:40px 0">${esc(z.n)} could not open. Check the internet and try again.</p><div class="center"><button class="b1" id="advbk2">← Adventures</button></div>`;$('#advbk2').onclick=()=>{V={s:'adv'};render()}};
  document.head.appendChild(s)}
 
 /* ---------- solving a stop ---------- */
