@@ -116,7 +116,7 @@ const ZONES=[
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{d:[3]}],my:[{d:[3]}],boss:[{d:[2,3]},{d:[2,3]},{d:[3]}]},src:()=>advLand('NI')},
  {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,game:'island3d.js?v=2',api:'IG3',mod:true,st:'ig',ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{w:1}],my:[{w:1}],boss:[{w:1},{w:1},{w:1}]},src:()=>advLand('TT').concat(advLand('NI').filter(it=>/[+−×÷]/.test(it.q))),words:()=>advWords(['NI','TT','MM'])},
- {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true,game:'city-game.js?v=1',api:'CG',ico:'🏙️'},
+ {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true,game:'city-game.js?v=2',api:'CG',ico:'🏙️'},
  {id:'mount',n:'Geometry Mountains',t:'Shapes, angles and geometry',e:'🏔️',bg:'linear-gradient(135deg,#B9A6F2,#E7E1FF)'},
  {id:'river',n:'Fraction River',t:'Fractions and decimals',e:'🌊',bg:'linear-gradient(135deg,#5BC0EB,#C6F1E7)'},
  {id:'caves',n:'Mystery Caves',t:'Reasoning and logic',e:'🕯️',bg:'linear-gradient(135deg,#3B3355,#8C7AB8)'}];

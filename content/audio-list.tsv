@@ -4669,3 +4669,234 @@ fg-fact-2	Here's an amazing fact from Wise Owl. A googol is 1 followed by one hu
 fg-fact-3	Here's an amazing fact from Wise Owl. Ancient Egyptians used a picture of a frog for one hundred thousand!
 fg-fact-4	Here's an amazing fact from Wise Owl. If you count one number every second, it takes eleven and a half days to reach one million.
 fg-fact-5	Here's an amazing fact from Wise Owl. Bees build their honeycombs from hexagons. Clever bees!
+ig-intro	Ahoy, explorer! The old Captain buried his treasure on this island. Follow the map, find the golden boxes, and use your maths to reach the spot marked X!
+ig-back	Welcome back, explorer! Let's carry on with the treasure hunt.
+ig-map	Follow the red dotted path. Find the golden boxes, and answer the question inside to get a key. Each key opens the next gate. Look out for snappy crabs, swooping seagulls and spiky sea urchins!
+ig-key	Correct! You found a key! The next gate is now open. Keep exploring!
+ig-key3	Correct! You have all the keys! Now go to Skull Rock, where X marks the spot.
+ig-coins	Bonus coins for exploring!
+ig-gem	A sparkling gem! You can spend gems in Math City.
+ig-heart	An extra heart! You found an extra life.
+ig-win	Hooray! You found the Captain's treasure! You earned the Treasure Hunter badge!
+ig-zone0	Sandy Cove.
+ig-zone1	Parrot Jungle.
+ig-zone2	Crab Coast.
+ig-zone3	Skull Rock.
+ig-tip-1-0	Here's a tip from Wise Owl. To add 9, add 10 and take away 1!
+ig-tip-1-1	Here's a tip from Wise Owl. Doubles are quick: double 6 is 12.
+ig-tip-1-2	Here's a tip from Wise Owl. Number bonds to 10: 3 and 7, 4 and 6, 5 and 5.
+ig-tip-2-0	Here's a tip from Wise Owl. To add 19, add 20 and take away 1.
+ig-tip-2-1	Here's a tip from Wise Owl. Multiplying by 10? Every digit moves one place to the left.
+ig-tip-2-2	Here's a tip from Wise Owl. Division is sharing into equal groups.
+ig-tip-3-0	Here's a tip from Wise Owl. Check a subtraction by adding the answer back on.
+ig-tip-3-1	Here's a tip from Wise Owl. To multiply by 4, double and then double again!
+ig-tip-3-2	Here's a tip from Wise Owl. To multiply by 8, double, double and double again!
+ig-tip-4-0	Here's a tip from Wise Owl. 9 times table trick: the digits of the answer add up to 9. 9 times 4 = 36.
+ig-tip-4-1	Here's a tip from Wise Owl. To multiply by 5, multiply by 10 and then halve it.
+ig-tip-4-2	Here's a tip from Wise Owl. Use the inverse: if 7 times 8 = 56, then 56 divided by 8 = 7.
+ig-tip-5-0	Here's a tip from Wise Owl. Brackets first! In (3 + 4) times 2, add first, then multiply.
+ig-tip-5-1	Here's a tip from Wise Owl. To multiply by 25, multiply by 100 and divide by 4.
+ig-tip-5-2	Here's a tip from Wise Owl. A number divides by 3 if its digits add up to a multiple of 3.
+ig-fact-0	Here's an amazing fact from Wise Owl. Pirates shared their treasure in equal parts. That is division!
+ig-fact-1	Here's an amazing fact from Wise Owl. Pieces of eight were silver coins worth 8 smaller coins.
+ig-fact-2	Here's an amazing fact from Wise Owl. The equals sign was invented in 1557 by Robert Recorde.
+ig-fact-3	Here's an amazing fact from Wise Owl. Crabs have 10 legs. Five crabs have 50 legs!
+ig-fact-4	Here's an amazing fact from Wise Owl. Some sea turtles live for more than 50 years.
+ig-fact-5	Here's an amazing fact from Wise Owl. A ship’s speed is measured in knots. 1 knot is about 1.85 km an hour.
+cg-welcome	Welcome to Math City! Walk to an empty plot and build your city with maths.
+cg-built-park1	You built a Park!
+cg-built-park2	You built a Flower park!
+cg-built-park3	You built a Royal gardens!
+cg-built-house1	You built a Cosy house!
+cg-built-house2	You built a Family home!
+cg-built-house3	You built a Grand villa!
+cg-built-fountain1	You built a Fountain!
+cg-built-fountain2	You built a Twin fountain!
+cg-built-fountain3	You built a Golden fountain!
+cg-built-shop1	You built a Market stall!
+cg-built-shop2	You built a Market!
+cg-built-shop3	You built a Grand bazaar!
+cg-built-clock1	You built a Clock tower!
+cg-built-clock2	You built a Tall clock tower!
+cg-built-clock3	You built a Royal clock tower!
+cg-built-library1	You built a Library!
+cg-built-library2	You built a Domed library!
+cg-built-library3	You built a Great library!
+cg-built-school1	You built a School!
+cg-built-school2	You built a Big school!
+cg-built-school3	You built a Academy!
+cg-built-tower1	You built a Tower!
+cg-built-tower2	You built a Sky tower!
+cg-built-tower3	You built a Crystal tower!
+cg-built-castle1	You built a Castle!
+cg-built-castle2	You built a Fortress!
+cg-built-castle3	You built a Royal palace!
+cg-built-stadium1	You built a Stadium!
+cg-built-stadium2	You built a Big stadium!
+cg-built-stadium3	You built a Grand arena!
+cg-built-wheel1	You built a Big wheel!
+cg-built-wheel2	You built a Giant wheel!
+cg-built-wheel3	You built a Golden wheel!
+cg-built-rocket1	You built a Rocket pad!
+cg-built-rocket2	You built a Space centre!
+cg-built-rocket3	You built a Moon launch!
+cg-back-village	Welcome back to your Village!
+cg-rank-village	Amazing! Your city is now a Village!
+cg-back-town	Welcome back to your Town!
+cg-rank-town	Amazing! Your city is now a Town!
+cg-back-city	Welcome back to your City!
+cg-rank-city	Amazing! Your city is now a City!
+cg-back-capitalcity	Welcome back to your Capital City!
+cg-rank-capitalcity	Amazing! Your city is now a Capital City!
+cg-q0	The builder has 3 bricks and gets 8 more. How many bricks now?
+cg-q1	There are 18 planks. The builder uses 1. How many planks are left?
+cg-q2	Boots come in pairs. How many boots do 2 builders wear?
+cg-q3	Double 2 windows. How many windows?
+cg-q4	The wall has 16 bricks. The builder adds 1 more. How many bricks now?
+cg-q5	The builder has 7 bricks and gets 9 more. How many bricks now?
+cg-q6	There are 16 planks. The builder uses 3. How many planks are left?
+cg-q7	Boots come in pairs. How many boots do 3 builders wear?
+cg-q8	Double 9 windows. How many windows?
+cg-q9	The wall has 19 bricks. The builder adds 1 more. How many bricks now?
+cg-q10	The builder has 4 bricks and gets 4 more. How many bricks now?
+cg-q11	There are 8 planks. The builder uses 2. How many planks are left?
+cg-q12	Boots come in pairs. How many boots do 6 builders wear?
+cg-q13	Double 3 windows. How many windows?
+cg-q14	The wall has 18 bricks. The builder adds 1 more. How many bricks now?
+cg-q15	The builder has 4 bricks and gets 9 more. How many bricks now?
+cg-q16	There are 18 planks. The builder uses 3. How many planks are left?
+cg-q17	Boots come in pairs. How many boots do 5 builders wear?
+cg-q18	Double 6 windows. How many windows?
+cg-q19	The wall has 7 bricks. The builder adds 1 more. How many bricks now?
+cg-q20	The builder has 9 bricks and gets 4 more. How many bricks now?
+cg-q21	There are 18 planks. The builder uses 7. How many planks are left?
+cg-q22	Boots come in pairs. How many boots do 4 builders wear?
+cg-q23	Double 4 windows. How many windows?
+cg-q24	The wall has 9 bricks. The builder adds 1 more. How many bricks now?
+cg-q25	The builder has 6 bricks and gets 7 more. How many bricks now?
+cg-q26	There are 14 planks. The builder uses 4. How many planks are left?
+cg-q27	The wall has 25 bricks. The builder adds 22 more. How many bricks now?
+cg-q28	Each window has 2 panes of glass. How many panes in 6 windows?
+cg-q29	A door costs 30 coins. You pay with 50 coins. How much change do you get?
+cg-q30	Half of 16 roof tiles are red. How many tiles are red?
+cg-q31	The builder has 67 nails and uses 21. How many nails are left?
+cg-q32	The wall has 27 bricks. The builder adds 26 more. How many bricks now?
+cg-q33	Each window has 10 panes of glass. How many panes in 9 windows?
+cg-q34	A door costs 5 coins. You pay with 50 coins. How much change do you get?
+cg-q35	Half of 12 roof tiles are red. How many tiles are red?
+cg-q36	The builder has 58 nails and uses 22. How many nails are left?
+cg-q37	The wall has 29 bricks. The builder adds 25 more. How many bricks now?
+cg-q38	Each window has 5 panes of glass. How many panes in 3 windows?
+cg-q39	A door costs 10 coins. You pay with 50 coins. How much change do you get?
+cg-q40	Half of 8 roof tiles are red. How many tiles are red?
+cg-q41	The builder has 83 nails and uses 13. How many nails are left?
+cg-q42	The wall has 26 bricks. The builder adds 26 more. How many bricks now?
+cg-q43	Each window has 10 panes of glass. How many panes in 5 windows?
+cg-q44	A door costs 15 coins. You pay with 50 coins. How much change do you get?
+cg-q45	Half of 28 roof tiles are red. How many tiles are red?
+cg-q46	The builder has 40 nails and uses 17. How many nails are left?
+cg-q47	The wall has 55 bricks. The builder adds 27 more. How many bricks now?
+cg-q48	Each window has 5 panes of glass. How many panes in 10 windows?
+cg-q49	A door costs 45 coins. You pay with 50 coins. How much change do you get?
+cg-q50	Half of 10 roof tiles are red. How many tiles are red?
+cg-q51	The builder has 44 nails and uses 27. How many nails are left?
+cg-q52	The wall has 21 bricks. The builder adds 13 more. How many bricks now?
+cg-q53	Each window has 5 panes of glass. How many panes in 8 windows?
+cg-q54	A door costs 25 coins. You pay with 50 coins. How much change do you get?
+cg-q55	Half of 30 roof tiles are red. How many tiles are red?
+cg-q56	The builder has 40 nails and uses 34. How many nails are left?
+cg-q57	The builder puts a fence all the way around this garden. How long is the fence?
+cg-q58	Each floor has 8 windows. How many windows on 8 floors?
+cg-q59	A roof costs 55 coins. You pay with 100 coins. How much change do you get?
+cg-q60	The builder has 499 tiles and buys 372 more. How many tiles now?
+cg-q61	A wall has 8 rows of bricks with 9 bricks in each row. How many bricks?
+cg-q62	Each floor has 4 windows. How many windows on 7 floors?
+cg-q63	A roof costs 25 coins. You pay with 100 coins. How much change do you get?
+cg-q64	The builder has 285 tiles and buys 247 more. How many tiles now?
+cg-q65	A wall has 5 rows of bricks with 8 bricks in each row. How many bricks?
+cg-q66	Each floor has 8 windows. How many windows on 2 floors?
+cg-q67	A roof costs 45 coins. You pay with 100 coins. How much change do you get?
+cg-q68	The builder has 519 tiles and buys 170 more. How many tiles now?
+cg-q69	A wall has 4 rows of bricks with 6 bricks in each row. How many bricks?
+cg-q70	Each floor has 4 windows. How many windows on 2 floors?
+cg-q71	A roof costs 40 coins. You pay with 100 coins. How much change do you get?
+cg-q72	The builder has 234 tiles and buys 194 more. How many tiles now?
+cg-q73	A wall has 7 rows of bricks with 4 bricks in each row. How many bricks?
+cg-q74	Each floor has 3 windows. How many windows on 5 floors?
+cg-q75	A roof costs 85 coins. You pay with 100 coins. How much change do you get?
+cg-q76	The builder has 152 tiles and buys 212 more. How many tiles now?
+cg-q77	A wall has 5 rows of bricks with 5 bricks in each row. How many bricks?
+cg-q78	Each floor has 3 windows. How many windows on 10 floors?
+cg-q79	A roof costs 20 coins. You pay with 100 coins. How much change do you get?
+cg-q80	The builder has 374 tiles and buys 303 more. How many tiles now?
+cg-q81	A wall has 4 rows of bricks with 4 bricks in each row. How many bricks?
+cg-q82	How many square tiles cover this floor?
+cg-q83	How long is the fence around this garden?
+cg-q84	The wall is 7 m long. How many centimetres is that?
+cg-q85	9 lorries each carry 10 bags of cement. How many bags altogether?
+cg-q86	A pack of bricks costs 10 coins. How much do 3 packs cost?
+cg-q87	The wall is 2 m long. How many centimetres is that?
+cg-q88	5 lorries each carry 7 bags of cement. How many bags altogether?
+cg-q89	A pack of bricks costs 8 coins. How much do 9 packs cost?
+cg-q90	The wall is 3 m long. How many centimetres is that?
+cg-q91	7 lorries each carry 10 bags of cement. How many bags altogether?
+cg-q92	A pack of bricks costs 6 coins. How much do 7 packs cost?
+cg-q93	The wall is 8 m long. How many centimetres is that?
+cg-q94	9 lorries each carry 9 bags of cement. How many bags altogether?
+cg-q95	A pack of bricks costs 7 coins. How much do 7 packs cost?
+cg-q96	The wall is 5 m long. How many centimetres is that?
+cg-q97	7 lorries each carry 11 bags of cement. How many bags altogether?
+cg-q98	A pack of bricks costs 10 coins. How much do 6 packs cost?
+cg-q99	The wall is 6 m long. How many centimetres is that?
+cg-q100	8 lorries each carry 9 bags of cement. How many bags altogether?
+cg-q101	A pack of bricks costs 11 coins. How much do 7 packs cost?
+cg-q102	What is the area of this floor?
+cg-q103	A square garden has sides of 11 m. How long is the fence around it?
+cg-q104	A crane lifts 29 kg each time. How much does it lift in 5 trips?
+cg-q105	three quarters of 52 bricks are red. How many bricks are red?
+cg-q106	The builder has 2 kg of nails. How many grams is that?
+cg-q107	A square garden has sides of 14 m. How long is the fence around it?
+cg-q108	A crane lifts 82 kg each time. How much does it lift in 5 trips?
+cg-q109	three quarters of 60 bricks are red. How many bricks are red?
+cg-q110	The builder has 8 kg of nails. How many grams is that?
+cg-q111	A square garden has sides of 24 m. How long is the fence around it?
+cg-q112	A crane lifts 43 kg each time. How much does it lift in 4 trips?
+cg-q113	three quarters of 28 bricks are red. How many bricks are red?
+cg-q114	The builder has 8.5 kg of nails. How many grams is that?
+cg-q115	A square garden has sides of 22 m. How long is the fence around it?
+cg-q116	A crane lifts 49 kg each time. How much does it lift in 3 trips?
+cg-q117	three quarters of 76 bricks are red. How many bricks are red?
+cg-q118	The builder has 2.5 kg of nails. How many grams is that?
+cg-q119	A square garden has sides of 23 m. How long is the fence around it?
+cg-q120	A crane lifts 63 kg each time. How much does it lift in 8 trips?
+cg-q121	three quarters of 56 bricks are red. How many bricks are red?
+cg-q122	The builder has 5 kg of nails. How many grams is that?
+cg-q123	A square garden has sides of 9 m. How long is the fence around it?
+cg-q124	A crane lifts 33 kg each time. How much does it lift in 9 trips?
+cg-q125	three quarters of 20 bricks are red. How many bricks are red?
+cg-q126	The builder has 9.5 kg of nails. How many grams is that?
+cg-q127	How many 1 cm cubes fill a box 5 cm  times  2 cm  times  3 cm?
+cg-q128	The tower costs 200 coins. There is 10% off. How many coins do you save?
+cg-q129	Concrete uses sand and cement in the ratio 2 : 1. How many buckets of sand go with 6 buckets of cement?
+cg-q130	What is the area of this triangular roof?
+cg-q131	You buy 5 windows at 45 coins each. You pay with 500 coins. How much change?
+cg-q132	How many 1 cm cubes fill a box 8 cm  times  4 cm  times  2 cm?
+cg-q133	The tower costs 380 coins. There is 25% off. How many coins do you save?
+cg-q134	Concrete uses sand and cement in the ratio 2 : 1. How many buckets of sand go with 3 buckets of cement?
+cg-q135	You buy 7 windows at 34 coins each. You pay with 500 coins. How much change?
+cg-q136	How many 1 cm cubes fill a box 5 cm  times  5 cm  times  5 cm?
+cg-q137	The tower costs 320 coins. There is 20% off. How many coins do you save?
+cg-q138	Concrete uses sand and cement in the ratio 3 : 1. How many buckets of sand go with 6 buckets of cement?
+cg-q139	You buy 6 windows at 20 coins each. You pay with 500 coins. How much change?
+cg-q140	How many 1 cm cubes fill a box 4 cm  times  2 cm  times  5 cm?
+cg-q141	The tower costs 380 coins. There is 50% off. How many coins do you save?
+cg-q142	Concrete uses sand and cement in the ratio 4 : 1. How many buckets of sand go with 7 buckets of cement?
+cg-q143	You buy 6 windows at 44 coins each. You pay with 500 coins. How much change?
+cg-q144	How many 1 cm cubes fill a box 6 cm  times  2 cm  times  2 cm?
+cg-q145	The tower costs 260 coins. There is 50% off. How many coins do you save?
+cg-q146	Concrete uses sand and cement in the ratio 3 : 1. How many buckets of sand go with 12 buckets of cement?
+cg-q147	You buy 6 windows at 41 coins each. You pay with 500 coins. How much change?
+cg-q148	How many 1 cm cubes fill a box 6 cm  times  3 cm  times  2 cm?
+cg-q149	The tower costs 280 coins. There is 10% off. How many coins do you save?
+cg-q150	Concrete uses sand and cement in the ratio 4 : 1. How many buckets of sand go with 3 buckets of cement?
+cg-q151	You buy 8 windows at 44 coins each. You pay with 500 coins. How much change?
