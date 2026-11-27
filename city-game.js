@@ -138,7 +138,7 @@ const DIST=[
  {id:'town',n:'Town Square',x0:2,y0:2,x1:20,y1:12,need:null,col:'#E9D8A6'},
  {id:'forest',n:'Forest Quarter',x0:23,y0:2,x1:41,y1:12,need:'forest',how:'Finish Number Forest to open the Forest Quarter',col:'#B7DFA0'},
  {id:'harbour',n:'Harbour',x0:23,y0:15,x1:38,y1:25,need:'island',how:'Finish Treasure Island to open the Harbour',col:'#A8D8EA'},
- {id:'hill',n:'Hilltop',x0:2,y0:15,x1:20,y1:25,need:'mount',how:'Geometry Mountains is coming soon. Then the Hilltop opens!',col:'#D6C8F0'}];
+ {id:'hill',n:'Hilltop',x0:2,y0:15,x1:20,y1:25,need:'mount',how:'Finish Geometry Mountains to open the Hilltop',col:'#D6C8F0'}];
 let PLOTS=[];
 function mkPlots(){PLOTS=[];DIST.forEach((d,di)=>{const xs=d.id==='harbour'?[d.x0+1,d.x0+6,d.x0+11]:[d.x0+1,d.x0+7,d.x0+13];
  [d.y0+1,d.y0+6].forEach((py,r)=>xs.forEach((px,c)=>PLOTS.push({key:d.id+'-'+(r*3+c),d:di,x:px,y:py,id:null,lv:0,anim:1})))})}

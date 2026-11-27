@@ -114,12 +114,12 @@ const ISLAND=[
 const ZONES=[
  {id:'forest',n:'Number Forest',t:'Number and place value',img:'img/adv-forest-sm.webp',map:'img/adv-forest.webp',open:true,game:'forest-game.js?v=2',ico:'🌲',bg:'linear-gradient(180deg,#0F3B26,#1E5B3A)',spots:FOREST,start:[62,852],badge:'Forest Explorer',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{d:[3]}],my:[{d:[3]}],boss:[{d:[2,3]},{d:[2,3]},{d:[3]}]},src:()=>advLand('NI')},
- {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,game:'island3d.js?v=3',api:'IG3',mod:true,st:'ig',ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
+ {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,game:'island3d.js?v=4',api:'IG3',mod:true,st:'ig',ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{w:1}],my:[{w:1}],boss:[{w:1},{w:1},{w:1}]},src:()=>advLand('TT').concat(advLand('NI').filter(it=>/[+−×÷]/.test(it.q))),words:()=>advWords(['NI','TT','MM'])},
- {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true,game:'city-game.js?v=2',api:'CG',ico:'🏙️'},
- {id:'mount',n:'Geometry Mountains',t:'Shapes, angles and geometry',e:'🏔️',bg:'linear-gradient(135deg,#B9A6F2,#E7E1FF)'},
- {id:'river',n:'Fraction River',t:'Fractions and decimals',e:'🌊',bg:'linear-gradient(135deg,#5BC0EB,#C6F1E7)'},
- {id:'caves',n:'Mystery Caves',t:'Reasoning and logic',e:'🕯️',bg:'linear-gradient(135deg,#3B3355,#8C7AB8)'}];
+ {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true,game:'city-game.js?v=3',api:'CG',ico:'🏙️'},
+ {id:'mount',n:'Geometry Mountains',t:'Shapes, angles and geometry',img:'img/adv-mount-sm.webp',open:true,game:'island3d.js?v=4',api:'IG3',mod:true,st:'gm',ico:'🏔️'},
+ {id:'river',n:'Fraction River',t:'Fractions and decimals',img:'img/adv-river-sm.webp',open:true,game:'island3d.js?v=4',api:'IG3',mod:true,st:'fr',ico:'🌊'},
+ {id:'caves',n:'Mystery Caves',t:'Data, patterns and puzzles',img:'img/adv-caves-sm.webp',open:true,game:'island3d.js?v=4',api:'IG3',mod:true,st:'mc',ico:'🕯️'}];
 const BUILD=[
  {id:'house',e:'🏠',n:'Cosy house',c:40},{id:'park',e:'🌳',n:'Park',c:30},{id:'fountain',e:'⛲',n:'Fountain',c:60},
  {id:'shop',e:'🏪',n:'Market',c:70},{id:'school',e:'🏫',n:'School',c:100},{id:'bridge',e:'🌉',n:'Bridge',c:80},
@@ -167,7 +167,7 @@ function advView(){const a=$('#app');if(!ADV||ADV._code!==ME.code){a.innerHTML='
  const cb=ADV.city&&ADV.city.p?Object.keys(ADV.city.p).length:Object.keys(ADV.built).length;
  a.innerHTML=`<div class="advbar"><button class="back" id="advbk">← Map</button><span class="ttl">🗺️ Adventures</span><span class="sp"></span>${advChips()}</div>
  <p class="muted" style="margin:0 0 12px;font-weight:800">Explore magical worlds. Every problem you solve opens the way, unlocks treasure and earns coins to build your own Math City!</p>
- <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const st=z.st==='ig'&&ADV.ig&&ADV.ig.v===2?(ADV.ig.cur?`Level ${ADV.ig.cur.l}: ${ADV.ig.cur.o.filter(i=>i<3).length} of 3 keys`:`Level ${ADV.ig.un} is open`):z.build?(cb?`${cb} building${cb>1?'s':''} in your city`:'Start building'):z.game?(ADV[z.st||'fg']&&Array.isArray(ADV[z.st||'fg'].o)?`${ADV[z.st||'fg'].o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?'🏆 Explored! Play again':'Start exploring'):z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
+ <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const zg=z.st&&ADV[z.st]&&ADV[z.st].v===2?ADV[z.st]:null;const st=z.st&&z.mod?(zg?(zg.cur?`Level ${zg.cur.l}: ${zg.cur.o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?`🏆 Explored! Level ${zg.un} is open`:`Level ${zg.un} is open`):'Start exploring'):z.build?(cb?`${cb} building${cb>1?'s':''} in your city`:'Start building'):z.game?(ADV[z.st||'fg']&&Array.isArray(ADV[z.st||'fg'].o)?`${ADV[z.st||'fg'].o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?'🏆 Explored! Play again':'Start exploring'):z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
   return `<button class="advz${z.open?'':' soon'}" data-zone="${z.id}"><div class="zimg" style="background-image:${z.img?`url(${z.img})`:'none'};${z.img?'':'background:'+z.bg}">${z.e?`<span class="zemo">${z.e}</span>`:''}</div><div class="zt"><h3>${esc(z.n)}</h3><p>${esc(z.t)}</p><span class="zst">${z.open?(z.build?'🏗️ ':'🧭 ')+st:'🔒 Coming soon'}</span></div></button>`}).join('')}</div>`;
  $('#advbk').onclick=()=>{V={s:'map'};render()};
  document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>{const z=advZ(b.dataset.zone);if(!z.open){cheer(z.n+' is coming soon! 🧭');return}V={s:'adv',z:z.id,land:'NI'};render()})}
