@@ -114,7 +114,7 @@ const ISLAND=[
 const ZONES=[
  {id:'forest',n:'Number Forest',t:'Number and place value',img:'img/adv-forest-sm.webp',map:'img/adv-forest.webp',open:true,game:'forest-game.js?v=2',ico:'🌲',bg:'linear-gradient(180deg,#0F3B26,#1E5B3A)',spots:FOREST,start:[62,852],badge:'Forest Explorer',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{d:[3]}],my:[{d:[3]}],boss:[{d:[2,3]},{d:[2,3]},{d:[3]}]},src:()=>advLand('NI')},
- {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
+ {id:'island',n:'Treasure Island',t:'Calculations and problem-solving',img:'img/adv-island-sm.webp',map:'img/adv-island.webp',open:true,game:'island3d.js?v=1',api:'IG3',mod:true,st:'ig',ico:'🏝️',bg:'linear-gradient(180deg,#0B5C7A,#138FB0)',spots:ISLAND,start:[150,690],badge:'Treasure Hunter',
   locks:{ob:[{d:[1,2]}],ch:[{d:[1]},{d:[2]},{w:1}],my:[{w:1}],boss:[{w:1},{w:1},{w:1}]},src:()=>advLand('TT').concat(advLand('NI').filter(it=>/[+−×÷]/.test(it.q))),words:()=>advWords(['NI','TT','MM'])},
  {id:'city',n:'Math City',t:'Build and grow your own city',img:'img/adv-city-sm.webp',open:true,build:true,game:'city-game.js?v=1',api:'CG',ico:'🏙️'},
  {id:'mount',n:'Geometry Mountains',t:'Shapes, angles and geometry',e:'🏔️',bg:'linear-gradient(135deg,#B9A6F2,#E7E1FF)'},
@@ -167,7 +167,7 @@ function advView(){const a=$('#app');if(!ADV||ADV._code!==ME.code){a.innerHTML='
  const cb=ADV.city&&ADV.city.p?Object.keys(ADV.city.p).length:Object.keys(ADV.built).length;
  a.innerHTML=`<div class="advbar"><button class="back" id="advbk">← Map</button><span class="ttl">🗺️ Adventures</span><span class="sp"></span>${advChips()}</div>
  <p class="muted" style="margin:0 0 12px;font-weight:800">Explore magical worlds. Every problem you solve opens the way, unlocks treasure and earns coins to build your own Math City!</p>
- <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const st=z.build?(cb?`${cb} building${cb>1?'s':''} in your city`:'Start building'):z.game?(ADV.fg&&Array.isArray(ADV.fg.o)?`${ADV.fg.o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?'🏆 Explored! Play again':'Start exploring'):z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
+ <div class="advzones">${ZONES.map(z=>{const d=z.spots?advZS(z.id).c.length:0;const st=z.build?(cb?`${cb} building${cb>1?'s':''} in your city`:'Start building'):z.game?(ADV[z.st||'fg']&&Array.isArray(ADV[z.st||'fg'].o)?`${ADV[z.st||'fg'].o.filter(i=>i<3).length} of 3 keys`:ADV.badges.includes(z.id)?'🏆 Explored! Play again':'Start exploring'):z.spots?(ADV.badges.includes(z.id)&&!d?'🏆 Explored! Play again':d?`${d} of ${z.spots.length} stops`:'Start exploring'):z.build?`${cb} of ${PLOTS} buildings`:'Coming soon';
   return `<button class="advz${z.open?'':' soon'}" data-zone="${z.id}"><div class="zimg" style="background-image:${z.img?`url(${z.img})`:'none'};${z.img?'':'background:'+z.bg}">${z.e?`<span class="zemo">${z.e}</span>`:''}</div><div class="zt"><h3>${esc(z.n)}</h3><p>${esc(z.t)}</p><span class="zst">${z.open?(z.build?'🏗️ ':'🧭 ')+st:'🔒 Coming soon'}</span></div></button>`}).join('')}</div>`;
  $('#advbk').onclick=()=>{V={s:'map'};render()};
  document.querySelectorAll('[data-zone]').forEach(b=>b.onclick=()=>{const z=advZ(b.dataset.zone);if(!z.open){cheer(z.n+' is coming soon! 🧭');return}V={s:'adv',z:z.id,land:'NI'};render()})}
@@ -189,7 +189,9 @@ function advZone(z){const a=$('#app'),S=z.spots,zs=advZS(z.id);const n=zs.c.leng
 /* ---------- Number Forest: the explore-the-forest game (forest-game.js) ---------- */
 function advGame(z){const a=$('#app'),nm=z.api||'FG';if(window[nm]&&window[nm].on)return;a.innerHTML=`<p class="center muted" style="padding:40px 0">${z.ico||'🌲'} Opening ${esc(z.n)}…</p>`;
  const go=()=>window[nm].start(z,view=>{V=view||{s:'adv'};render()});
- if(window[nm])return go();const s=document.createElement('script');s.src=z.game;s.onload=go;
+ if(window[nm])return go();
+ if(z.mod){import('./'+z.game).then(go).catch(()=>{a.innerHTML=`<p class="center muted" style="padding:40px 0">${esc(z.n)} could not open. Check the internet and try again.</p><div class="center"><button class="b1" id="advbk2">← Adventures</button></div>`;$('#advbk2').onclick=()=>{V={s:'adv'};render()}});return}
+ const s=document.createElement('script');s.src=z.game;s.onload=go;
  s.onerror=()=>{s.remove();a.innerHTML=`<p class="center muted" style="padding:40px 0">${esc(z.n)} could not open. Check the internet and try again.</p><div class="center"><button class="b1" id="advbk2">← Adventures</button></div>`;$('#advbk2').onclick=()=>{V={s:'adv'};render()}};
  document.head.appendChild(s)}
 
