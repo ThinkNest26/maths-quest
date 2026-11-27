@@ -2576,6 +2576,6 @@ function useView(){const st=stopObj();if(!Q){const p=usePick(st);Q={kind:'use',p
 (async()=>{let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
  if(saved&&saved.code){$('#app').innerHTML='<p class="center muted">Opening your map…</p>';const m=await signIn(saved.code);if(m){ME=null;render()}}else render()})();
 </script>
-<script src="adventures.js?v=9"></script>
+<script src="adventures.js?v=10"></script>
 </body>
 </html>
