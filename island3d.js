@@ -10,6 +10,10 @@ const MP='models/pirate/';
 const CSS="#fgw #fg-wrap{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}\n#fgw #fg-stage{position:relative;width:min(100vw,calc(100vh*16/9));aspect-ratio:16/9;font-size:min(1.6vw,2.85vh)}\n#fgw canvas{width:100%;height:100%;display:block;border-radius:14px}\n#fgw .fg-hud{position:absolute;top:2%;left:2%;display:flex;gap:.6em;align-items:center;pointer-events:none}\n#fgw .fg-pill{background:rgba(255,255,255,.93);border-radius:999px;padding:.35em .9em;font-weight:700;font-size:1.25em;color:#3B2A00;box-shadow:0 3px 0 rgba(0,0,0,.2)}\n#fgw .fg-goal{position:absolute;top:10.5%;left:50%;transform:translateX(-50%);background:rgba(20,60,35,.88);color:#FFE08A;border-radius:999px;padding:.35em 1.1em;font-weight:600;font-size:1.15em;white-space:nowrap;box-shadow:0 3px 0 rgba(0,0,0,.25)}\n#fgw #fg-mapbtn{position:absolute;top:2%;right:2%;border:0;border-radius:18px;background:#F4E3B5;border:3px solid #B98B4A;color:#5A3D00;font-family:inherit;font-weight:700;font-size:1.2em;padding:.3em .8em;box-shadow:0 4px 0 #8A6230;cursor:pointer}\n#fgw #fg-mini{position:absolute;top:11%;right:2%;width:20%;height:auto!important;border-radius:10px;border:3px solid #B98B4A;background:#F4E3B5;box-shadow:0 4px 10px rgba(0,0,0,.35)}\n#fgw .fg-pad{position:absolute;left:2%;bottom:3%;width:19%;aspect-ratio:1;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);gap:4%}\n#fgw .fg-pad button{border:0;border-radius:22%;background:rgba(255,255,255,.55);font-size:2.2em;color:#1E5B3A;font-weight:700;box-shadow:0 4px 0 rgba(0,0,0,.25);touch-action:none}\n#fgw .fg-pad button.fg-on{background:rgba(255,224,138,.9);transform:translateY(2px)}\n#fgw #fg-act{position:absolute;right:3%;bottom:5%;width:13%;aspect-ratio:1;border-radius:50%;border:0;background:rgba(255,201,60,.9);color:#5A3D00;font-family:inherit;font-weight:700;font-size:1.4em;box-shadow:0 5px 0 #B7791F;display:none;touch-action:none}\n#fgw .fg-ov{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(5,25,14,.72)}\n#fgw .fg-ov[hidden]{display:none}\n#fgw .fg-card{background:#FFFBEA;border:5px solid #FFC93C;border-radius:26px;box-shadow:0 10px 0 #D9A21A,0 20px 40px rgba(0,0,0,.4);padding:1.4em 1.8em;text-align:center;max-width:72%;color:#16323A;animation:fgpop .45s cubic-bezier(.2,1.6,.4,1)}\n@keyframes fgpop{from{transform:scale(.3);opacity:0}}\n#fgw .fg-card .fg-big{font-size:4em;line-height:1;animation:fgwob 1s infinite alternate}\n#fgw .fg-card .fg-big img{display:block;margin:0 auto;height:1.4em!important}\n#fgw .fg-card .fg-owlrow{display:flex;align-items:center;gap:.8em;text-align:left}\n#fgw .fg-card .fg-owlrow img{flex:none}\n@keyframes fgwob{to{transform:rotate(6deg) scale(1.06)}}\n#fgw .fg-card h2{margin:.2em 0;font-size:1.9em;color:#1E5B3A}\n#fgw .fg-card .fg-q{font-size:2.1em;font-weight:600;margin:.4em 0 .6em;line-height:1.2}\n#fgw .fg-ans{display:grid;grid-template-columns:repeat(2,1fr);gap:.6em}\n#fgw .fg-ans button,#fgw .fg-card .fg-go{font-family:inherit;font-weight:700;font-size:1.7em;border:0;border-radius:18px;padding:.4em .8em;background:#FFC93C;color:#5A3D00;box-shadow:0 5px 0 #D9A21A;cursor:pointer}\n#fgw .fg-ans button.fg-bad{background:#D6D0C4;color:#8B867A;box-shadow:0 5px 0 #A9A396;animation:fgshake .4s}\n#fgw .fg-ans button.fg-good{background:#2DBE6C;color:#fff;box-shadow:0 5px 0 #1E8A4C}\n@keyframes fgshake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}\n#fgw .fg-card .fg-say{border:0;background:#E0F4FF;border-radius:99px;font-size:1.2em;padding:.2em .7em;cursor:pointer;font-family:inherit;font-weight:700;color:#0B5C7A}\n#fgw .fg-card .fg-fb{min-height:1.4em;font-weight:600;font-size:1.2em;margin-top:.5em;color:#B54708}\n#fgw .fg-card p{font-size:1.35em;margin:.4em 0}\n#fgw .fg-parch{max-height:96%;display:flex;flex-direction:column;align-items:center;background:var(--paper) center/100% 100% no-repeat;filter:drop-shadow(0 14px 30px rgba(0,0,0,.5));padding:3.5% 9% 6% 6%;text-align:center;color:#5A3D00;max-width:86%;animation:fgunroll .7s ease-out}\n@keyframes fgunroll{from{transform:scaleY(.05);opacity:.3}}\n#fgw .fg-parch h1{margin:0 0 .2em;font-size:2.4em;color:#7A3E1A}\n#fgw .fg-parch p{margin:.2em 0;font-size:1.3em}\n#fgw .fg-parch canvas{width:100%;height:auto;min-height:0;flex:1 1 auto;object-fit:contain;border-radius:10px;border:2px dashed #B98B4A;margin:.4em 0}\n#fgw .fg-parch .fg-row{display:flex;gap:.7em;justify-content:center;align-items:center;flex-wrap:wrap}\n#fgw .fg-parch select,#fgw .fg-parch .fg-go{font-family:inherit;font-size:1.5em;border-radius:999px;border:0;padding:.3em 1.1em;font-weight:700}\n#fgw .fg-parch .fg-go{background:#2DBE6C;color:#fff;box-shadow:0 5px 0 #1E8A4C;cursor:pointer}\n#fgw .fg-toast{position:absolute;left:50%;top:22%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:#fff;font-weight:600;font-size:1.4em;padding:.4em 1.2em;border-radius:999px;pointer-events:none;white-space:nowrap;transition:opacity .4s}\n#fgw{position:fixed;inset:0;z-index:60;background:#0B2216;font-family:Fredoka,'Trebuchet MS',sans-serif;overflow:hidden;touch-action:none;user-select:none;-webkit-user-select:none}\n#fgw *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}\n#fgw button{transition:none;line-height:1.2}\n#fgw .fg-pad button{padding:0}\n#fgw #fg-exit{position:absolute;top:2%;right:13%;border:0;border-radius:18px;background:rgba(255,255,255,.9);color:#1E5B3A;font-family:inherit;font-weight:700;font-size:1.2em;padding:.3em .8em;box-shadow:0 4px 0 rgba(0,0,0,.25);cursor:pointer}\n#fgw .fg-parch .fg-row .fg-sub{background:#fff;color:#1E5B3A;box-shadow:0 5px 0 #B98B4A}\nbody.fgon{overflow:hidden}\nbody.fgon .party,body.fgon .burst{z-index:80}body.fgon .cheer{z-index:85}\nbody.fgon .advov{z-index:75}\nbody.fgon .advcard .se img{height:96px;display:block;margin:0 auto}\n"+`
 #fgw #fg-3d{position:absolute;inset:0;border-radius:14px;overflow:hidden;background:#8FD3F2}
 #fgw #fg-3d canvas{width:100%!important;height:100%!important;border-radius:14px}
+#fgw .lv-wrap{max-width:92%}#fgw .lv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.6em;margin:.5em 0 .7em;width:100%}
+#fgw .lv{font-family:inherit;border:3px solid #B98B4A;background:#FFF8E6;border-radius:16px;padding:.35em;display:flex;flex-direction:column;align-items:center;gap:.1em;cursor:pointer;color:#5A3D00}
+#fgw .lv img{width:100%;border-radius:10px;aspect-ratio:216/120;object-fit:cover}#fgw .lv b{font-size:1.05em}#fgw .lv i{font-style:normal;font-size:.9em;color:#7A5A20}#fgw .lv span{font-weight:700;font-size:.95em}
+#fgw .lv.locked{filter:grayscale(.9);opacity:.6;cursor:default}#fgw .lv:not(.locked):hover{border-color:#FFC93C}#fgw .lv-topic{font-size:1.15em;color:#7A3E1A}
 #fgw .fg-load{color:#fff;font-size:1.6em;font-weight:700;text-align:center}
 #fgw .fg-load .bar{width:16em;height:.7em;background:rgba(255,255,255,.25);border-radius:99px;margin:.6em auto 0;overflow:hidden}
 #fgw .fg-load .bar i{display:block;height:100%;width:0;background:#FFC93C;border-radius:99px;transition:width .2s}
@@ -66,98 +70,160 @@ const TIPS={1:['To add 9, add 10 and take away 1!','Doubles are quick: double 6 
 const FACTS=['Pirates shared their treasure in equal parts. That is division!','Pieces of eight were silver coins worth 8 smaller coins.','The equals sign was invented in 1557 by Robert Recorde.','Crabs have 10 legs. Five crabs have 50 legs!','Some sea turtles live for more than 50 years.','A ship\u2019s speed is measured in knots. 1 knot is about 1.85 km an hour.'];
 const VO={"intro": "Ahoy, explorer! The old Captain buried his treasure on this island. Follow the map, find the golden boxes, and use your maths to reach the spot marked X!", "back": "Welcome back, explorer! Let's carry on with the treasure hunt.", "map": "Follow the red dotted path. Find the golden boxes, and answer the question inside to get a key. Each key opens the next gate. Look out for snappy crabs, swooping seagulls and spiky sea urchins!", "key": "Correct! You found a key! The next gate is now open. Keep exploring!", "key3": "Correct! You have all the keys! Now go to Skull Rock, where X marks the spot.", "coins": "Bonus coins for exploring!", "gem": "A sparkling gem! You can spend gems in Math City.", "heart": "An extra heart! You found an extra life.", "win": "Hooray! You found the Captain's treasure! You earned the Treasure Hunter badge!", "zone0": "Sandy Cove.", "zone1": "Parrot Jungle.", "zone2": "Crab Coast.", "zone3": "Skull Rock.", "tip-1-0": "Here's a tip from Wise Owl. To add 9, add 10 and take away 1!", "tip-1-1": "Here's a tip from Wise Owl. Doubles are quick: double 6 is 12.", "tip-1-2": "Here's a tip from Wise Owl. Number bonds to 10: 3 and 7, 4 and 6, 5 and 5.", "tip-2-0": "Here's a tip from Wise Owl. To add 19, add 20 and take away 1.", "tip-2-1": "Here's a tip from Wise Owl. Multiplying by 10? Every digit moves one place to the left.", "tip-2-2": "Here's a tip from Wise Owl. Division is sharing into equal groups.", "tip-3-0": "Here's a tip from Wise Owl. Check a subtraction by adding the answer back on.", "tip-3-1": "Here's a tip from Wise Owl. To multiply by 4, double and then double again!", "tip-3-2": "Here's a tip from Wise Owl. To multiply by 8, double, double and double again!", "tip-4-0": "Here's a tip from Wise Owl. 9 times table trick: the digits of the answer add up to 9. 9 times 4 = 36.", "tip-4-1": "Here's a tip from Wise Owl. To multiply by 5, multiply by 10 and then halve it.", "tip-4-2": "Here's a tip from Wise Owl. Use the inverse: if 7 times 8 = 56, then 56 divided by 8 = 7.", "tip-5-0": "Here's a tip from Wise Owl. Brackets first! In (3 + 4) times 2, add first, then multiply.", "tip-5-1": "Here's a tip from Wise Owl. To multiply by 25, multiply by 100 and divide by 4.", "tip-5-2": "Here's a tip from Wise Owl. A number divides by 3 if its digits add up to a multiple of 3.", "fact-0": "Here's an amazing fact from Wise Owl. Pirates shared their treasure in equal parts. That is division!", "fact-1": "Here's an amazing fact from Wise Owl. Pieces of eight were silver coins worth 8 smaller coins.", "fact-2": "Here's an amazing fact from Wise Owl. The equals sign was invented in 1557 by Robert Recorde.", "fact-3": "Here's an amazing fact from Wise Owl. Crabs have 10 legs. Five crabs have 50 legs!", "fact-4": "Here's an amazing fact from Wise Owl. Some sea turtles live for more than 50 years.", "fact-5": "Here's an amazing fact from Wise Owl. A ship’s speed is measured in knots. 1 knot is about 1.85 km an hour."};
 
-/* ======================= THE ISLAND ======================= */
-/* world units: the explorer is about 2 tall. The island runs from x −108 to 108 and z −58 to 58. */
-const ZONES=[{name:'Sandy Cove'},{name:'Parrot Jungle'},{name:'Crab Coast'},{name:'Skull Rock'}];
-const WALLX=[-50,0,50],GATEZ=[-6,22,-14];
-const STARTS=[[-90,24],[-45,-6],[5,22],[55,-14]];
-const FINAL={x:86,z:-8};
-const BOXES=[{x:-77,z:-30,k:'q'},{x:-21,z:33,k:'q'},{x:27,z:-31,k:'q'},
- {x:-92,z:0,k:'s'},{x:-64,z:34,k:'s'},{x:-36,z:-24,k:'s'},{x:-8,z:4,k:'s'},{x:16,z:12,k:'s'},{x:38,z:30,k:'s'},{x:68,z:30,k:'s'},{x:74,z:-34,k:'s'}];
-const ROUTE=[[-90,24],[-84,-6],[-74,-24],[-62,-14],[-50,-6],[-36,10],[-25,28],[-12,26],[0,22],[14,4],[24,-24],[38,-22],[50,-14],[66,-6],[FINAL.x,FINAL.z]];
+/* ======================= THE ISLANDS (one per level) ======================= */
+/* world units: the explorer is about 2 tall. Every island fits inside x −110…110, z −62…62.
+   Each level: an island shape, a route from the start to the treasure, 3 gates on the route
+   (each in a wall of rocks across the island), a theme (light, colours, decorations) and its zone names. */
 const sm=(a,b,x)=>{const t=Math.min(1,Math.max(0,(x-a)/(b-a)));return t*t*(3-2*t)};
-function shapeS(x,z){return Math.pow(Math.pow(Math.abs(x/108),4)+Math.pow(Math.abs(z/58),4),.25)+Math.sin(x*.09)*.025+Math.cos(z*.11)*.025}
+const se=(x,z,a,b,p)=>Math.pow(Math.pow(Math.abs(x/a),p)+Math.pow(Math.abs(z/b),p),1/p);
+const wob=(x,z)=>Math.sin(x*.09)*.025+Math.cos(z*.11)*.025;
+const bump=(x,z,cx,cz,h,r2)=>h*Math.exp(-((x-cx)**2+(z-cz)**2)/r2);
+const ringPts=(a0,a1,n,rx,rz,cx=0,cz=0)=>Array.from({length:n},(_,i)=>{const a=(a0+(a1-a0)*i/(n-1))*Math.PI/180;return[Math.round(cx+rx*Math.cos(a)),Math.round(cz+rz*Math.sin(a))]});
+const LEVELS=[
+ {name:'Sandy Cove Island',theme:'day',deco:'harbour',zones:['Sandy Cove','Parrot Jungle','Crab Coast','Skull Rock'],
+  S:(x,z)=>se(x,z,108,58,4)+wob(x,z),
+  route:[[-90,24],[-84,-6],[-74,-24],[-62,-14],[-50,-6],[-36,10],[-25,28],[-12,26],[0,22],[14,4],[24,-24],[38,-22],[50,-14],[66,-6],[86,-8]],gi:[4,8,12]},
+ {name:'Shipwreck Bay',theme:'day',deco:'wrecks',zones:['Wreck Point','Coral Beach','Lagoon Shore','Captain’s Cape'],
+  S:(x,z)=>{const d=Math.hypot(x,z+54);return Math.max(se(x,z,105,57,3)+wob(x,z),d<46?1+(46-d)/14:1-(d-46)/60)},
+  route:[[-84,-30],[-88,-6],[-76,16],[-56,32],[-30,40],[-5,43],[20,41],[45,33],[68,18],[84,0],[86,-28]],gi:[3,6,8]},
+ {name:'Fortress Isle',theme:'day',deco:'fortress',zones:['Cannon Beach','Fortress Walls','Tower Hill','Treasure Keep'],
+  S:(x,z)=>se(x,z,100,58,2.6)+wob(x,z),hill:(x,z)=>bump(x,z,0,0,2.4,700),
+  route:[[-88,10],[-72,-20],[-50,-38],[-30,-20],[-15,10],[-5,35],[15,40],[30,15],[35,-15],[50,-35],[70,-25],[85,0]],gi:[3,6,9]},
+ {name:'Volcano Isle',theme:'volcano',deco:'volcano',zones:['Ash Beach','Smoky Slopes','Lava Ridge','Dragon’s Rest'],volc:[5,-2],
+  S:(x,z)=>se(x,z,104,58,3)+wob(x,z),hill:(x,z)=>{const d=Math.hypot(x-5,z+2);let h=11*Math.pow(Math.max(0,1-d/36),1.5);if(d<6)h-=(6-d)*1.4;return h},
+  route:[[-90,10],[-70,-22],[-45,-40],[-15,-46],[20,-46],[50,-38],[78,-12],[80,20],[55,40],[25,46],[-5,44],[-30,40]],gi:[3,6,9],close:[[-14,7],[-100,44]]},
+ {name:'Ghost Lagoon',theme:'dusk',deco:'ghost',zones:['Misty Shore','Whispering Palms','Ghost Ship Point','Moonlight Cove'],
+  S:(x,z)=>{const r=Math.hypot(x/104,z/57);return Math.abs(r-.72)/.28+wob(x,z)},
+  route:ringPts(118,422,14,75,41),gi:[3,7,10],close:[[0,20],[0,62]]},
+ {name:'Skull Archipelago',theme:'day',deco:'archipelago',zones:['Skull Isle','Parrot Isle','Cannon Isle','Treasure Isle'],
+  isl:[[-78,12,30,25],[-26,-14,24,22],[26,16,24,22],[78,-6,28,26]],
+  S:(x,z)=>Math.min(...LEVELS[5].isl.map(([cx,cz,a,b])=>se(x-cx,z-cz,a,b,3)))+wob(x,z),
+  bridges:[[-60,1,-42,-8],[-6,-6,8,8],[45,14,56,-1]],
+  route:[[-94,22],[-80,4],[-66,4],[-51,-4],[-38,-10],[-26,-14],[-14,-10],[1,1],[14,10],[26,16],[40,15],[51,6],[62,-2],[78,-6],[90,-12]],gi:[3,7,11]}];
+const STORY=["The old Captain buried his treasure on this island. Follow the map, find the golden chests and use your maths to reach the spot marked X!", "Three old shipwrecks lie in this bay. The Captain hid the next treasure at the far end of the cape!", "Cannons and towers guard Fortress Isle. Open the fortress gates with your maths to reach the Treasure Keep!", "Smoke rises from the volcano! Walk around it, open the gates and find the treasure at Dragon’s Rest.", "The ghost ship floats in the moonlit lagoon. Follow the ring of sand all the way round to Moonlight Cove!", "Four islands joined by rope bridges. Cross every bridge to find the Captain’s greatest treasure!"];
+const THEMES={
+ day:{sky:0x8FD3F2,fog:0xA9E1F5,hemi:[0xCFF0FF,0xE9C98F,1.1],sun:[0xFFF1D6,2.4],sand:[.95,.8,.53],grass:[.36,.68,.3],grass2:[.28,.55,.25],edge:[.72,.76,.4],water:0x1E9CD0,deep:0x1A8CC0},
+ volcano:{sky:0xE9B08A,fog:0xD9A27E,hemi:[0xFFD9B8,0x6B5244,1.0],sun:[0xFFC78A,2.2],sand:[.5,.45,.42],grass:[.38,.46,.26],grass2:[.22,.2,.2],edge:[.44,.42,.3],water:0x2A7FA0,deep:0x226C88},
+ dusk:{sky:0x5E4F96,fog:0x7A6AB0,hemi:[0xB9A8FF,0x5A4A3A,.9],sun:[0xFFB07A,1.8],sand:[.86,.74,.56],grass:[.27,.5,.33],grass2:[.2,.4,.3],edge:[.6,.62,.42],water:0x2B6FA8,deep:0x23578A}};
+let L=LEVELS[0],LV=1,TH=THEMES.day,ROUTE=L.route,RARC=[],GATES=[],STARTS=[],FINAL={x:0,z:0},BOXES=[],ZONES=[];
 function segD(px,pz,a,b){const dx=b[0]-a[0],dz=b[1]-a[1],l=dx*dx+dz*dz;let t=l?((px-a[0])*dx+(pz-a[1])*dz)/l:0;t=Math.max(0,Math.min(1,t));return Math.hypot(px-a[0]-t*dx,pz-a[1]-t*dz)}
 function pathD(x,z){let d=1e9;for(let i=0;i<ROUTE.length-1;i++)d=Math.min(d,segD(x,z,ROUTE[i],ROUTE[i+1]));return d}
-function hgt(x,z){const s=shapeS(x,z),t=sm(1.12,.82,s);let h=-3+t*4.3;h+=t*(Math.sin(x*.13)*Math.cos(z*.11)*.35+Math.sin(x*.05+z*.07)*.3);
- h+=t*3.2*Math.exp(-((x-FINAL.x)**2+(z-FINAL.z)**2)/500);return h}
+function bridgeD(x,z){if(!L.bridges)return 1e9;let d=1e9;L.bridges.forEach(b=>d=Math.min(d,segD(x,z,[b[0],b[1]],[b[2],b[3]])));return d}
+function hgt(x,z){const s=L.S(x,z),t=sm(1.12,.82,s);let h=-3+t*4.3;h+=t*(Math.sin(x*.13)*Math.cos(z*.11)*.35+Math.sin(x*.05+z*.07)*.3);
+ if(L.hill)h+=t*L.hill(x,z);h+=t*bump(x,z,FINAL.x,FINAL.z,2.6,420);if(L.bridges&&bridgeD(x,z)<2.6)h=Math.max(h,.6);return h}
 const land=(x,z)=>hgt(x,z)>.35;
+/* where things go, worked out from the route */
+function routeAt(s){for(let i=0;i<ROUTE.length-1;i++){const a=ROUTE[i],b=ROUTE[i+1],l=Math.hypot(b[0]-a[0],b[1]-a[1]);if(s<=RARC[i]+l||i===ROUTE.length-2){const t=Math.max(0,Math.min(1,(s-RARC[i])/l));const dx=(b[0]-a[0])/l,dz=(b[1]-a[1])/l;return{x:a[0]+dx*l*t,z:a[1]+dz*l*t,dx,dz}}}}
+function arcOf(x,z){let best=1e9,arc=0;for(let i=0;i<ROUTE.length-1;i++){const a=ROUTE[i],b=ROUTE[i+1],dx=b[0]-a[0],dz=b[1]-a[1],l2=dx*dx+dz*dz;let t=((x-a[0])*dx+(z-a[1])*dz)/l2;t=Math.max(0,Math.min(1,t));const d=Math.hypot(x-a[0]-t*dx,z-a[1]-t*dz);if(d<best){best=d;arc=RARC[i]+t*Math.sqrt(l2)}}return arc}
+function sideSpot(s,off){const p=routeAt(s);for(const k of [1,-1,1.4,-1.4,.7,-.7]){const x=p.x-p.dz*off*k,z=p.z+p.dx*off*k;if(GATES.every(g=>Math.hypot(g.x-x,g.z-z)>9)&&hgt(x,z)>.8&&pathD(x,z)>2.8&&!(L.volc&&Math.hypot(x-L.volc[0],z-L.volc[1])<24)&&[.25,.5,.75].every(t=>hgt(p.x+(x-p.x)*t,p.z+(z-p.z)*t)>.5))return{x,z,lane:[p.x,p.z]}}return{x:p.x-p.dz*2.5,z:p.z+p.dx*2.5,lane:[p.x,p.z]}}
+function layout(){ROUTE=L.route;RARC=[0];for(let i=1;i<ROUTE.length;i++)RARC.push(RARC[i-1]+Math.hypot(ROUTE[i][0]-ROUTE[i-1][0],ROUTE[i][1]-ROUTE[i-1][1]));
+ const tot=RARC[RARC.length-1],end=ROUTE[ROUTE.length-1];FINAL={x:end[0],z:end[1]};ZONES=L.zones.map(name=>({name}));
+ GATES=L.gi.map(i=>{const a=ROUTE[i],b=ROUTE[i+1];let dx=b[0]-a[0],dz=b[1]-a[1];const l=Math.hypot(dx,dz);return{x:(a[0]+b[0])/2,z:(a[1]+b[1])/2,dx:dx/l,dz:dz/l,s:RARC[i]+l/2}});
+ STARTS=[ROUTE[0]].concat(GATES.map(g=>[g.x+g.dx*6,g.z+g.dz*6]));
+ const zs=[0].concat(GATES.map(g=>g.s)).concat([tot]);let seed=LV*97+3;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
+ BOXES=[0,1,2].map(k=>Object.assign(sideSpot(zs[k]+(zs[k+1]-zs[k])*.62,4.6),{k:'q'}));
+ for(let k=0;k<4;k++)for(let j=0;j<2;j++){const s=zs[k]+(zs[k+1]-zs[k])*(j?.82:.3)+(rnd()-.5)*6;const p=sideSpot(s,7+rnd()*5);if(BOXES.every(b=>Math.hypot(b.x-p.x,b.z-p.z)>6))BOXES.push(Object.assign(p,{k:'s'}))}}
+function laneD(x,z){let d=1e9;BOXES.forEach(b=>{if(b.lane)d=Math.min(d,segD(x,z,b.lane,[b.x,b.z]))});return d}
+function zoneOf(x,z){const a=arcOf(x,z);let n=0;GATES.forEach(g=>{if(a>g.s+1)n++});return n}
 
 /* ---------- three.js setup ---------- */
 let renderer,scene,camera,sun,clock,raf=0,LOADED=null,ocean,oceanBase;
 const loader=new GLTFLoader();const MODELS={};
-const NEED=['palm-bend','palm-straight','palm-detailed-bend','palm-detailed-straight','rocks-a','rocks-b','rocks-c','rocks-sand-a','rocks-sand-b','rocks-sand-c','chest','crate','barrel','castle-gate','ship-pirate-large','ship-wreck','structure-platform-dock','boat-row-small','tower-watch','flag-pirate','grass-plant','patch-grass-foliage','hole','tool-shovel','crate-bottles','cannon'];
+const NEED=['palm-bend','palm-straight','palm-detailed-bend','palm-detailed-straight','rocks-a','rocks-b','rocks-c','rocks-sand-a','rocks-sand-b','rocks-sand-c','chest','crate','barrel','castle-gate','ship-pirate-large','ship-wreck','structure-platform-dock','boat-row-small','tower-watch','flag-pirate','grass-plant','patch-grass-foliage','hole','tool-shovel','crate-bottles','cannon','ship-pirate-medium','castle-wall','tower-complete-large','tower-complete-small','cannon-mobile','ship-ghost','mast-ropes','structure-roof','ship-large','boat-row-large','bottle-large'];
 function loadModels(onp){if(LOADED)return LOADED;let n=0;LOADED=Promise.all(NEED.map(k=>new Promise(res=>loader.load(MP+k+'.glb',g=>{
   g.scene.traverse(o=>{if(o.isMesh){o.castShadow=true;o.receiveShadow=true}});const bb=new THREE.Box3().setFromObject(g.scene);MODELS[k]={g,bb};n++;onp(n/NEED.length);res()},undefined,()=>{n++;onp(n/NEED.length);res()}))));return LOADED}
 function place(k,x,z,o={}){const m=MODELS[k];if(!m)return null;const obj=m.g.scene.clone(true);const s=o.s||1;obj.scale.setScalar(s);obj.rotation.y=o.ry||0;
  obj.position.set(x,(o.y!==undefined?o.y:hgt(x,z))-m.bb.min.y*s+(o.dy||0),z);scene.add(obj);return obj}
 const mat=(c,o={})=>new THREE.MeshStandardMaterial(Object.assign({color:c,roughness:.8,flatShading:true},o));
 
-function buildWorld(){scene=new THREE.Scene();scene.background=new THREE.Color(0x8FD3F2);scene.fog=new THREE.Fog(0xA9E1F5,80,210);
- scene.add(new THREE.HemisphereLight(0xCFF0FF,0xE9C98F,1.1));
- sun=new THREE.DirectionalLight(0xFFF1D6,2.4);sun.position.set(30,50,20);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
+function rockLine(pts){pts.forEach(([x,z])=>{if(hgt(x,z)<-1.4||pathD(x,z)<3.4||laneD(x,z)<3.2)return;const k=pick(['rocks-a','rocks-b','rocks-c']);place(k,x+(Math.random()-.5)*1.2,z+(Math.random()-.5)*1.2,{s:2.1+Math.random()*.7,ry:Math.random()*6.3,dy:-.4});COL.push({x,z,r:2.3})})}
+function wallAt(g){const nx=-g.dz,nz=g.dx,pts=[];for(const sgn of [1,-1]){let miss=0;for(let d=4.6;d<90;d+=3.1){const x=g.x+nx*d*sgn,z=g.z+nz*d*sgn;if(L.volc&&Math.hypot(x-L.volc[0],z-L.volc[1])<21)break;if(hgt(x,z)<-1.4){if(++miss>1)break;continue}miss=0;if(pathD(x,z)<5.5&&Math.abs(arcOf(x,z)-g.s)>10)break;pts.push([x,z])}}rockLine(pts)}
+function buildWorld(){scene=new THREE.Scene();TH=THEMES[L.theme];scene.background=new THREE.Color(TH.sky);scene.fog=new THREE.Fog(TH.fog,80,210);
+ scene.add(new THREE.HemisphereLight(TH.hemi[0],TH.hemi[1],TH.hemi[2]));
+ sun=new THREE.DirectionalLight(TH.sun[0],TH.sun[1]);sun.castShadow=true;sun.shadow.mapSize.set(1024,1024);
  const sc=sun.shadow.camera;sc.left=-40;sc.right=40;sc.top=40;sc.bottom=-40;sc.near=1;sc.far=140;sun.shadow.bias=-.0008;scene.add(sun);scene.add(sun.target);
  // terrain
- const tg=new THREE.PlaneGeometry(272,164,136,82);tg.rotateX(-Math.PI/2);const p=tg.attributes.position,col=[];const c=new THREE.Color();
+ const tg=new THREE.PlaneGeometry(272,164,136,82);tg.rotateX(-Math.PI/2);const p=tg.attributes.position,col=[];const c=new THREE.Color(),deep=new THREE.Color(TH.deep);
  for(let i=0;i<p.count;i++){const x=p.getX(i),z=p.getZ(i),h=hgt(x,z);p.setY(i,h);
-  const pd=pathD(x,z),n=Math.sin(x*1.7)*Math.cos(z*1.3)*.04;
-  if(h<.2)c.setRGB(.92,.78,.52).lerp(new THREE.Color(.15,.55,.62),Math.min(1,(.2-h)/2.6));
-  else if(h<.62||pd<2.6)c.setRGB(.95+n,.8+n,.53+n);
-  else if(pd<3.6||h<.75)c.setRGB(.72,.76,.4);
-  else c.setRGB(.36+n,.68+n,.3+n).lerp(new THREE.Color(.28,.55,.25),Math.max(0,Math.min(1,(h-1.4)/2)));
+  const pd=pathD(x,z),n=Math.sin(x*1.7)*Math.cos(z*1.3)*.04,bd=bridgeD(x,z);
+  if(h<.2)c.setRGB(TH.sand[0]-.03,TH.sand[1]-.02,TH.sand[2]).lerp(deep,Math.min(1,(.2-h)/2.6));
+  else if(bd<2.6)c.setRGB(.55,.38,.22);
+  else if(h<.62||pd<2.6)c.setRGB(TH.sand[0]+n,TH.sand[1]+n,TH.sand[2]+n);
+  else if(pd<3.6||h<.75)c.setRGB(...TH.edge);
+  else c.setRGB(TH.grass[0]+n,TH.grass[1]+n,TH.grass[2]+n).lerp(new THREE.Color(...TH.grass2),Math.max(0,Math.min(1,(h-1.4)/(L.volc?4:2))));
+  if(L.volc){const d=Math.hypot(x-L.volc[0],z-L.volc[1]);if(d<30&&h>1.5)c.lerp(new THREE.Color(.18,.15,.15),Math.min(1,(30-d)/10))}
   col.push(c.r,c.g,c.b)}
  tg.setAttribute('color',new THREE.Float32BufferAttribute(col,3));tg.computeVertexNormals();
  const terr=new THREE.Mesh(tg,new THREE.MeshStandardMaterial({vertexColors:true,flatShading:true,roughness:.95}));terr.receiveShadow=true;scene.add(terr);
  // ocean
- const og=new THREE.PlaneGeometry(520,420,90,72);og.rotateX(-Math.PI/2);ocean=new THREE.Mesh(og,new THREE.MeshStandardMaterial({color:0x1E9CD0,transparent:true,opacity:.78,roughness:.25,metalness:.05,flatShading:true}));
- ocean.position.y=0;ocean.receiveShadow=true;scene.add(ocean);oceanBase=Float32Array.from(og.attributes.position.array);
- const far=new THREE.Mesh(new THREE.PlaneGeometry(2000,2000).rotateX(-Math.PI/2),mat(0x1A8CC0,{roughness:.4}));far.position.y=-3.3;scene.add(far);
- // the route as little stepping stones? (the sand path is painted on the ground)
- COL.length=0;
- // walls of rocks between the zones, each with a gate
- WALLX.forEach((wx,i)=>{for(let z=-66;z<=66;z+=3.1){if(Math.abs(z-GATEZ[i])<4.2)continue;if(hgt(wx,z)<-1.2)continue;const k=pick(['rocks-a','rocks-b','rocks-c']);
-   place(k,wx+(Math.random()-.5)*1.2,z,{s:2.1+Math.random()*.7,ry:Math.random()*6.3,dy:-.4});COL.push({x:wx,z,r:2.3})}});
- G.gates=WALLX.map((wx,i)=>{const gz=GATEZ[i];const arch=place('castle-gate',wx,gz,{s:1,ry:Math.PI/2,dy:-.2});
-   if(arch){const bb=new THREE.Box3().setFromObject(arch),sz=bb.getSize(new THREE.Vector3());const s=8.4/Math.max(sz.x,sz.z);arch.scale.setScalar(s);arch.position.y=hgt(wx,gz)-MODELS['castle-gate'].bb.min.y*s-.2}
+ const og=new THREE.PlaneGeometry(520,420,90,72);og.rotateX(-Math.PI/2);ocean=new THREE.Mesh(og,new THREE.MeshStandardMaterial({color:TH.water,transparent:true,opacity:.78,roughness:.25,metalness:.05,flatShading:true}));
+ ocean.receiveShadow=true;scene.add(ocean);oceanBase=Float32Array.from(og.attributes.position.array);
+ const far=new THREE.Mesh(new THREE.PlaneGeometry(2000,2000).rotateX(-Math.PI/2),mat(TH.deep,{roughness:.4}));far.position.y=-3.3;scene.add(far);
+ COL.length=0;PALMS=0;SHIPS.length=0;
+ if(L.volc){COL.push({x:L.volc[0],z:L.volc[1],r:21});const lava=new THREE.Mesh(new THREE.CircleGeometry(5.4,24).rotateX(-Math.PI/2),new THREE.MeshStandardMaterial({color:0xFF5A1F,emissive:0xFF3D00,emissiveIntensity:1.6}));
+  lava.position.set(L.volc[0],hgt(L.volc[0],L.volc[1])+.6,L.volc[1]);scene.add(lava);const pl=new THREE.PointLight(0xFF6A2A,60,40);pl.position.set(L.volc[0],hgt(L.volc[0],L.volc[1])+4,L.volc[1]);scene.add(pl);G.smoke=[];
+  for(let i=0;i<10;i++){const m=new THREE.Mesh(new THREE.IcosahedronGeometry(1.6,0),new THREE.MeshStandardMaterial({color:0x6E6460,transparent:true,opacity:.55,flatShading:true}));scene.add(m);G.smoke.push({m,t:i/10})}}
+ // bridges (Skull Archipelago)
+ (L.bridges||[]).forEach(b=>{const dx=b[2]-b[0],dz=b[3]-b[1],l=Math.hypot(dx,dz),wood=mat(0x9B6A3E),dark=mat(0x6B4423);const g=new THREE.Group();
+  for(let k=0;k<=l;k+=1.1){const pl=new THREE.Mesh(new THREE.BoxGeometry(5,.25,.9),k%2.2<1.1?wood:dark);pl.position.set(0,0,k-l/2);pl.castShadow=pl.receiveShadow=true;g.add(pl)}
+  [-2.4,2.4].forEach(s=>{const r=new THREE.Mesh(new THREE.BoxGeometry(.2,.2,l),dark);r.position.set(s,1,0);g.add(r);for(let k=0;k<=l;k+=3){const po=new THREE.Mesh(new THREE.BoxGeometry(.3,1.6,.3),dark);po.position.set(s,.5,k-l/2);po.castShadow=true;g.add(po)}});
+  g.position.set((b[0]+b[2])/2,.75,(b[1]+b[3])/2);g.rotation.y=Math.atan2(dx,dz);scene.add(g)});
+ // gates, each in a wall of rocks across the island
+ G.gates=GATES.map(gt=>{wallAt(gt);const ry=Math.atan2(gt.dx,gt.dz);const arch=place('castle-gate',gt.x,gt.z,{s:1,ry,dy:-.2});
+   if(arch){const bb=new THREE.Box3().setFromObject(arch),sz=bb.getSize(new THREE.Vector3());const s=8.4/Math.max(sz.x,sz.z);arch.scale.setScalar(s);arch.position.y=hgt(gt.x,gt.z)-MODELS['castle-gate'].bb.min.y*s-.2}
    const bars=new THREE.Group();const wood=mat(0x6B4423);for(let k=-2;k<=2;k++){const b=new THREE.Mesh(new THREE.BoxGeometry(.35,5.2,.35),wood);b.position.set(0,2.6,k*1.05);b.castShadow=true;bars.add(b)}
    for(let k=0;k<3;k++){const b=new THREE.Mesh(new THREE.BoxGeometry(.3,.3,5),wood);b.position.set(0,1+k*1.6,0);bars.add(b)}
-   bars.position.set(wx,hgt(wx,gz),gz);scene.add(bars);place('flag-pirate',wx+.5,gz-5.6,{s:1.6});place('flag-pirate',wx+.5,gz+5.6,{s:1.6});
-   COL.push({x:wx,z:gz-4.6,r:1.4},{x:wx,z:gz+4.6,r:1.4});const blk={x:wx,z:gz,r:3.2};COL.push(blk);
-   return{x:wx,z:gz,open:false,anim:0,bars,blk}});
- // palms and jungle
- const palmK=['palm-bend','palm-straight','palm-detailed-bend','palm-detailed-straight'];let seed=7;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};
- for(let i=0;i<900&&PALMS<170;i++){const x=-104+rnd()*208,z=-56+rnd()*112;if(!land(x,z))continue;const h=hgt(x,z);
-  if(pathD(x,z)<5.5||WALLX.some(w=>Math.abs(x-w)<4.5))continue;if(BOXES.some(b=>Math.hypot(b.x-x,b.z-z)<5)||Math.hypot(FINAL.x-x,FINAL.z-z)<9||STARTS.some(s=>Math.hypot(s[0]-x,s[1]-z)<5))continue;
-  if(COL.some(c=>Math.hypot(c.x-x,c.z-z)<c.r+2.2))continue;const r=rnd();
-  if(r<.62){place(palmK[Math.floor(rnd()*4)],x,z,{s:1.6+rnd()*.7,ry:rnd()*6.3,dy:-.2});COL.push({x,z,r:.9});PALMS++}
-  else if(r<.75){place(pick(['rocks-sand-a','rocks-sand-b','rocks-sand-c']),x,z,{s:1+rnd()*.6,ry:rnd()*6.3,dy:-.3});COL.push({x,z,r:2})}
-  else if(h>.9)place(r<.88?'grass-plant':'patch-grass-foliage',x,z,{s:1.2+rnd(),ry:rnd()*6.3,dy:-.1})}
- // harbour, ships, wreck, lookout
- place('structure-platform-dock',-101,24,{s:1.6,ry:-Math.PI/2,y:.2});place('boat-row-small',-104,30,{s:1.4,ry:.4,y:-.3});
- place('crate-bottles',-86,30,{s:1.2,ry:.5});place('barrel',-84,31,{s:1.1});COL.push({x:-85,z:30.5,r:2});
- place('tower-watch',-70,8,{s:1.5,ry:.8});COL.push({x:-70,z:8,r:2.6});
- SHIPS.push(place('ship-pirate-large',-20,74,{s:2.4,ry:Math.PI/2.4,y:-1.2}),place('ship-pirate-large',62,-78,{s:2,ry:-Math.PI/1.7,y:-1}));
- const wr=place('ship-wreck',-30,-60,{s:1.8,ry:.6,y:-1.4});
- place('cannon',44,-5,{s:1.4,ry:-1});COL.push({x:44,z:-5,r:1.5});
- // the dig site
+   bars.position.set(gt.x,hgt(gt.x,gt.z),gt.z);bars.rotation.y=ry-Math.PI/2;scene.add(bars);const nx=-gt.dz,nz=gt.dx;
+   place('flag-pirate',gt.x+nx*5.6,gt.z+nz*5.6,{s:1.6});place('flag-pirate',gt.x-nx*5.6,gt.z-nz*5.6,{s:1.6});
+   COL.push({x:gt.x+nx*4.6,z:gt.z+nz*4.6,r:1.4},{x:gt.x-nx*4.6,z:gt.z-nz*4.6,r:1.4});const blk={x:gt.x,z:gt.z,r:3.2};COL.push(blk);
+   return{x:gt.x,z:gt.z,open:false,anim:0,bars,blk}});
+ if(L.close){const [a,b]=L.close,l=Math.hypot(b[0]-a[0],b[1]-a[1]),pts=[];for(let d=0;d<=l;d+=3.1)pts.push([a[0]+(b[0]-a[0])*d/l,a[1]+(b[1]-a[1])*d/l]);rockLine(pts)}
+ // the dig site and boxes are placed before the trees, so the trees keep clear of them
  G.final.x=new THREE.Group();const red=mat(0xC0263A);[[1,1],[1,-1]].forEach(([a,b])=>{const m=new THREE.Mesh(new THREE.BoxGeometry(5.2,.25,1),red);m.rotation.y=Math.atan2(a,b)+Math.PI/4;m.position.y=.12;m.receiveShadow=true;G.final.x.add(m)});
  G.final.x.position.set(FINAL.x,hgt(FINAL.x,FINAL.z)+.05,FINAL.z);scene.add(G.final.x);place('tool-shovel',FINAL.x+3.6,FINAL.z+1.5,{s:1.6,ry:.5});
  G.final.ring=ring(FINAL.x,FINAL.z,4.2,0xFFD166);
- // boxes
- G.boxes=BOXES.map((b,i)=>{const gold=b.k==='q';const obj=place(gold?'chest':'crate',b.x,b.z,{s:gold?1.5:1.25,ry:Math.atan2(-b.x,-b.z)*0+(gold?.4:0)});
+ G.boxes=BOXES.map(b=>{const gold=b.k==='q';const obj=place(gold?'chest':'crate',b.x,b.z,{s:gold?1.5:1.25,ry:gold?.4:0});
   let mixer=null,act=null;if(gold&&obj){mixer=new THREE.AnimationMixer(obj);const clip=MODELS.chest.g.animations.find(a=>a.name==='open');if(clip){act=mixer.clipAction(clip);act.setLoop(THREE.LoopOnce);act.clampWhenFinished=true}}
-  const rg=ring(b.x,b.z,gold?2.4:1.9,gold?0xFFD166:0xB79CFF);COL.push({x:b.x,z:b.z,r:1.3});
-  return Object.assign({},b,{open:false,obj,mixer,act,ring:rg,anim:0})});
- // creatures
- G.critters=[];[[-40,-30,-18,-30],[-28,8,-10,8],[10,-10,30,-12],[30,10,44,22],[60,22,76,14]].forEach(([x1,z1,x2,z2])=>G.critters.push({k:'crab',a:[x1,z1],b:[x2,z2],t:Math.random(),obj:crab()}));
- [[20,0,16],[36,-12,12],[30,24,14]].forEach(([cx,cz,r],i)=>G.critters.push({k:'gull',cx,cz,r,t:i*2,obj:gull()}));
- G.sand=[];[[-30,-6],[-40,22],[-14,-12],[-12,40],[-34,40]].forEach(([x,z])=>{if(!land(x,z)||pathD(x,z)<3)return;const m=new THREE.Mesh(new THREE.CylinderGeometry(3,3,.12,20),mat(0xB98A4E,{roughness:1}));m.position.set(x,hgt(x,z)+.06,z);m.receiveShadow=true;scene.add(m);
+  const rg=ring(b.x,b.z,gold?2.4:1.9,gold?0xFFD166:0xB79CFF);COL.push({x:b.x,z:b.z,r:1.3});return Object.assign({},b,{open:false,obj,mixer,act,ring:rg,anim:0})});
+ decorate();
+ // palms, rocks and plants
+ const palmK=['palm-bend','palm-straight','palm-detailed-bend','palm-detailed-straight'];let seed=7+LV*13;const rnd=()=>{seed=(seed*16807)%2147483647;return (seed-1)/2147483646};const pd=L.volc?.35:.62;
+ for(let i=0;i<1100&&PALMS<(L.volc?80:160);i++){const x=-108+rnd()*216,z=-60+rnd()*120;if(!land(x,z))continue;const h=hgt(x,z);
+  if(pathD(x,z)<5.5||bridgeD(x,z)<4||laneD(x,z)<3.5)continue;if(BOXES.some(b=>Math.hypot(b.x-x,b.z-z)<5)||Math.hypot(FINAL.x-x,FINAL.z-z)<9||STARTS.some(s=>Math.hypot(s[0]-x,s[1]-z)<5))continue;
+  if(COL.some(c=>Math.hypot(c.x-x,c.z-z)<c.r+2.2))continue;const r=rnd();
+  if(r<pd){place(palmK[Math.floor(rnd()*4)],x,z,{s:1.6+rnd()*.7,ry:rnd()*6.3,dy:-.2});COL.push({x,z,r:.9});PALMS++}
+  else if(r<pd+.15){place(L.volc?pick(['rocks-a','rocks-b','rocks-c']):pick(['rocks-sand-a','rocks-sand-b','rocks-sand-c']),x,z,{s:1+rnd()*.6,ry:rnd()*6.3,dy:-.3});COL.push({x,z,r:2})}
+  else if(h>.9)place(r<.88?'grass-plant':'patch-grass-foliage',x,z,{s:1.2+rnd(),ry:rnd()*6.3,dy:-.1})}
+ // creatures, along the route
+ const zs=[0].concat(GATES.map(g=>g.s)).concat([RARC[RARC.length-1]]),zm=k=>(zs[k]+zs[k+1])/2;G.critters=[];
+ const crabAt=s=>{const p=routeAt(s),o=sideSpot(s,5.5);G.critters.push({k:'crab',a:[o.x-p.dx*7,o.z-p.dz*7],b:[o.x+p.dx*7,o.z+p.dz*7],t:Math.random(),obj:crab()})};
+ [zm(1)-12,zm(1)+10,zm(2)-8,zm(2)+12,zm(3)].forEach(crabAt);if(LV>=3)[zm(0)+10,zm(3)-14].forEach(crabAt);
+ [zm(2),zm(2)+18,zm(3)].concat(LV>=4?[zm(1)]:[]).forEach((s,i)=>{const p=routeAt(s);G.critters.push({k:'gull',cx:p.x,cz:p.z,r:11+i*2,t:i*2,obj:gull()})});
+ G.sand=[];[zm(1)-16,zm(1)-4,zm(1)+8].concat(LV>=2?[zm(0)+6]:[]).forEach(s=>{const o=sideSpot(s,6.5);const {x,z}=o;if(!land(x,z))return;
+  const m=new THREE.Mesh(new THREE.CylinderGeometry(3,3,.12,20),mat(0xB98A4E,{roughness:1}));m.position.set(x,hgt(x,z)+.06,z);m.receiveShadow=true;scene.add(m);
   const sw=new THREE.Mesh(new THREE.TorusGeometry(1.6,.12,6,24),mat(0x8A6230));sw.rotation.x=Math.PI/2;sw.position.set(x,hgt(x,z)+.15,z);scene.add(sw);G.sand.push({x,z,r:3,sw})});
- G.urch=[];for(let i=0;i<14;i++){const x=6+Math.random()*40,z=-50+Math.random()*100;if(!land(x,z)||pathD(x,z)<2.6||pathD(x,z)>9||COL.some(c=>Math.hypot(c.x-x,c.z-z)<c.r+1))continue;const u=urchin();u.position.set(x,hgt(x,z)+.4,z);scene.add(u);G.urch.push({x,z,obj:u})}
+ G.urch=[];for(let i=0;i<10+LV*2;i++){const s=zs[2]+Math.random()*(zs[3]-zs[2]+(LV>=4?zs[2]-zs[1]:0))-(LV>=4?zs[2]-zs[1]:0);const p=sideSpot(s,3+Math.random()*4);const {x,z}=p;if(!land(x,z)||pathD(x,z)<2.4||COL.some(c=>Math.hypot(c.x-x,c.z-z)<c.r+1))continue;const u=urchin();u.position.set(x,hgt(x,z)+.4,z);scene.add(u);G.urch.push({x,z,obj:u})}
  // explorer and compass
  G.hero=hero();scene.add(G.hero.g);
  G.arrow=new THREE.Mesh(new THREE.ConeGeometry(.45,1.4,4),mat(0xFFC93C,{emissive:0x7A4A10,emissiveIntensity:.4}));G.arrow.rotation.z=-Math.PI/2;const ag=new THREE.Group();ag.add(G.arrow);G.arrowG=ag;scene.add(ag);
- G.fx=[];}
+ G.fx=[];LANDC=null}
+/* the things that make each island different */
+function onLand(x,z,need=.6){return hgt(x,z)>need&&pathD(x,z)>6&&laneD(x,z)>4.5&&!COL.some(c=>Math.hypot(c.x-x,c.z-z)<c.r+2)&&BOXES.every(b=>Math.hypot(b.x-x,b.z-z)>8)}
+function decorate(){const s0=ROUTE[0],s1=ROUTE[1],dx=s0[0]-s1[0],dz=s0[1]-s1[1],l=Math.hypot(dx,dz);
+ // a dock where the explorer lands
+ let x=s0[0],z=s0[1];for(let k=0;k<30&&land(x,z);k++){x+=dx/l;z+=dz/l}if(!land(x,z)){place('structure-platform-dock',x+dx/l*2,z+dz/l*2,{s:1.6,ry:Math.atan2(dx,dz)+Math.PI,y:.2});place('boat-row-small',x+dx/l*5-dz/l*5,z+dz/l*5+dx/l*5,{s:1.4,ry:.4,y:-.3})}
+ const sea=(a,ry,s,k)=>{const p=a;SHIPS.push(place(k||'ship-pirate-large',p[0],p[1],{s:s||2.2,ry,y:-1.1}))};
+ const prop=(k,x,z,s,r=1.6)=>{if(onLand(x,z,.5)){place(k,x,z,{s,ry:Math.random()*6.3});COL.push({x,z,r})}};
+ const D=L.deco;
+ if(D==='harbour'){prop('crate-bottles',-86,30,1.2,2);prop('barrel',-82,33,1.1,1);prop('tower-watch',-70,8,1.5,2.6);prop('cannon',44,-5,1.4,1.5);sea([-20,74],Math.PI/2.4);sea([62,-78],-Math.PI/1.7,2);place('ship-wreck',-30,-60,{s:1.8,ry:.6,y:-1.4})}
+ if(D==='wrecks'){place('ship-wreck',-8,-22,{s:2,ry:-.5,y:-1.5});place('ship-wreck',40,-34,{s:1.6,ry:1.1,y:-1.4});SHIPS.push(place('ship-pirate-medium',8,-48,{s:2,ry:1.3,y:-1}));sea([-10,76],Math.PI/2,2.4);
+  [[-60,42],[-40,46],[30,48],[60,34],[76,20]].forEach(([x,z],i)=>prop(['barrel','crate','crate-bottles','barrel','bottle-large'][i],x,z,1.1,1.2));prop('tower-watch',-90,20,1.5,2.6)}
+ if(D==='fortress'){[[-60,-10],[-20,-38],[0,-5],[20,24],[55,-5],[72,14]].forEach(([x,z],i)=>prop(i%2?'tower-complete-small':'tower-complete-large',x,z,1.6,3));
+  [[-40,-6],[44,-24],[10,52],[-78,-30]].forEach(([x,z])=>prop('cannon-mobile',x,z,1.3,1.6));[[-30,-46],[30,0]].forEach(([x,z])=>prop('castle-wall',x,z,1.6,3));sea([-30,-72],.3,2.4);sea([70,72],Math.PI,2)}
+ if(D==='volcano'){[[-80,-10],[-30,-30],[40,-30],[70,10],[40,40],[-10,30]].forEach(([x,z])=>prop(pick(['rocks-a','rocks-b']),x,z,2.4,2.6));prop('tower-watch',-78,30,1.5,2.6);sea([90,-60],-1,2.2,'ship-pirate-medium')}
+ if(D==='ghost'){SHIPS.push(place('ship-ghost',0,0,{s:2.6,ry:.8,y:-1.2}));[[-70,20],[-60,-30],[50,-30],[70,20]].forEach(([x,z])=>prop('mast-ropes',x,z,1.4,1.4));[[-80,0],[0,-44],[80,0]].forEach(([x,z])=>prop('barrel',x,z,1.2,1.2))}
+ if(D==='archipelago'){L.isl.forEach(([cx,cz],i)=>{prop(i%2?'structure-roof':'tower-watch',cx+(i%2?8:-8),cz-(i%2?-10:10),1.5,3)});sea([0,-58],.2,2.2,'ship-large');sea([-40,58],2.4,2,'ship-pirate-medium');place('boat-row-large',50,40,{s:1.6,ry:.8,y:-.3})}}
+
 let PALMS=0;const SHIPS=[];const COL=[];
 function ring(x,z,r,c){const m=new THREE.Mesh(new THREE.RingGeometry(r*.78,r,40),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.6,depthWrite:false}));m.rotation.x=-Math.PI/2;m.position.set(x,hgt(x,z)+.12,z);scene.add(m);
  const beam=new THREE.Mesh(new THREE.CylinderGeometry(r*.55,r*.75,9,20,1,true),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.16,depthWrite:false,side:THREE.DoubleSide}));beam.position.set(x,hgt(x,z)+4.5,z);scene.add(beam);return{m,beam}}
@@ -182,7 +248,7 @@ function urchin(){const g=new THREE.Group(),m=mat(0x5B2A6E);g.add(new THREE.Mesh
 function burst(x,y,z,c,n=26){for(let i=0;i<n;i++){const m=new THREE.Mesh(new THREE.OctahedronGeometry(.18,0),new THREE.MeshBasicMaterial({color:c[i%c.length]}));m.position.set(x,y,z);scene.add(m);G.fx.push({m,v:new THREE.Vector3((Math.random()-.5)*.35,.25+Math.random()*.3,(Math.random()-.5)*.35),l:70})}}
 
 /* ---------- game state ---------- */
-let G={};function reset(){G={x:STARTS[0][0],z:STARTS[0][1],ang:Math.PI/2,walk:0,hearts:3,coins:0,gems:0,keys:0,inv:0,boxes:[],gates:[],final:{open:false,step:0,anim:0},pause:true,first:0,asked:0,zone:0,t:0,seen:new Uint8Array(54*30),critters:[],fx:[],mix:[]}}
+let G={};function reset(){const s0=STARTS[0]||[0,0];G={x:s0[0],z:s0[1],ang:Math.PI/2,walk:0,hearts:3,coins:0,gems:0,keys:0,inv:0,boxes:[],gates:[],final:{open:false,step:0,anim:0},pause:true,first:0,asked:0,zone:0,t:0,seen:new Uint8Array(54*30),critters:[],fx:[],mix:[]}}
 let HUDK='';function hud(){const hk=[G.hearts,G.coins,G.gems,G.keys].join();if(hk===HUDK)return;HUDK=hk;$('fg-hearts').textContent='❤️'.repeat(G.hearts)+'🤍'.repeat(Math.max(0,3-G.hearts));$('fg-coins').textContent='🪙 '+G.coins;$('fg-gems').textContent='💎 '+G.gems;$('fg-keys').innerHTML=pic('key',1.1,'vertical-align:-.2em')+' '+G.keys+'/4'}
 function nextTarget(){const q=G.boxes.find(b=>b.k==='q'&&!b.open);if(q)return{x:q.x,z:q.z,t:'box'};const g=G.gates.find(g=>!g.open);if(g)return{x:g.x,z:g.z,t:'gate'};return{x:FINAL.x,z:FINAL.z,t:'final'}}
 function goal(){const n=G.boxes.filter(b=>b.k==='q'&&b.open).length;const tg=nextTarget();$('fg-goal').textContent=tg.t==='final'?'📍 Go to Skull Rock: X marks the spot! ✖':`📍 ${ZONES[Math.min(n,3)].name}: find the golden chest ✖`}
@@ -200,7 +266,7 @@ function bindUI(){document.querySelectorAll('#fgw .fg-pad button').forEach(b=>{c
  $('fg-act').addEventListener('pointerdown',e=>{e.preventDefault();interact()});$('fg-mapbtn').onclick=()=>showMap(false);$('fg-exit').onclick=()=>stop(true)}
 
 /* ---------- movement ---------- */
-function blocked(x,z){if(!land(x,z))return true;for(const c of COL)if(!c.off&&Math.hypot(c.x-x,c.z-z)<c.r+.55)return true;return false}
+function blocked(x,z){if(!land(x,z))return true;if(G.gates&&G.gates.length&&zoneOf(x,z)>G.gates.filter(g=>g.open).length)return true;for(const c of COL)if(!c.off&&Math.hypot(c.x-x,c.z-z)<c.r+.55)return true;return false}
 let near=null;
 function update(dt){G.t+=dt;const f=dt*60;
  G.fx.forEach(p=>{p.m.position.add(p.v.clone().multiplyScalar(f));p.v.y-=.012*f;p.m.rotation.x+=.1*f;p.l-=f;if(p.l<=0){scene.remove(p.m);p.m.geometry.dispose()}});G.fx=G.fx.filter(p=>p.l>0);
@@ -212,6 +278,7 @@ function update(dt){G.t+=dt;const f=dt*60;
  if(ocean&&(Math.round(G.t*60)%2===0)){const p=ocean.geometry.attributes.position,a=p.array;for(let i=0;i<p.count;i++){const x=oceanBase[i*3],z=oceanBase[i*3+2];a[i*3+1]=Math.sin(x*.12+G.t*1.3)*.22+Math.cos(z*.1+G.t*1.1)*.2}p.needsUpdate=true}
  SHIPS.forEach((s,i)=>{if(s){s.rotation.z=Math.sin(G.t*.8+i)*.04;s.position.y+=Math.sin(G.t*1.2+i)*.004}});
  G.sand.forEach(q=>q.sw.rotation.z+=dt*.8);
+ if(G.smoke&&L.volc)G.smoke.forEach(q=>{q.t=(q.t+dt*.08)%1;const y=hgt(L.volc[0],L.volc[1])+2+q.t*26;q.m.position.set(L.volc[0]+Math.sin(q.t*9)*2+q.t*8,y,L.volc[1]-q.t*4);q.m.scale.setScalar(.6+q.t*3);q.m.material.opacity=.55*(1-q.t)});
  G.critters.forEach(c=>{if(c.k==='crab'){c.t+=dt*.12;const k=(Math.sin(c.t*Math.PI*2)+1)/2,x=c.a[0]+(c.b[0]-c.a[0])*k,z=c.a[1]+(c.b[1]-c.a[1])*k;c.x=x;c.z=z;c.obj.position.set(x,hgt(x,z)+Math.abs(Math.sin(G.t*10))*.12,z);c.obj.rotation.y=Math.atan2(c.b[0]-c.a[0],c.b[1]-c.a[1])+Math.PI/2}
   else{c.t+=dt*.55;const x=c.cx+Math.cos(c.t)*c.r,z=c.cz+Math.sin(c.t*1.3)*c.r*.7,y=Math.max(1.6,hgt(x,z)+1.6)+(Math.sin(c.t*.9)+1)*3.2;c.x=x;c.z=z;c.y=y;c.obj.position.set(x,y,z);c.obj.rotation.y=Math.atan2(-Math.sin(c.t),Math.cos(c.t)*1.3)+Math.PI;const fl=Math.sin(G.t*9)*.5;c.obj.userData.L.rotation.z=fl;c.obj.userData.R.rotation.z=-fl}});
  if(!G.pause){let dx=K.r-K.l,dz=K.d-K.u;const mv=dx||dz;if(dx&&dz){dx*=.71;dz*=.71}let sp=9;if(G.sand.some(q=>Math.hypot(q.x-G.x,q.z-G.z)<q.r))sp=4;
@@ -219,7 +286,7 @@ function update(dt){G.t+=dt;const f=dt*60;
   const nx=G.x+dx*sp*dt,nz=G.z+dz*sp*dt;if(!blocked(nx,G.z))G.x=nx;if(!blocked(G.x,nz))G.z=nz;
   if(G.inv<=0){for(const c of G.critters){const hit=c.k==='crab'?Math.hypot(c.x-G.x,c.z-G.z)<1.6:Math.hypot(c.x-G.x,c.z-G.z)<1.6&&c.y<hgt(G.x,G.z)+3;if(hit){knock(c.x,c.z);hurt(c.k==='gull'?'A seagull swooped at you! 🐦':'Snap! A crab pinched you! 🦀');break}}
    if(G.inv<=0)for(const u of G.urch)if(Math.hypot(u.x-G.x,u.z-G.z)<1.2){knock(u.x,u.z);hurt('Ouch, spiky sea urchins!');break}}
-  reveal();const z=G.x<WALLX[0]?0:G.x<WALLX[1]?1:G.x<WALLX[2]?2:3;if(z!==G.zone){G.zone=z;toast('📍 '+ZONES[z].name);talk('zone'+z)}}
+  reveal();const z=zoneOf(G.x,G.z);if(z!==G.zone){G.zone=z;toast('📍 '+ZONES[z].name);talk('zone'+z)}}
  if(G.inv>0)G.inv-=dt;
  near=null;G.boxes.forEach(b=>{if(!b.open&&Math.hypot(b.x-G.x,b.z-G.z)<3.6)near=b});if(!near&&!G.final.open&&G.keys>=3&&Math.hypot(FINAL.x-G.x,FINAL.z-G.z)<5.5)near='final';
  const ab=$('fg-act');ab.style.display=near&&!G.pause?'block':'none';ab.textContent=near==='final'?'Dig':'Open';
@@ -239,7 +306,7 @@ function hurt(msg){G.hearts--;G.inv=1.6;snd('hurt');toast(msg);burst(G.x,hgt(G.x
 const live=()=>typeof ADV!=='undefined'&&ADV&&typeof ME!=='undefined'&&ME;
 function say(t,k){try{if(typeof window.say==='function'&&window.say!==say){window.say(t,k);return}}catch(e){}say0(t)}
 function talk(k){if(VO[k])say(VO[k],'ig-'+k)}
-function fgSave(){if(!live())return;ADV.coins=G.coins;ADV.gems=G.gems;ADV.ig={o:G.boxes.map((b,i)=>b.open?i:-1).filter(i=>i>=0),f:G.final.step};advSave()}
+function fgSave(){const ig=IGS();ig.cur={l:LV,o:G.boxes.map((b,i)=>b.open?i:-1).filter(i=>i>=0),f:G.final.step};if(!live())return;ADV.coins=G.coins;ADV.gems=G.gems;advSave()}
 function card(html){$('fg-ov').innerHTML=`<div class="fg-card">${html}</div>`;$('fg-ov').hidden=false}
 function close(){$('fg-ov').hidden=true;$('fg-ov').innerHTML='';G.pause=false;goal()}
 function interact(){if(!near||G.pause)return;if(near==='final'){openFinal();return}const b=near;snd('open');G.pause=true;K.u=K.d=K.l=K.r=0;if(b.k==='q')askBox(b);else surprise(b)}
@@ -292,12 +359,13 @@ function openFinal(){G.pause=true;K.u=K.d=K.l=K.r=0;
    G.keys=4;hud();close();G.pause=true;setTimeout(()=>{snd('open');burst(FINAL.x,hgt(FINAL.x,FINAL.z)+2,FINAL.z,[0xFFD166,0xFFF3A0,0xF2B134,0xFFFFFF],60)},1700);setTimeout(win,3400);return}
   const want=(Z&&Z.locks&&Z.locks.boss&&Z.locks.boss[G.final.step])||{d:[3]};
   qAsk({img:'goldOpen',n:'X marks the spot',s:`Dig ${G.final.step+1} of 3. Solve all three to dig up the Captain’s treasure!`},want,first=>{G.asked++;if(first)G.first++;G.final.step++;fgSave();snd('dig');setTimeout(step,300)})};step()}
-function win(){G.pause=true;snd('win');setTimeout(()=>talk('win'),900);const pct=G.asked?G.first/G.asked:1,st=pct>=.85?3:pct>=.6?2:1;G.coins+=50;G.gems+=2;hud();
- let badge='';if(live()){ADV.coins=G.coins;ADV.gems=G.gems;ADV.ig=null;if(!ADV.badges.includes('island')){ADV.badges.push('island');badge=' You earned the <b>Treasure Hunter</b> badge! The Harbour in Math City is now open.'}advSave()}
- const nm=live()&&ME.first_name?', '+esc(ME.first_name):'';
- $('fg-ov').innerHTML=`<div class="fg-parch"><div class="fg-row" style="gap:0">${pic('heroKey',6.5)}${pic('goldOpen',4.5,'margin-left:-.3em')}</div><h1>🏆 You found the Captain’s treasure${nm}!</h1><div style="font-size:4em">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p>+50 🪙 · +2 💎 · ${G.first} of ${G.asked} right first time</p><p>${badge||'Badge: <b>Treasure Hunter</b>'}</p>
- <div class="fg-row" style="font-size:.8em;padding-right:10%"><button class="fg-go" id="fg-again">Play again ↺</button><button class="fg-go fg-sub" id="fg-city">🏗️ Build Math City</button><button class="fg-go fg-sub" id="fg-back">Adventures</button></div></div>`;
- $('fg-ov').hidden=false;$('fg-again').onclick=()=>{if(live()){ADV.ig=null;advSave()}stop(true,{s:'adv',z:'island'})};$('fg-back').onclick=()=>stop(true);$('fg-city').onclick=()=>stop(true,{s:'adv',z:'city',land:'NI'})}
+function win(){G.pause=true;snd('win');setTimeout(()=>talk('win'),900);const pct=G.asked?G.first/G.asked:1,st=pct>=.85?3:pct>=.6?2:1,cn=40+LV*10;G.coins+=cn;G.gems+=2;hud();
+ const ig=IGS();ig.st[LV]=Math.max(ig.st[LV]||0,st);ig.un=Math.max(ig.un,Math.min(NLV,LV+1));ig.cur=null;let badge='';
+ if(live()){ADV.coins=G.coins;ADV.gems=G.gems;if(!ADV.badges.includes('island')){ADV.badges.push('island');badge=' You earned the <b>Treasure Hunter</b> badge! The Harbour in Math City is now open.'}advSave()}
+ const nm=live()&&ME.first_name?', '+esc(ME.first_name):'',more=LV<NLV;
+ $('fg-ov').innerHTML=`<div class="fg-parch"><div class="fg-row" style="gap:0">${pic('heroKey',6.5)}${pic('goldOpen',4.5,'margin-left:-.3em')}</div><h1>🏆 Level ${LV} complete${nm}!</h1><div style="font-size:4em">${'⭐'.repeat(st)}${'☆'.repeat(3-st)}</div><p>+${cn} 🪙 · +2 💎 · ${G.first} of ${G.asked} right first time</p><p>${badge}${more?` <b>${LEVELS[LV].name}</b> is now open!`:' You found every treasure on every island!'}</p>
+ <div class="fg-row" style="font-size:.8em;padding-right:10%">${more?'<button class="fg-go" id="fg-next">Next island ➜</button>':''}<button class="fg-go fg-sub" id="fg-pick">🏝️ Choose island</button><button class="fg-go fg-sub" id="fg-city">🏗️ Math City</button><button class="fg-go fg-sub" id="fg-back">Adventures</button></div></div>`;
+ $('fg-ov').hidden=false;if(more)$('fg-next').onclick=()=>goLevel(LV+1);$('fg-pick').onclick=levelSelect;$('fg-back').onclick=()=>stop(true);$('fg-city').onclick=()=>stop(true,{s:'adv',z:'city',land:'NI'})}
 
 /* ---------- treasure maps ---------- */
 let LANDC=null;function landCanvas(){if(LANDC)return LANDC;const c=document.createElement('canvas');c.width=216;c.height=120;const x=c.getContext('2d'),im=x.createImageData(216,120);
@@ -319,15 +387,16 @@ function showMap(first){G.pause=true;snd('map');K.u=K.d=K.l=K.r=0;
 /* ---------- start and stop ---------- */
 let ON=false,WRAP=null,DONE=null,MINIT=0;
 function intro(){G.pause=true;const n=G.boxes.filter(b=>b.k==='q'&&b.open).length,back=n>0||G.final.step>0||G.boxes.some(b=>b.open);const nm=live()&&ME.first_name?esc(ME.first_name):'explorer';
- $('fg-ov').innerHTML=`<div class="fg-parch">${pic('scroll',4.5,'margin-bottom:.2em')}<h1>🏝️ Treasure Island Adventure 🏝️</h1>
- <p>${back?`Welcome back, ${nm}! You have ${n} of 3 keys. Carry on from <b>${ZONES[Math.min(n,3)].name}</b>.`:`Ahoy, ${nm}! The old Captain buried his treasure on this island. Follow the map, find the golden chests and use your maths to reach the spot marked X!`}</p>
- <div class="fg-row" style="margin:.6em 0"><button class="fg-go" id="fg-begin">Open the map 🗺️</button>${back?'<button class="fg-go fg-sub" id="fg-restart">Start again ↺</button>':''}</div>
+ $('fg-ov').innerHTML=`<div class="fg-parch">${pic('scroll',4.5,'margin-bottom:.2em')}<h1>🏝️ Level ${LV}: ${L.name}</h1><p class="lv-topic">Maths topic: <b>${esc0(topicName(LV))}</b></p>
+ <p>${back?`Welcome back, ${nm}! You have ${n} of 3 keys. Carry on from <b>${ZONES[Math.min(n,3)].name}</b>.`:`Ahoy, ${nm}! ${STORY[LV-1]}`}</p>
+ <div class="fg-row" style="margin:.6em 0"><button class="fg-go" id="fg-begin">Open the map 🗺️</button>${back?'<button class="fg-go fg-sub" id="fg-restart">Start again ↺</button>':''}<button class="fg-go fg-sub" id="fg-pick">🏝️ Islands</button></div>
  <p style="font-size:1em;opacity:.8;padding-right:12%">Computer: arrow keys to walk · Space to open chests · M for the map &nbsp;|&nbsp; iPad: use the buttons</p></div>`;$('fg-ov').hidden=false;
- $('fg-begin').onclick=()=>{showMap(true);talk('map')};setTimeout(()=>talk(back?'back':'intro'),300);const rs=$('fg-restart');if(rs)rs.onclick=()=>{if(live()){ADV.ig=null;advSave()}stop(true,{s:'adv',z:'island'})}}
-function restore(){if(live()){G.coins=ADV.coins;G.gems=ADV.gems}const fg=live()?ADV.ig:null;
+ $('fg-begin').onclick=()=>{showMap(true);talk('map')};setTimeout(()=>talk(back?'back':'intro'),300);$('fg-pick').onclick=levelSelect;const rs=$('fg-restart');if(rs)rs.onclick=()=>{IGS().cur=null;if(live())advSave();goLevel(LV)}}
+function restore(){if(live()){G.coins=ADV.coins;G.gems=ADV.gems}const ig=IGS(),fg=ig.cur&&ig.cur.l===LV?ig.cur:null;
  if(fg&&Array.isArray(fg.o)){fg.o.forEach(i=>{const b=G.boxes[i];if(b){b.open=true;b.anim=1;b.ring.m.visible=b.ring.beam.visible=false;if(b.act){b.act.play();b.mixer.update(5)}if(b.k==='s'&&b.obj)b.obj.visible=false;const c=COL.find(c=>c.x===b.x&&c.z===b.z);if(c&&b.k==='s')c.off=true}});
   G.keys=G.boxes.filter(b=>b.k==='q'&&b.open).length;G.gates.forEach((g,i)=>{if(i<G.keys){g.open=true;g.anim=1;g.blk.off=true;g.bars.position.y=hgt(g.x,g.z)+5.4}});G.final.step=+fg.f||0;
-  const zi=Math.min(G.keys,3);G.x=STARTS[zi][0];G.z=STARTS[zi][1];G.zone=zi;for(let j=0;j<30;j++)for(let i=0;i<54;i++)if(i*4-108<(zi?WALLX[zi-1]:-200))G.seen[j*54+i]=1}
+  const zi=Math.min(G.keys,3);G.x=STARTS[zi][0];G.z=STARTS[zi][1];G.zone=zi;for(let j=0;j<30;j++)for(let i=0;i<54;i++)if(zoneOf(i*4-106,j*4-58)<zi)G.seen[j*54+i]=1}
+ else{G.x=STARTS[0][0];G.z=STARTS[0][1];G.zone=0}
  reveal();hud();goal()}
 function resize(){const el=$('fg-3d');if(!el||!renderer)return;const w=el.clientWidth,h=el.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix()}
 function snapCam(){const gy=hgt(G.x,G.z);camera.position.set(G.x,gy+CAMY,G.z+CAMZ);camera.lookAt(G.x,gy+1.5,G.z)}
@@ -338,16 +407,44 @@ function stop(go,view){ON=false;cancelAnimationFrame(raf);try{speechSynthesis.ca
  try{scene.traverse(o=>{if(o.isMesh&&!o.userData.shared){o.geometry&&o.geometry.dispose()}});renderer.dispose();renderer.forceContextLoss()}catch(e){}renderer=null;
  if(WRAP){WRAP.remove();WRAP=null}document.body.classList.remove('fgon');if(go){const d=DONE;DONE=null;if(d)d(view)}}
 function webgl(){try{const c=document.createElement('canvas');return !!(window.WebGLRenderingContext&&(c.getContext('webgl2')||c.getContext('webgl')))}catch(e){return false}}
+
+/* ---------- levels: one island per topic of the child's grade ---------- */
+let NLV=6,BASEZ=null,LOCALIG=null;
+function topics(){const out=[];try{if(typeof C!=='undefined'&&C&&C.lands)['NI','TT'].forEach(code=>{const l=C.lands.find(x=>x.code===code);if(l)l.stops.forEach(s=>out.push({code,n:s.n,topic:s.topic||l.name,land:l.name}))})}catch(e){}
+ return out.slice(0,LEVELS.length)}
+function IGS(){if(!live()){LOCALIG=LOCALIG||{v:2,un:1,st:{},cur:null};return LOCALIG}const g=ADV.ig;
+ if(!g||g.v!==2){const old=g&&Array.isArray(g.o)?g:null;ADV.ig={v:2,un:ADV.badges.includes('island')?2:1,st:{},cur:old?{l:1,o:old.o,f:+old.f||0}:null}}return ADV.ig}
+function levelZone(n){const tp=topics()[n-1];if(!tp||!BASEZ)return BASEZ;const l=C.lands.find(x=>x.code===tp.code),st=l&&l.stops.find(s=>s.n===tp.n);if(!st)return BASEZ;
+ return Object.assign({},BASEZ,{src:()=>(st.practise||[]).map(it=>Object.assign({_land:tp.code},it)),words:()=>typeof advWords==='function'?advWords([tp.code]).filter(w=>String(w.id).startsWith('use-'+tp.code+'-'+tp.n+'-')):[]})}
+function topicName(n){const tp=topics()[n-1];return tp?tp.topic:['Adding and taking away','Bigger numbers','Times tables','Multiplying','Dividing','Problem solving'][n-1]}
+const THUMB={};function levelThumb(n){if(THUMB[n])return THUMB[n];const keep=[L,LV];L=LEVELS[n-1];LV=n;layout();const c=document.createElement('canvas');c.width=216;c.height=120;const x=c.getContext('2d'),im=x.createImageData(216,120),th=THEMES[L.theme];
+ const sea=[Math.round(th.sky>>16&255),Math.round(th.sky>>8&255),th.sky&255];
+ for(let j=0;j<120;j++)for(let i=0;i<216;i++){const wx=i-108,wz=j-60,h=hgt(wx,wz),k=(j*216+i)*4;let col;
+  if(h<.2)col=h<-1.2?[30,120,170]:[90,180,210];else if(h<.62||pathD(wx,wz)<2)col=th.sand.map(v=>v*255);else col=th.grass.map(v=>v*255);if(L.volc&&Math.hypot(wx-L.volc[0],wz-L.volc[1])<6)col=[255,90,30];im.data.set([col[0],col[1],col[2],255],k)}
+ x.putImageData(im,0,0);x.strokeStyle='#B5402A';x.setLineDash([4,3]);x.lineWidth=2;x.beginPath();ROUTE.forEach(([a,b],i)=>i?x.lineTo(a+108,b+60):x.moveTo(a+108,b+60));x.stroke();x.setLineDash([]);
+ x.strokeStyle='#C0263A';x.lineWidth=3;const f=[FINAL.x+108,FINAL.z+60];x.beginPath();x.moveTo(f[0]-5,f[1]-5);x.lineTo(f[0]+5,f[1]+5);x.moveTo(f[0]+5,f[1]-5);x.lineTo(f[0]-5,f[1]+5);x.stroke();
+ [L,LV]=keep;layout();return THUMB[n]=c.toDataURL()}
+function levelSelect(){G.pause=true;K.u=K.d=K.l=K.r=0;const ig=IGS();
+ $('fg-ov').innerHTML=`<div class="fg-parch lv-wrap"><h1>🏝️ Choose your island</h1><p>Each island has a new maths topic. Find the treasure to open the next island!</p>
+ <div class="lv-grid">${LEVELS.slice(0,NLV).map((lv,i)=>{const n=i+1,open=n<=ig.un,st=ig.st[n]||0,cur=ig.cur&&ig.cur.l===n;
+  return `<button class="lv${open?'':' locked'}" data-lv="${n}" ${open?'':'disabled'}><img src="${levelThumb(n)}" alt=""><b>Level ${n} · ${lv.name}</b><i>${esc0(topicName(n))}</i><span>${open?(st?'⭐'.repeat(st)+'☆'.repeat(3-st):cur?'▶ Carry on':'New!'):'🔒 Locked'}</span></button>`}).join('')}</div>
+ <div class="fg-row"><button class="fg-go fg-sub" id="lv-back">← Adventures</button></div></div>`;$('fg-ov').hidden=false;
+ document.querySelectorAll('#fgw [data-lv]').forEach(b=>b.onclick=()=>goLevel(+b.dataset.lv));$('lv-back').onclick=()=>stop(true)}
+const esc0=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function goLevel(n){LV=n;L=LEVELS[n-1];layout();Z=levelZone(n);const coins=G.coins,gems=G.gems;reset();if(!live()&&coins!==undefined){G.coins=coins;G.gems=gems}
+ buildWorld();restore();snapCam();intro()}
+
 function fallback(z,done){const s=document.createElement('script');s.src='island-game.js?v=1';s.onload=()=>window.IG.start(z,done);s.onerror=()=>done();document.head.appendChild(s)}
 
-window.IG3={start(z,done){if(ON)return;if(!webgl())return fallback(z,done);Z=z;DONE=done;
+window.IG3={start(z,done){if(ON)return;if(!webgl())return fallback(z,done);Z=z;BASEZ=z;DONE=done;
  if(!document.getElementById('ig3css')){const s=document.createElement('style');s.id='ig3css';s.textContent=CSS;document.head.appendChild(s)}
  WRAP=document.createElement('div');WRAP.id='fgw';WRAP.innerHTML=HTML;document.body.appendChild(WRAP);document.body.classList.add('fgon');WRAP.style.setProperty('--paper','url('+IMGSRC.mapPaper+')');
- grade=Math.max(1,Math.min(5,live()?(+ME.grade||1):3));HUDK='';reset();bindUI();
+ grade=Math.max(1,Math.min(5,live()?(+ME.grade||1):3));HUDK='';layout();reset();bindUI();
  $('fg-ov').innerHTML='<div class="fg-load">🏝️ Sailing to Treasure Island…<div class="bar"><i id="fg-lb"></i></div></div>';$('fg-ov').hidden=false;
  try{renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:'high-performance'})}catch(e){WRAP.remove();WRAP=null;document.body.classList.remove('fgon');return fallback(z,done)}
  renderer.setPixelRatio(Math.min(window.devicePixelRatio||1,1.6));renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=.92;
  $('fg-3d').appendChild(renderer.domElement);camera=new THREE.PerspectiveCamera(45,16/9,.5,400);ON=true;resize();addEventListener('resize',resize);
- loadModels(p=>{const b=$('fg-lb');if(b)b.style.width=Math.round(p*100)+'%'}).then(()=>{if(!ON)return;PALMS=0;SHIPS.length=0;buildWorld();restore();
-  snapCam();intro();last=performance.now();raf=requestAnimationFrame(loop)})},
- stop(){stop(false)},get on(){return ON},_t:{cam:(a,b,c,d,e,f)=>{G.dbg=1;camera.position.set(a,b,c);camera.lookAt(d,e,f)},g:()=>G,go:(x,z)=>{G.x=x;G.z=z;reveal();snapCam()},use:()=>interact(),hgt}};
+ loadModels(p=>{const b=$('fg-lb');if(b)b.style.width=Math.round(p*100)+'%'}).then(()=>{if(!ON)return;NLV=Math.max(1,topics().length||LEVELS.length);const ig=IGS();ig.un=Math.min(ig.un,NLV);
+  const n=ig.cur&&ig.cur.l<=NLV?ig.cur.l:Math.min(ig.un,NLV);LV=n;L=LEVELS[n-1];layout();Z=levelZone(n);reset();buildWorld();restore();snapCam();last=performance.now();raf=requestAnimationFrame(loop);levelSelect()})},
+ stop(){stop(false)},get on(){return ON},_t:{tp:()=>({t:topics(),n:NLV,src:[1,2,3,4,5].map(n=>{const z=levelZone(n);return z&&z.src?z.src().length:0})}),fin:()=>FINAL,why:(x,z)=>({land:land(x,z),h:hgt(x,z),zone:zoneOf(x,z),col:COL.filter(c=>!c.off&&Math.hypot(c.x-x,c.z-z)<c.r+.55).map(c=>[Math.round(c.x),Math.round(c.z),c.r]),gates:GATES.map(g=>[g.x,g.z])}),lv:n=>goLevel(n),sel:()=>levelSelect(),check:()=>{const bad=[];const keep=G.gates.map(g=>g.open);G.gates.forEach(g=>g.open=true);const tot=RARC[RARC.length-1];for(let d=0;d<=tot;d+=1){const p=routeAt(d);const gate=G.gates.some(g=>Math.hypot(g.x-p.x,g.z-p.z)<3.6);if(!gate&&blocked(p.x,p.z))bad.push([Math.round(p.x),Math.round(p.z)])}
+ const bx=G.boxes.map((b,bi)=>{const s=arcOf(b.x,b.z),p=routeAt(s),l=Math.hypot(b.x-p.x,b.z-p.z);let ok=true;for(let t=0;t<l-2;t+=.5){const x=p.x+(b.x-p.x)*t/l,z=p.z+(b.z-p.z)*t/l;if(blocked(x,z))ok=false}if(!ok)console.log('box',bi,b.k,Math.round(b.x),Math.round(b.z),JSON.stringify(IG3._t.why((b.x+p.x)/2,(b.z+p.z)/2)));return ok?1:0});G.gates.forEach((g,i)=>g.open=keep[i]);return{bad:bad.slice(0,12),nbad:bad.length,bx,zones:ZONES.length,boxes:G.boxes.length,gates:G.gates.length}},cam:(a,b,c,d,e,f)=>{G.dbg=1;camera.position.set(a,b,c);camera.lookAt(d,e,f)},g:()=>G,go:(x,z)=>{G.x=x;G.z=z;reveal();snapCam()},use:()=>interact(),hgt}};
