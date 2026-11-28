@@ -1491,6 +1491,11 @@ function tasksPanel(){if(!MYTASKS)return '';const td=dubaiDay();const list=MYTAS
   ${t.note?`<div class="small" style="margin-top:2px">💬 ${esc(t.note)}</div>`:''}<div class="tks">${ks.map(k=>{const d=ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`];return `<span class="${d?'ok':''}">${d?'✓':KIND_E[k]} ${QSHORT[k]}</span>`}).join('')}</div></div>
   ${done?'<div class="tbad">✓ Done!</div>':`<button class="b1 tgo" data-tgo="${t.id}">Go ➜</button>`}</div>`}).join('')}</div>`}
 async function loadTasks(){const {data}=await rpc('mq_my_tasks',{p_code:ME.code});MYTASKS=Array.isArray(data)?data:[];const b=$('#tasksBox');if(b){b.innerHTML=tasksPanel();bindTasks()}}
+let WANTTASK=null;
+/* homework opened from Nestlings: go straight to the first quest still to do */
+async function openTaskId(id){if(!ME||V.s==='avatar')return false;if(!MYTASKS){const {data}=await rpc('mq_my_tasks',{p_code:ME.code});MYTASKS=Array.isArray(data)?data:[]}
+ const t=MYTASKS.find(x=>x.id===id);if(!t||!C)return false;const [l,st]=taskStop(t);if(!st)return false;
+ const k=taskKinds(t,st).find(k=>!(ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`]))||'practise';V={s:k,land:t.land,stop:t.stop};Q=null;render();return true}
 function bindTasks(){document.querySelectorAll('[data-tgo]').forEach(b=>b.onclick=()=>{const t=MYTASKS.find(x=>x.id===b.dataset.tgo);const [l,st]=taskStop(t);const k=taskKinds(t,st).find(k=>!(ME.done&&ME.done[`G${ME.grade}-${t.land}-${t.stop}-${k}`]))||'practise';V={s:k,land:t.land,stop:t.stop};Q=null;render()})}
 
 /* ================= finishers, Champion mode, daily challenge, Beat the clock and races ================= */
@@ -1963,7 +1968,7 @@ function showHow(it){const H=HOW.steps(it),S=H.steps;let n=1;const ov=document.c
 /* ================= 📋 Maths checks (start of year / end of term) ================= */
 let WANTRACE=/[?&]race\b/.test(location.search);let MYCHECKS=null,CK=null,WANTCK=/[?&]check\b/.test(location.search);
 function openCheck(c){const qs=checkQs(c);CK={c,qs,i:qs.findIndex(q=>!(c.answers||{})[q.id]),intro:!c.answered};if(CK.i<0)CK.i=qs.length;V={s:'check'};render()}
-async function afterSignin(){if(WANTRACE&&V.s==='map'){WANTRACE=false;try{history.replaceState(null,'',location.pathname)}catch(e){}SP={stage:'menu',scope:'class',period:'today',race:{stage:'menu'}};V={s:'speed'};render();setTimeout(()=>{const i=$('#rjoin');if(i)i.focus()},300);return}await loadChecks();const c=(MYCHECKS||[]).find(x=>!x.done);
+async function afterSignin(){if(WANTTASK){const id=WANTTASK;WANTTASK=null;if(await openTaskId(id))return}if(WANTRACE&&V.s==='map'){WANTRACE=false;try{history.replaceState(null,'',location.pathname)}catch(e){}SP={stage:'menu',scope:'class',period:'today',race:{stage:'menu'}};V={s:'speed'};render();setTimeout(()=>{const i=$('#rjoin');if(i)i.focus()},300);return}await loadChecks();const c=(MYCHECKS||[]).find(x=>!x.done);
  if(WANTCK){WANTCK=false;try{history.replaceState(null,'',location.pathname)}catch(e){}if(c&&V.s!=='avatar'){openCheck(c);return}if(!c){cheer('No maths check is open right now 🙂');return}}
  if(c&&V.s==='map'){let seen=null;try{seen=sessionStorage.getItem('mq-ckpop-'+c.id)}catch(e){}if(seen)return;try{sessionStorage.setItem('mq-ckpop-'+c.id,'1')}catch(e){}
   const ov=document.createElement('div');ov.className='howov';ov.innerHTML=`<div class="howcard center" style="border-color:#2F9BE0"><div style="font-size:64px;line-height:1">📋</div><h2 style="color:var(--sea);font-size:28px;margin:8px 0">Your teacher has a maths check for you!</h2><p style="font-size:18px"><b>${esc(c.name)}</b>${c.answered?` · you have done ${c.answered} questions`:''}</p><div class="row" style="justify-content:center;gap:10px"><button class="b1" id="ckpGo" style="font-size:22px">${c.answered?'Carry on →':'Start now →'}</button><button class="b2" id="ckpLater">Later</button></div></div>`;
@@ -2573,7 +2578,12 @@ function useView(){const st=stopObj();if(!Q){const p=usePick(st);Q={kind:'use',p
    else{$('#fb').innerHTML=`<span class="bad">The answer is <b>${esc(p.a)}</b>.</span> ${howBtn(p)}`;bindHow(p);$('#af').querySelector('button').disabled=true;$('#ans2').innerHTML='<div style="margin-top:12px"><button class="b2" id="another">Try another problem</button></div>';$('#another').onclick=()=>{Q=null;render()}}}}
  else $('#rev').onclick=()=>{$('#ans2').innerHTML=`<div class="hint">${friendSvg()}<div><b>${fname()} says:</b> ${esc(p.a)}</div></div>`;fin()}}
 /* ---------- start ---------- */
-(async()=>{let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
+(async()=>{const NEST=new URLSearchParams(location.search).get('nest');
+ if(NEST){try{history.replaceState(null,'',location.pathname)}catch(e){}$('#app').innerHTML='<p class="center muted">Opening your homework…</p>';
+  const {data,error}=await rpc0('nest_mq_ticket',{p_ticket:NEST});
+  if(data&&data.code){WANTTASK=data.task||null;const m=await signIn(data.code);if(!m)return;ME=null;render();const cm=$('#cm');if(cm)cm.textContent=m;return}
+  ME=null;render();const cm=$('#cm');if(cm)cm.textContent=error?'Could not connect. Please try again.':data&&data.error==='nokid'?'Your Maths Quest account isn’t linked to Nestlings yet. Type your Maths Quest code, or ask your teacher.':'That homework link has run out. Go back to Nestlings and tap the button again, or type your code.';return}
+ let saved=null;try{saved=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){}
  if(saved&&saved.code){$('#app').innerHTML='<p class="center muted">Opening your map…</p>';const m=await signIn(saved.code);if(m){ME=null;render()}}else render()})();
 </script>
 <script src="adventures.js?v=11"></script>
